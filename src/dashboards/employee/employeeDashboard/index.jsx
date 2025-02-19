@@ -6,8 +6,12 @@ import EmployeeSidebar from "../employeeSidebar";
 import { useAuth } from "../../../context/AuthContext";
 import DemoPageContent from "../../../components/demoPageContent";
 import { createTheme } from "@mui/material/styles";
+import company_logo from "../../../company-logo.png";
 
 const demoTheme = createTheme({
+  palette: {
+    mode: "light", // ✅ Force light mode
+  },
     typography: {
       fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     },
@@ -22,6 +26,15 @@ const demoTheme = createTheme({
         md: 960, // Change md to a valid breakpoint
         lg: 1200,
         xl: 1536,
+      },
+    },
+    components: {
+      MuiSvgIcon: {
+        styleOverrides: {
+          root: {
+            color: "rgba(249, 64, 8, 0.62) !important", // ✅ Change hamburger color (orange)
+          },
+        },
       },
     },
   });
@@ -44,6 +57,11 @@ function EmployeeDashboard(props) {
   return (
     <AppProvider
       navigation={EmployeeSidebar}
+      branding={{
+        logo: <img src={company_logo} alt="MUI logo" />,
+        title: '',
+        homeUrl: '/toolpad/core/introduction',
+      }}
       router={router}
       theme={demoTheme}
       window={demoWindow}
