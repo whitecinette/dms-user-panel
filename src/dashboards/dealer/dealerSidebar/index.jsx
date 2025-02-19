@@ -1,19 +1,9 @@
   import React from "react";
-  import { BsGraphUpArrow } from "react-icons/bs";
-  import { SlGraph } from "react-icons/sl";
   import { RiDashboardLine } from "react-icons/ri";
-  import { TbMap2 } from "react-icons/tb";
-  import { MdOutlineAccountBalanceWallet } from "react-icons/md";
-  import { MdOutlineManageAccounts } from "react-icons/md";
-  import { LuClipboardList } from "react-icons/lu";
-  import { CiMoneyBill } from "react-icons/ci";
-  import { HiOutlineSpeakerphone } from "react-icons/hi";
   import { TbTargetArrow } from "react-icons/tb";
   import { CgProfile } from "react-icons/cg";
   import { TfiLock } from "react-icons/tfi";
   import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
-
-
 
   const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
