@@ -13,6 +13,8 @@ const Login = () => {
     "SC-TSE0001": { role: "Employee", dashboard: "/employee/dashboard" },
     "RAJD0691": { role: "Dealer", dashboard: "/dealer/dashboard" },
     "MDD0001": { role: "MDD", dashboard: "/mdd/dashboard" },
+    "NAM-HR0001": { role: "human resource", dashboard: "/hr-dashboard" },
+
   };
 
   const handleLogin = () => {
