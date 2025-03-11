@@ -8,14 +8,18 @@ import { FaMale, FaFemale } from "react-icons/fa";
 // Attendance Pie Chart Data
 const COLORS = ["#0088FE", "#FF8042"];
 const dataPie = [
-  { name: "Present", value: 95 },
-  { name: "Absent", value: 15 },
-];
+  { name: "Present", value: 95, color: "#5C3CF2" },
+  { name: "Absent", value: 15, color: "red" },
+  // ];
 
-// Leave Request | Approvals Pie Chart Data
-const leaveData = [
-  { name: "Female", value: 35, color: "#5C3CF2" }, 
-  { name: "Male", value: 65, color: "#00B589" }, 
+  // Leave Request | Approvals Pie Chart Data
+  // const leaveData = [
+  //   { name: "Female", value: 35, color: "#5C3CF2" },
+  //   { name: "Male", value: 65, color: "#00B589" },
+  // ];
+  // const leaveData = [
+  { name: "Approved", value: 35, color: "green" },
+  { name: "pending", value: 65, color: "orange" },
 ];
 
 // Static Data for Birthdays & Events
@@ -44,15 +48,39 @@ const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, inde
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date());
-  const selectedDate = date.toISOString().split("T")[0];
+  // const selectedDate = date.toISOString().split("T")[0];
+  const selectedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .split("T")[0];
 
   const birthdays = staticBirthdays[selectedDate] || [];
   const events = staticEvents[selectedDate] || [];
 
+  // Function to highlight dates with events
+  const tileContent = ({ date, view }) => {
+    if (view === "month") {
+      const formattedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+        .toISOString()
+        .split("T")[0];
+      const hasBirthday = staticBirthdays[formattedDate];
+      const hasEvent = staticEvents[formattedDate];
+
+      if (hasBirthday || hasEvent) {
+        return (
+          <div className="event-indicator">
+            {hasBirthday && <span className="birthday-dot">🎂</span>}
+            {hasEvent && <span className="event-dot">📅</span>}
+          </div>
+        );
+      }
+    }
+    return null;
+  };
+
   return (
     <div className="dashboard">
       {/* Employee Stats Cards */}
-      <div className="cards">
+      {/* <div className="cards">
         <div className="card">
           <h3>Total Employees</h3>
           <p>120</p>
@@ -65,20 +93,75 @@ const Dashboard = () => {
           <h3>Total Absent</h3>
           <p>15</p>
         </div>
+      </div> */}
+      <div className="chart-container">
+        <div className="chart-content">
+
+          {/* Center: Combined Pie Charts */}
+          <div className="chart-center">
+            <ResponsiveContainer width={300} height={200}>
+              <PieChart>
+                <Pie
+                  data={dataPie} // Merged attendance & leave data
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={40}
+                  innerRadius={20}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  fontSize={12}
+                >
+                  {dataPie.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+
+          {/* Right: Leave Approval Stats */}
+          <div className="chart-right">
+            <div className="employee-stat">
+              <h6>Total Employees: <span>120</span></h6>
+              
+            </div>
+            <div className="employee-stat">
+              <h6>Total Present</h6>
+              {/* <p>95</p> */}
+            </div>
+            <div className="employee-stat">
+              <h6>Total Absent</h6>
+              {/* <p>15</p> */}
+            </div>
+            <div className="employee-stat">
+              <h6>Approved</h6>
+              {/* <p>35</p> */}
+            </div>
+            <div className="employee-stat">
+              <h6>Pending</h6>
+              {/* <p>65</p> */}
+            </div>
+          </div>
+
+        </div>
+        <div className="chart-leave">
+          <h2>Leave Requests</h2>
+        </div>
       </div>
       <div className="charts">
         <div className="calendar-container">
-          <Calendar onChange={setDate} value={date} view="month" />
+          <Calendar onChange={setDate} value={date} view="month" tileContent={tileContent} />
         </div>
 
         <div className="event-table">
           <h2>Birthdays & Events</h2>
           <table>
             <thead>
-              <tr>
+              {/* <tr> */}
                 <th>Name</th>
                 <th>Type</th>
-              </tr>
+              {/* </tr> */}
             </thead>
             <tbody>
               {birthdays.map((bday, index) => (
@@ -102,29 +185,9 @@ const Dashboard = () => {
           </table>
         </div>
       </div>
-      <div className="chart-container">
-        <h3 style={{ fontSize: "16px", fontWeight: "bold", textAlign: "center" }}>
-          <span style={{ color: "#5C3CF2" }}>Leave Request</span> | <span style={{ color: "#00B589" }}>Approvals</span>
-        </h3>
-        <ResponsiveContainer width="100%" height={250}>
-          <PieChart>
-            <Pie
-              data={leaveData}
-              cx="50%"
-              cy="50%"
-              outerRadius={70}
-              innerRadius={40}
-              label={CustomLabel}
-            >
-              {leaveData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </ResponsiveContainer>
-        <p style={{ fontSize: "12px", color: "#666", textAlign: "center" }}>56 employee total</p>
-      </div>
+      
+
+
     </div>
   );
 };

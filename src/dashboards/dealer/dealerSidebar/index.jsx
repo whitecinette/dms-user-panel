@@ -9,10 +9,14 @@ import { AppProvider, DashboardLayout } from "@toolpad/core";
 import PropTypes from "prop-types";
 import company_logo from "../../../company-logo.png";
 import { useAuth } from "../../../context/AuthContext";
+import ProductList from "../../../components/dealer/products";
+import OrderOfDealers from "../../../components/dealer/orders";
   const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
   const DealerSidebar = [
     { kind: "header", title: "Dealer Panel" },
+    { segment: "dealer/dashboard/products", title: "Products", icon: <RiDashboardLine size={22} {...iconStyle} /> },
+    { segment: "dealer/dashboard/orders", title: "Order", icon: <RiDashboardLine size={22} {...iconStyle} /> },
     { segment: "dealer/dashboard/sales-dashboard", title: "Sales Dashboard", icon: <RiDashboardLine size={22} {...iconStyle} /> },
     { segment: "dealer/dashboard/scheme-letters", title: "Scheme Letters", icon: <LiaFileInvoiceDollarSolid size={22} {...iconStyle}/> },
     { segment: "dealer/dashboard/targets", title: "Targets", icon: <TbTargetArrow size={22} {...iconStyle}/> },
@@ -34,7 +38,8 @@ import { useAuth } from "../../../context/AuthContext";
      >
        <DashboardLayout slots={{ sidebarFooter: () => null }}>
          <Routes>
-           {/* <Route path="targets" element={<Targets />} /> */}
+           <Route path="products" element={<ProductList />} />
+           <Route path="orders" element={<OrderOfDealers />} />
          </Routes>
        </DashboardLayout>
      </AppProvider>

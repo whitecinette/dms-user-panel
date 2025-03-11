@@ -2,7 +2,7 @@ import React from "react";
 import { BsGraphUpArrow } from "react-icons/bs";
 import { SlGraph } from "react-icons/sl";
 import { RiDashboardLine } from "react-icons/ri";
-import PropTypes from "prop-types";
+import PropTypes, { element } from "prop-types";
 import { TbMap2 } from "react-icons/tb";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { MdOutlineManageAccounts } from "react-icons/md";
@@ -16,13 +16,14 @@ import company_logo from "../../../company-logo.png";
 import { TfiLock } from "react-icons/tfi";
 import { useAuth } from "../../../context/AuthContext";
 import { AppProvider, DashboardLayout } from "@toolpad/core";
-import { Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
+import PaySlipByEmployee from "../../../components/employee/paySlip";
+import Attendance from "../../../components/employee/attendance";
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
-
 const EmployeeSidebar = [
   { kind: "header", title: "Employee Panel" },
   {
-    segment: "sales-dashboard",
+    segment: "employee/dashboard/sales-dashboard",
     title: "Sales Dashboard",
     icon: <RiDashboardLine size={22} {...iconStyle} />,
   },
@@ -44,33 +45,36 @@ const EmployeeSidebar = [
 
   // HR Section with Dropdown
   {
-   // fix this 
-    segment: "hr",
+    segment: "employee/dashboard/hr",
     title: "Human Resources",
     icon: <MdOutlineManageAccounts size={22} {...iconStyle} />,
     children: [
       {
-        segment: "employee/dashboard/attendance",
+        segment: "attendance",
         title: "Attendance",
         icon: <LuClipboardList size={22} {...iconStyle} />,
+        link: "attendance", // ✅ Corrected link property
       },
       {
-        segment: "employee/dashboard/payslip",
+        segment: "payslip",
         title: "Payslip",
         icon: <MdOutlineAccountBalanceWallet size={22} {...iconStyle} />,
+        link: "/employee/dashboard/hr/payslip",
       },
       {
-        segment: "employee/dashboard/vouchers",
+        segment: "vouchers",
         title: "Vouchers",
         icon: <CiMoneyBill size={22} {...iconStyle} />,
+        link: "/employee/dashboard/hr/vouchers",
       },
       {
-        segment: "employee/dashboard/announcements",
+        segment: "announcements",
         title: "Announcements",
         icon: <HiOutlineSpeakerphone size={22} {...iconStyle} />,
+        link: "/employee/dashboard/hr/announcements",
       },
     ],
-  },
+  }, 
   {
     segment: "employee/dashboard/targets",
     title: "Targets",
@@ -82,7 +86,7 @@ const EmployeeSidebar = [
     icon: <CgProfile size={22} {...iconStyle} />,
   },
   {
-    segment: "logout",
+    segment: "employee/dashboard/logout",
     title: "Logout",
     icon: <TfiLock size={22} {...iconStyle} />,
   },
@@ -100,7 +104,17 @@ function SidebarEmployee(props) {
     >
       <DashboardLayout slots={{ sidebarFooter: () => null }}>
         <Routes>
-          {/* <Route path="hr-dashboard" element={<Dashboard />} /> */}
+          
+          <Route path="employee/dashboard/sales-dashboard" />
+          <Route path="hr">
+            <Route path="attendance" element={<Attendance />} />
+            <Route path="payslip" element={<PaySlipByEmployee />} />
+            {/* <Route path="vouchers" element={<PaySlipByEmployee />} />
+            <Route path="announcements" element={<PaySlipByEmployee />} /> */}
+          </Route>
+          {/* <Route path="employee/dashboard/logout" element={<Logout />} /> */}
+          <Route path="pulse" element={<Attendance />} />
+          
           {/* <Route path="extraction" element={<Extraction />} /> */}
           {/* <Route path="payroll" element={<Payroll />}></Route> */}
           {/* <Route path="vouchers" element={<Vouchers />}></Route> */}
@@ -114,7 +128,7 @@ function SidebarEmployee(props) {
   );
 }
 
-SidebarEmployee.propTypess = {
+SidebarEmployee.propTypes = {
   window: PropTypes.func,
 };
 export default SidebarEmployee;

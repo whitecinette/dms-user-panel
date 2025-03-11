@@ -46,7 +46,7 @@ function HumanResource(props) {
         <Routes>
           <Route path="/hr-dashboard" element={<Dashboard />} />
           <Route path="/attendance" element={<Attendance />} />
-          <Route path="/payroll" element={<Payroll />}></Route>
+          {/* <Route path="/payroll" element={<Payroll />}></Route> */}
           {/* <Route path="/vouchers" element={<Vouchers />}></Route> */}
           {/* <Route path="/timeline" element={<Timeline />}></Route> */}
           {/* <Route path="/beat-mapping" element={<BeatMapping />}></Route> */}

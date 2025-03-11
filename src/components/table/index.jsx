@@ -84,8 +84,14 @@ function Table(prop) {
                               })
                             }
                           >
-                            <option value="active">Active</option>
+                            {/* <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
+                          </select> */}
+                            {prop.statusOptions.map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
                           </select>
                         ) : (
                           <input
