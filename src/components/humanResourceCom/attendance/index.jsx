@@ -1,166 +1,152 @@
 import React, { useEffect, useState } from "react";
-import { CiImageOn } from "react-icons/ci"; // Image icon
-import config from "../../../config";
 import axios from "axios";
-import Table from "../../table";
+import config from "../../../config";
+import { NavLink } from "react-router-dom";
 
 const backend_url = config.backend_url;
 
 const Attendance = () => {
-  const [employeeData, setEmployeeData] = useState([]); // Store unique employees
-  const [attendanceData, setAttendanceData] = useState([]); // Store attendance records
-  const [selectedEmployee, setSelectedEmployee] = useState(null); // Selected employee for viewing attendance
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [modalImage, setModalImage] = useState(null);
+  const [employeeData, setEmployeeData] = useState([]);
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatuses, setSelectedStatuses] = useState(new Set());
 
-  // Fetch unique employees
+  useEffect(() => {
+    fetchEmpThroughActorCode();
+    fetchAttendance();
+  }, []);
+
   const fetchEmpThroughActorCode = async () => {
     try {
       const response = await axios.get(`${backend_url}/actorCode/get-actorCode-for-admin`);
-      console.log("Fetched Employees:", response.data);
-  
-      // Extract employeeList from the response
-      if (response.data && Array.isArray(response.data.employeeList)) {
-        setEmployeeData(response.data.employeeList);
-      } else {
-        setEmployeeData([]); // Fallback to an empty array
-      }
+      setEmployeeData(response.data.employeeList || []);
     } catch (err) {
       console.error("Failed to fetch employee data:", err);
-      setEmployeeData([]); // Ensure state remains an array even on failure
+      setEmployeeData([]);
     }
   };
-  
 
-  // Fetch attendance data for a specific employee
-  const fetchAttendance = async (code) => {
+  const fetchAttendance = async () => {
     try {
-      setLoading(true);
       const response = await axios.get(`${backend_url}/get-all-attendance`);
-      const { attendance } = response.data;
-      console.log("Full Attendance API Response:", response.data);
-      
-      // Filter records for the selected employee
-      const filteredData = attendance
-        .filter((record) => record.code === code)
-        .map((record) => ({
-          _id: record._id,
-          code: record.code,
-          name: record.name,
-          status: record.status,
-          punchIn: record.punchIn,
-          punchInImg: record.punchInImage,
-          punchOutImg: record.punchOutImage,
-          punchOut: record.punchOut,
-          hoursWorked: record.hoursWorked,
-        }));
+      const allAttendance = response.data.attendance || [];
 
-      setAttendanceData(filteredData);
-      console.log("Filtered Attendance Data:", filteredData);
-      
+      // Get today's date in YYYY-MM-DD format
+      const today = new Date().toISOString().split("T")[0];
+
+      // Filter records only for today
+      const todayAttendance = allAttendance.filter((record) => record.date === today);
+
+      setAttendanceData(todayAttendance);
     } catch (err) {
-      setError("Failed to fetch attendance data");
-    } finally {
-      setLoading(false);
+      console.error("Failed to fetch attendance data:", err);
+      setAttendanceData([]);
     }
   };
 
-  useEffect(() => {
-    fetchEmpThroughActorCode(); // Fetch employees on mount
-  }, []);
-
-  // Function to handle View button click
-  const handleViewAttendance = (code) => {
-    setSelectedEmployee(code); // Store selected employee code
-    fetchAttendance(code); // Fetch attendance for selected employee
+  const handleStatusChange = (status) => {
+    setSelectedStatuses((prevStatuses) => {
+      const newStatuses = new Set(prevStatuses);
+      if (newStatuses.has(status)) {
+        newStatuses.delete(status);
+      } else {
+        newStatuses.add(status);
+      }
+      return newStatuses;
+    });
   };
 
-  const openImageModal = (imgUrl) => {
-    setModalImage(imgUrl);
-  };
+  const filteredEmployees = employeeData.filter((employee) => {
+    const matchesSearch =
+      employee.employee_code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.employee_name.toLowerCase().includes(searchQuery.toLowerCase());
 
-  const closeModal = () => {
-    setModalImage(null);
-  };
+    const attendanceRecord = attendanceData.find((record) => record.code === employee.employee_code);
+    const employeeStatus = attendanceRecord ? attendanceRecord.status : "Pending";
 
-  // Employee Table (Shows unique employees)
-  const employeeTableData = {
-    headers: ["EMPLOYEE_CODE", "NAME", "Details"],
-    data: employeeData.map((employee) => ({
-      EMPLOYEE_CODE: employee.employee_code,  // ✅ Correct key
-      NAME: employee.employee_name,          // ✅ Correct key
-      Details: (
-        <button
-          onClick={() => handleViewAttendance(employee.employee_code)}
-          style={{
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            padding: "5px 10px",
-            cursor: "pointer",
-            borderRadius: "5px",
-          }}
-        >
-          View
-        </button>
-      ),
-    })),
-    currentPage: 1,
-  };
+    const matchesStatus = selectedStatuses.size === 0 || selectedStatuses.has(employeeStatus);
 
-  // Attendance Table (Displays attendance when an employee is selected)
-  const attendanceTableData = {
-    headers: ["Code", "Name", "Status", "Punch In", "Punch In Img", "Punch Out Img", "Punch Out", "Hours Worked"],
-    data: attendanceData.map((row) => ({
-      Code: row.code || "N/A",
-      Name: row.name || "N/A",
-      Status: row.status || "N/A",
-      "Punch In": row.punchIn ? new Date(row.punchIn).toLocaleString() : "N/A",
-      "Punch In Img": row.punchInImg ? (
-        <CiImageOn size={20} style={{ cursor: "pointer" }} onClick={() => openImageModal(row.punchInImg)} />
-      ) : "No Image",
-      "Punch Out Img": row.punchOutImg ? (
-        <CiImageOn size={20} style={{ cursor: "pointer" }} onClick={() => openImageModal(row.punchOutImg)} />
-      ) : "No Image",
-      "Punch Out": row.punchOut ? new Date(row.punchOut).toLocaleString() : "N/A",
-      "Hours Worked": row.hoursWorked || "N/A",
-    })),
-    currentPage: 1,
-  };
-  
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div style={{ padding: "20px" }}>
       <h3>Employee List For Attendance</h3>
-      <Table data={employeeTableData} />
 
-      {selectedEmployee && (
-        <>
-          <h3>Attendance for {selectedEmployee}</h3>
-          <Table data={attendanceTableData} />
-        </>
-      )}
+      <input
+        type="text"
+        placeholder="Search by Name or Code"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        style={{ marginBottom: "10px", padding: "5px", borderRadius: "5px", border: "1px solid #ccc" }}
+      />
 
-      {/* Modal for Viewing Image */}
-      {modalImage && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0, 0, 0, 0.8)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onClick={closeModal}
-        >
-          <img src={modalImage} alt="PunchImg" style={{ maxWidth: "90%", maxHeight: "90%" }} />
-        </div>
-      )}
+      <div style={{ marginBottom: "10px" }}>
+        {["Present", "Absent", "Half Day", "Pending"].map((status) => (
+          <label key={status} style={{ marginRight: "10px" }}>
+            <input
+              type="checkbox"
+              value={status}
+              checked={selectedStatuses.has(status)}
+              onChange={() => handleStatusChange(status)}
+            />
+            {status}
+          </label>
+        ))}
+      </div>
+
+      <div style={{ maxHeight: "450px", overflow: "scroll" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "center", fontSize: "12px" }}>
+          <thead>
+            <tr style={{ backgroundColor: "#6399f9", color: "white", position: "sticky", top: "-1px" }}>
+              <th>EMPLOYEE_CODE</th>
+              <th>NAME</th>
+              <th>STATUS</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredEmployees.length > 0 ? (
+              filteredEmployees.map((employee) => {
+                const attendanceRecord = attendanceData.find((record) => record.code === employee.employee_code);
+                const employeeStatus = attendanceRecord ? attendanceRecord.status : "Pending";
+
+                return (
+                  <tr key={employee.employee_code} style={{ borderBottom: "1px solid #ddd" }}>
+                    <td>{employee.employee_code}</td>
+                    <td>{employee.employee_name}</td>
+                    <td>{employeeStatus}</td>
+                    <td>
+                      <NavLink
+                        to={`/attendance-detail/${employee.employee_code}`}
+                        state={{ employeeName: employee.employee_name }}
+                      >
+                        <button
+                          style={{
+                            backgroundColor: "#007bff",
+                            color: "white",
+                            border: "none",
+                            padding: "3px 8px",
+                            cursor: "pointer",
+                            borderRadius: "5px",
+                            fontSize: "12px",
+                          }}
+                        >
+                          View
+                        </button>
+                      </NavLink>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan="4" style={{ textAlign: "center" }}>No employees found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

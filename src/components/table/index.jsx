@@ -21,7 +21,18 @@ function Table(prop) {
   const limit = 50;
 
   // Enable edit mode for a row
+  // const handleEdit = (row) => {
+  //   setEditId(row._id);
+  //   setEditData({ ...row }); // Store original data in state
+  // };
   const handleEdit = (row) => {
+    // ==hDs=========
+    if (!row._id) {
+      console.error("Row ID is missing:", row);
+      return; // Prevent editing if no ID
+    }
+    setEditId(String(row._id)); // Convert _id to string
+    // ==hDs=========
     setEditId(row._id);
     setEditData({ ...row }); // Store original data in state
   };
@@ -34,8 +45,27 @@ function Table(prop) {
 
     setSortConfig({ key: header, direction });
 
-    prop.onSort(header, direction); // 🔥 Send sorting info to parent
+    //   prop.onSort(header, direction); // 🔥 Send sorting info to parent
+    // };
+    // ======hDs===========
+    // Sort the rows locally
+    const sortedRows = [...rows].sort((a, b) => {
+      const valueA = a[header] ?? "";
+      const valueB = b[header] ?? "";
+
+      // Handle numbers and strings separately
+      if (!isNaN(valueA) && !isNaN(valueB)) {
+        return direction * (Number(valueA) - Number(valueB));
+      }
+      return direction * valueA.toString().localeCompare(valueB.toString());
+    });
+
+    // If `onSort` is provided, pass sorted data to the parent
+    if (prop.onSort) {
+      prop.onSort(header, direction, sortedRows);
+    }
   };
+  // ======hDs===========
 
   return (
     <>
@@ -67,7 +97,17 @@ function Table(prop) {
           </thead>
           <tbody>
             {rows.length > 0 ? (
-              rows.map((row, index) => (
+              // rows.map((row, index) => (
+              // ===========hDs===========
+              [...rows].sort((a, b) => {
+                const valueA = a[sortConfig.key] ?? "";
+                const valueB = b[sortConfig.key] ?? "";
+                if (!isNaN(valueA) && !isNaN(valueB)) {
+                  return sortConfig.direction * (Number(valueA) - Number(valueB));
+                }
+                return sortConfig.direction * valueA.toString().localeCompare(valueB.toString());
+              }).map((row, index) => (
+                // ===========hDs===========
                 <tr key={index}>
                   <td>{(currentPage - 1) * limit + index + 1}</td>
                   {headers.map((header, idx) => (
@@ -113,8 +153,8 @@ function Table(prop) {
                                 ? row[header]?.toLowerCase() === "active"
                                   ? "#23862A"
                                   : row[header]?.toLowerCase() === "inactive"
-                                  ? "#F21E1E"
-                                  : "black"
+                                    ? "#F21E1E"
+                                    : "black"
                                 : "black",
                           }}
                         >
@@ -130,7 +170,15 @@ function Table(prop) {
                           color="#23862A"
                           style={{ cursor: "pointer", marginRight: "8px" }}
                           onClick={() => {
-                            prop.handleSave(editData, editId);
+                            // ========hDs===========
+                            if (prop.handleSave) {
+                            // ========hDs===========
+                              prop.handleSave(editData, editId);
+                            // ========hDs===========
+                            } else {
+                              console.warn("handleSave function is not provided!");
+                            }
+                            // ========hDs===========
                             setEditId(null);
                           }}
                         />

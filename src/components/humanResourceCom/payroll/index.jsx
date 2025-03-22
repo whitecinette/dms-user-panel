@@ -89,25 +89,28 @@ const Payroll = () => {
     try {
       const response = await axios.get(`${backend_url}/salary-details`);
 
-      const requiredFields = [
-        "actorCode",
-        "actorName",
-        "position",
-        "role",
-        "basicSalary",
-        "bonuses",
-        "deductions",
-        "taxAmount",
-        "netSalary",
-        "paymentDate",
-      ];
+      // const requiredFields = [
+      //   "code",
+      //   "name",
+      //   "baseSalary",
+      //   "totalAdditions",
+      //   "totalDeductions",
+      //   "absentDays",
+      //   "halfDays",
+      //   "absentDeduction",
+      //   "halfDayDeduction",
+      //   "attendanceDeductions",
+      //   "netSalary",
+      // ];
 
-      const salaryData = response.data.data.map((item) =>
-        Object.fromEntries(
-          Object.entries(item).filter(([key]) => requiredFields.includes(key))
-        )
-      );
-
+      // const salaryData = response.data.data.map((item) =>
+      //   Object.fromEntries(
+      //     Object.entries(item).filter(([key]) => requiredFields.includes(key))
+      //   )
+      // );
+      const salaryData=response.data.data
+      console.log('salaryData::::',salaryData);
+      
       setSalaries(salaryData);
       setLoading(false);
     } catch (err) {
@@ -119,8 +122,9 @@ const Payroll = () => {
   // Handle Search
   const filteredSalaries = salaries.filter(
     (salary) =>
-      salary.actorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      salary.role.toLowerCase().includes(searchQuery.toLowerCase())
+      // salary.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    // salary.role.toLowerCase().includes(searchQuery.toLowerCase())
+    salary.code.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
 
   // Handle Sorting
@@ -165,8 +169,8 @@ const Payroll = () => {
           <table className="payroll-table">
             <thead>
               <tr>
-                <th onClick={() => sortData("actorCode")}>
-                  Actor Code <FaSort />
+                <th onClick={() => sortData("code")}>
+                   Code <FaSort />
                 </th>
                 <th onClick={() => sortData("actorName")}>
                   Name <FaSort />
@@ -187,8 +191,8 @@ const Payroll = () => {
               {filteredSalaries.map((salary, index) => (
                 <React.Fragment key={index}>
                   <tr>
-                    <td>{salary.actorCode}</td>
-                    <td>{salary.actorName}</td>
+                    <td>{salary.code}</td>
+                    <td>{salary.name}</td>
                     <td>{salary.position}</td>
                     <td>{salary.role}</td>
                     <td>₹{salary.netSalary}</td>
@@ -204,7 +208,7 @@ const Payroll = () => {
                   {expandedIndex === index && (
                     <tr className="expanded-content">
                       <td colSpan="6">
-                        <p><strong>Basic Salary:</strong> ₹{salary.basicSalary}</p>
+                        <p><strong>Basic Salary:</strong> ₹{salary.baseSalary}</p>
                         <p><strong>Bonuses:</strong> ₹{salary.bonuses}</p>
                         <p><strong>Deductions:</strong> ₹{salary.deductions}</p>
                         <p><strong>Tax Amount:</strong> ₹{salary.taxAmount}</p>

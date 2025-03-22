@@ -1,0 +1,127 @@
+.main {
+    max-width: 90%;
+    margin: 20px auto;
+    font-family: "Arial", sans-serif;
+    
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+  
+    .table-container {
+      overflow-x: auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+  
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+  
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+  
+      th {
+        background-color: #6399f9;
+        font-weight: bold;
+        cursor: pointer;
+      }
+  
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+  
+      .status-dropdown {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: #fff;
+        cursor: pointer;
+        transition: 0.3s;
+  
+        &:hover {
+          border-color: #007bff;
+        }
+      }
+  
+      .edit-btn, .save-btn, .delete-btn {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 14px;
+      }
+  
+      .edit-btn {
+        background: #ffc107;
+        color: #fff;
+  
+        &:hover {
+          background: #e0a800;
+        }
+      }
+  
+      .save-btn {
+        background: #28a745;
+        color: #fff;
+        margin-left: 5px;
+  
+        &:hover {
+          background: #218838;
+        }
+      }
+  
+      .delete-btn {
+        background: #dc3545;
+        color: #fff;
+  
+        &:hover {
+          background: #c82333;
+        }
+      }
+    }
+  
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+  
+      button {
+        // padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background: #4bb7ff;
+        color: white;
+        transition: 0.3s;
+        margin: 0 5px;
+        border: none;
+  
+        &:disabled {
+          background: #a9dcff91;
+          cursor: not-allowed;
+        }
+  
+        &:hover:not(:disabled) {
+          background: #059bff;
+        }
+      }
+  
+      span {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        margin: 0 10px;
+      }
+    }
+  }
+  
