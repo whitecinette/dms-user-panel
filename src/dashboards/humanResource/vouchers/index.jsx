@@ -75,7 +75,7 @@ const Vouchers = () => {
 
   return (
     <div className="vouchers-container">
-      <h2>Create and Assign Vouchers</h2>
+      <h2>🎉 Create and Assign Vouchers</h2>
       <div className="form-container">
         <select value={voucherName} onChange={(e) => setVoucherName(e.target.value)}>
           <option value="">Select Voucher</option>
@@ -88,29 +88,30 @@ const Vouchers = () => {
           ))}
         </select>
 
-        <input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
+        <input type="number" placeholder="💰 Amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
 
-        <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+        <textarea placeholder="✍️ Description" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
 
         <select value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
-          <option value="">Select Employee</option>
+          <option value="">👤 Select Employee</option>
           {employees.map((emp, index) => (
             <option key={index} value={emp}>{emp}</option>
           ))}
         </select>
 
-        <button className="assign-btn" onClick={handleAssignVoucher}>Assign Voucher</button>
+        <button className="assign-btn" onClick={handleAssignVoucher}>🚀 Assign Voucher</button>
       </div>
 
-      <h3>Assigned Vouchers</h3>
+      <h3>📝 Assigned Vouchers</h3>
       <div className="vouchers-list">
         {assignedVouchers.map((voucher) => (
           <div className={`voucher-card ${getCategoryClass(voucher.category)}`} key={voucher.id}>
             <h4>{voucher.employee}</h4>
-            <p><strong>Voucher:</strong> {voucher.voucherName}</p>
-            <p><strong>Amount:</strong> ${voucher.amount}</p>
-            <p><strong>Description:</strong> {voucher.description}</p>
-            <p><strong>Category:</strong> {voucher.category}</p>
+            <p><strong>📌 Category:</strong> {voucher.category}</p>
+            <p><strong>🎁 Voucher:</strong> {voucher.voucherName}</p>
+            <p><strong>💵 Amount:</strong> ${voucher.amount}</p>
+            <strong>📝 Description:</strong>
+            <div className="description"><p> {voucher.description}</p></div>
           </div>
         ))}
       </div>

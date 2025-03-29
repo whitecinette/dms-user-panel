@@ -62,7 +62,7 @@ const Login = () => {
     <div className="login-container">
       <div className="login-card">
         <img src="/sc.jpg" alt="Company Logo" className="login-logo" />
-        <h2>Welcome Back!</h2>
+        <h2>Welcome !</h2>
         <p className="login-subtitle">Please log in to continue</p>
 
         <input
