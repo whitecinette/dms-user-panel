@@ -4,11 +4,12 @@
 
     h1 {
         font-size: 24px;
+        text-align: center;
     }
 
     .search-bar {
         width: 50%;
-        margin-bottom: 15px;
+        margin: 15px ;
 
         input {
             width: 100%;
@@ -24,42 +25,37 @@
 
         .employee-list-table {
             height: 250px;
-            overflow: scroll;
+            overflow-y: auto;
 
             table {
                 width: 100%;
                 border-collapse: collapse;
 
                 thead {
-
                     .list-header {
                         position: sticky;
                         top: -1px;
 
                         th {
-                            // border: 1px solid #ddd;
-                            // border: ;
-                            // padding: 10px;
                             text-align: center;
                             border-radius: 10px;
                             background: #6399f9;
                             color: white;
+                            padding: 10px;
                         }
                     }
                 }
 
                 tbody {
                     tr:nth-child(odd) {
-                        background: #ffffff; // White for even rows
+                        background: #ffffff;
                     }
 
                     tr:nth-child(even) {
-                        background: #f2f2f2; // Light gray for odd rows
+                        background: #f2f2f2;
                     }
 
                     td {
-                        // border: 1px solid #ddd;
-                        // border: ;
                         padding: 3px;
                         text-align: center;
                         border-radius: 10px;
@@ -90,6 +86,52 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+
+        .task-list-header {
+            .task-filters {
+                display: flex;
+                gap: 10px;
+
+                .search-bar {
+                    // justify-content: start;
+                    margin: 0px;
+                }
+                .status-dropdown {
+                    position: relative;
+                    display: inline-block;
+                }
+
+                .dropdown-toggle {
+                    background-color: #007bff;
+                    color: white;
+                    padding: 8px 12px;
+                    border: none;
+                    cursor: pointer;
+                    border-radius: 5px;
+                }
+
+                .dropdown-menu {
+                    position: absolute;
+                    background: white;
+                    border: 1px solid #ddd;
+                    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+                    padding: 10px;
+                    width: 150px;
+                    border-radius: 5px;
+                    z-index: 10;
+                }
+
+                .dropdown-menu label {
+                    display: block;
+                    margin-bottom: 5px;
+                    cursor: pointer;
+                }
+
+                .dropdown-menu input {
+                    margin-right: 5px;
+                }
+            }
+        }
 
         .search-bar {
             margin-bottom: 15px;
@@ -141,7 +183,7 @@
             gap: 8px;
             border-left: 5px solid #007bff;
             max-height: 200px;
-            overflow-y: scroll;
+            overflow-y: auto;
 
             &:hover {
                 background: #f0f4f8;
@@ -165,30 +207,29 @@
                     font-size: 12px;
                     display: inline-block;
                     width: fit-content;
-                
+
                     span {
                         display: inline-block;
                         padding: 4px 8px;
                         border-radius: 15px;
                         font-size: 12px;
                     }
-                
+
                     .status-pending {
                         background: #ffcc00;
                         color: #fff;
                     }
-                
+
                     .status-in-process {
                         background: #076aff;
                         color: #fff;
                     }
-                
+
                     .status-complete {
                         background: #28a745;
                         color: #fff;
                     }
                 }
-                
             }
 
             .assigned-date {
@@ -235,24 +276,6 @@
         }
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .task-group {
-            width: 100%;
-        }
-
-        .task-card {
-            width: 100%;
-        }
-
-        .task-actions {
-            flex-direction: column;
-            gap: 5px;
-        }
-    }
-
-
-
     .modal {
         position: fixed;
         top: 0;
@@ -294,5 +317,41 @@
                 color: white;
             }
         }
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .search-bar {
+        width: 80%;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-bar {
+        width: 100%;
+    }
+
+    .task-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 20px;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+
+    .task-card {
+        font-size: 14px;
+    }
+
+    .task-actions {
+        flex-direction: column;
     }
 }

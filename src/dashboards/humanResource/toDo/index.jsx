@@ -14,7 +14,7 @@ const ToDoForEmployee = () => {
     const [searchTask, setSearchTask] = useState(""); // New state for task search
     const [editingTask, setEditingTask] = useState(null); // Store task being edited
     const [selectedStatuses, setSelectedStatuses] = useState([]);
-
+    const [isOpen, setIsOpen] = useState(false); // Toggle dropdown
 
     useEffect(() => {
         fetchEmpThroughActorCode();
@@ -232,40 +232,51 @@ const ToDoForEmployee = () => {
             <div className="task-list">
                 <div className="task-list-header">
                     <h3>Assigned Tasks</h3>
-                    <div className="search-bar">
-                        <input
-                            type="text"
-                            placeholder="Search by employee name or Task"
-                            value={searchTask}
-                            onChange={(e) => setSearchTask(e.target.value)}
-                        />
-                    </div>
-                    {/* Status Filter Checkboxes */}
-                    <div className="status-filters">
-                        <label>
+                    <div className="task-filters">
+                        {/* Task Search Bar */}
+                        <div className="search-bar">
                             <input
-                                type="checkbox"
-                                checked={selectedStatuses.includes("Pending")}
-                                onChange={() => handleStatusFilterChange("Pending")}
+                                type="text"
+                                placeholder="Search by employee name or Task"
+                                value={searchTask}
+                                onChange={(e) => setSearchTask(e.target.value)}
                             />
-                            Pending
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={selectedStatuses.includes("In-Process")}
-                                onChange={() => handleStatusFilterChange("In-Process")}
-                            />
-                            In-Process
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={selectedStatuses.includes("Complete")}
-                                onChange={() => handleStatusFilterChange("Complete")}
-                            />
-                            Complete
-                        </label>
+                        </div>
+                        {/* Status Filter dropdown */}
+                        <div className="status-dropdown">
+                            <button className="dropdown-toggle" onClick={() => setIsOpen(!isOpen)}>
+                                Filter by Status ⏷
+                            </button>
+
+                            {isOpen && (
+                                <div className="dropdown-menu">
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedStatuses.includes("Pending")}
+                                            onChange={() => handleStatusFilterChange("Pending")}
+                                        />
+                                        Pending
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedStatuses.includes("In-Process")}
+                                            onChange={() => handleStatusFilterChange("In-Process")}
+                                        />
+                                        In-Process
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedStatuses.includes("Complete")}
+                                            onChange={() => handleStatusFilterChange("Complete")}
+                                        />
+                                        Complete
+                                    </label>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>

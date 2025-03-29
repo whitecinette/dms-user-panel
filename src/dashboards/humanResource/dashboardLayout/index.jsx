@@ -14,7 +14,7 @@ import { SlCalculator } from "react-icons/sl";
 import { TbReportAnalytics } from "react-icons/tb";
 import { IoCloseSharp } from "react-icons/io5";
 import Employees from "../employees";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 
 
@@ -73,24 +73,32 @@ const growthData = [
 ];
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [date, setDate] = useState(new Date());
   const selectedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
     .toISOString()
     .split("T")[0];
-
   const [isExpanded, setIsExpanded] = useState(false);
   const [attendanceData, setAttendanceData] = useState([]);
   const [totalEmployees, setTotalEmployees] = useState(0);
   const [notices, setNotices] = useState([
-    { id: 1, message: "Office will be closed on Friday." },
-    { id: 2, message: "Submit your attendance by 5 PM." },
-    { id: 3, message: "New HR policies have been updated." }
+    // { id: 1, message: "Office will be closed on Friday." },
+    // { id: 2, message: "Submit your attendance by 5 PM." },
+    // { id: 3, message: "New HR policies have been updated." }
   ]);
 
+  useEffect(() => {
+    const storedNotices = localStorage.getItem("todayAnnouncement");
+    setNotices(storedNotices ? JSON.parse(storedNotices) : []);
+}, []);
+
+  const handleNavigation = (sectionId) => {
+    navigate(`/announcements#${sectionId}`);
+  };
   const removeNotice = (id) => {
     setNotices(notices.filter(notice => notice.id !== id));
   };
-
+  const [allEmployees, setAllEmployees] = useState([]);
   const fetchEmpThroughActorCode = async () => {
     try {
       const response = await axios.get(`${backend_url}/actorCode/get-actorCode-for-admin`);
@@ -98,9 +106,11 @@ const Dashboard = () => {
 
       // Filter only those whose role is 'employee'
       const employeeCount = employeeList.length;
-
+      setAllEmployees(employeeList);
+      console.log("Employee Listttttttttttttttttt:", employeeList);
+      
       setTotalEmployees(employeeCount);
-      console.log("Total Employeesssssssssssssssss:", employeeCount);
+      console.log("Total Employeesssss:", employeeCount);
 
     } catch (err) {
       console.error("Failed to fetch employee data:", err);
@@ -117,16 +127,16 @@ const Dashboard = () => {
   const events = staticEvents[selectedDate] || [];
 
   // Fetch Attendance Data from API
+  const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
-        const response = await axios.get(`${backend_url}/get-all-attendance`);
+        const response = await axios.get(`${backend_url}/get-attendance-by-date/${today}`);
         const data = response.data;
-
+    
         if (response.status === 200) {
           processAttendanceData(data.attendance);
           console.log("AttendanceOfEmployees:::", data.attendance);
-
         } else {
           console.error("Error fetching attendance:", data.message);
         }
@@ -134,6 +144,7 @@ const Dashboard = () => {
         console.error("Error:", error);
       }
     };
+    
     fetchAttendance();
   }, []);
 
@@ -157,7 +168,7 @@ const Dashboard = () => {
       { name: "Present", value: presentCount, color: COLORS[0] },
       { name: "Absent", value: absentCount, color: COLORS[1] },
       { name: "Approved", value: approvedLeaveCount, color: COLORS[2] },
-      { name: "Pending", value: pendingLeaveCount, color: COLORS[3] },
+      { name: "PunchIn", value: pendingLeaveCount, color: COLORS[3] },
       { name: "Half Day", value: halfDayCount, color: COLORS[4] },
     ]);
   };
@@ -194,54 +205,50 @@ const Dashboard = () => {
           <div>
             {/* Marquee Container */}
             <div className="marquee-container">
-              <div className="marquee-content">
-                {notices.length > 0 ? (
-                  notices.map((notice) => (
-                    <div className="announcement" key={notice.id}>
-                      <span>{notice.message}</span>
-                      <button className="close-btn" onClick={() => removeNotice(notice.id)}><IoCloseSharp color="grey" fontSize={25} /></button>
-                    </div>
-                  ))
-                ) : (
-                  <div className="announcement">No Announcements Available</div>
-                )}
-              </div>
-            </div>
+            <marquee>
+                {notices.length > 0 ? notices.join(" | ") : "No announcements for today."}
+            </marquee>
+        </div>
 
             {/* Announcements List as Cards */}
             <div className="announcements-list">
-              <div className="announcement-card">
+              <div className="announcement-card" onClick={() => handleNavigation("employee-announcement")}>
                 <img src="https://media.istockphoto.com/id/1344512181/vector/icon-red-loudspeaker.jpg?s=612x612&w=0&k=20&c=MSi3Z2La8OYjSY-pr0bB6f33NOuUKAQ_LBUooLhLQsk=" width={50} style={{ borderRadius: '100%' }} alt="" />
-                <span>Employee Related Announcement</span></div>
-              <div className="announcement-card">
+                <span>Employee Related Announcement</span>
+              </div>
+              <div className="announcement-card" onClick={() => handleNavigation("policy-training")}>
                 <img src="https://cdn-icons-png.freepik.com/256/11336/11336991.png?semt=ais_hybrid" width={50} alt="" />
-                <span>Policy & Training Announcement</span></div>
-              <div className="announcement-card">
+                <span>Policy & Training Announcement</span>
+              </div>
+              <div className="announcement-card" onClick={() => handleNavigation("event-celebration")}>
                 <img src="https://thumbs.dreamstime.com/b/events-icon-calendar-icon-white-background-events-icon-calendar-icon-simple-vector-icon-122490266.jpg" width={50} style={{ borderRadius: '100%' }} alt="" />
-                <span>Event & Celebration Announcement</span></div>
-              <div className="announcement-card">
+                <span>Event & Celebration Announcement</span>
+              </div>
+              <div className="announcement-card" onClick={() => handleNavigation("performance-announcement")}>
                 <img src="https://cdn-icons-png.freepik.com/256/3732/3732623.png?semt=ais_hybrid" width={50} alt="" />
-                <span>Performance Announcement</span></div>
-              <div className="announcement-card">
+                <span>Performance Announcement</span>
+              </div>
+              <div className="announcement-card" onClick={() => handleNavigation("administrative-announcement")}>
                 <img src="https://img.freepik.com/premium-vector/audit-document-icon-comic-style-result-report-vector-cartoon-illustration-white-isolated-background-verification-control-business-concept-splash-effect_157943-8622.jpg" width={50} style={{ borderRadius: '100%' }} alt="" />
-                <span>Administrative Announcement</span></div>
+                <span>Administrative Announcement</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div className="main-option">
-        <NavLink className="option" to="/employees-data"><FiUsers className="icons" /> <span>Employees</span></NavLink>
-        <div className="option"><PiThumbsUpLight className="icons" /> <span>Holiday</span>
-        </div>
+        <NavLink className="option" to="/employees-data"><div className="option1"><FiUsers className="icons" /> <span>Employees</span></div></NavLink>
+        <NavLink className="option" to='/holiday'><div className="option1"><PiThumbsUpLight className="icons" /> <span>Holiday</span></div>
+        </NavLink>
         <div className="option calendar-events-container" onClick={() => setIsExpanded(!isExpanded)}>
-          <IoCalendarOutline className="icons" /> <span>Events</span>
+          <div className="option1"><IoCalendarOutline className="icons" /> <span>Events</span></div>
           <div
             className={`event-sidebar ${isExpanded ? "expanded" : ""}`}
             onClick={(e) => e.stopPropagation()} // Stop click from closing the sidebar
           >
             <div className="event-table">
               {/* Close Button */}
-              <div style={{display:'flex',justifyContent:'end'}}>
+              <div style={{ display: 'flex', justifyContent: 'end' }}>
                 <button className="close-btn" onClick={() => setIsExpanded(false)}>
                   <IoCloseSharp color="grey" fontSize={30} />
                 </button>
@@ -283,9 +290,9 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <NavLink className="option" to='/employees-payroll'><IoCardOutline className="icons" /> <span>PayRoll</span></NavLink>
-        <div className="option">< SlCalculator className="icons" /> <span>Accounts</span></div>
-        <div className="option">< TbReportAnalytics className="icons" /> <span>Report</span></div>
+        <NavLink className="option" to='/employees-payroll'><div className="option1"><IoCardOutline className="icons" /> <span>PayRoll</span></div></NavLink>
+        <NavLink className="option" to='/dealers-accounts'><div className="option1">< SlCalculator className="icons" /> <span>Accounts</span></div></NavLink>
+        <NavLink className="option" to='/report'><div className="option1">< TbReportAnalytics className="icons" /> <span>Report</span></div></NavLink>
       </div>
 
 
@@ -294,9 +301,10 @@ const Dashboard = () => {
 
           {/* Center: Combined Pie Charts */}
           <div className="chart-center">
-            <div>
+            <div className="attendance-header">
               <h2>Attendance:</h2>
               <h6>Total Employees: <span>{totalEmployees}</span></h6>
+              <h5>Date: <span>{today}</span></h5>
             </div>
             <div style={{ display: "flex" }}>
               <ResponsiveContainer width={300} height={200}>
@@ -344,7 +352,8 @@ const Dashboard = () => {
                 </div>
                 <div className="employee-stat pending">
                   <div className="indicator pending-indicator"></div>
-                  <h6>Pending: <span>{attendanceData.find((item) => item.name === "Pending")?.value || 0}</span></h6>
+                  {/* <h6>Pending: <span>{attendanceData.find((item) => item.name === "Pending")?.value || 0}</span></h6> */}
+                  <h6>PunchIn: <span>{attendanceData.find((item) => item.name === "PunchIn")?.value || 0}</span></h6>
                 </div>
                 {/* </div> */}
                 <div className="employee-stat halfDay">

@@ -23,7 +23,7 @@ function Employees() {
 
       if (response.data && Array.isArray(response.data.data)) {
         setEmployeesData(response.data.data);
-        
+
         // Calculate total pages based on totalRecords
         const calculatedTotalPages = Math.ceil(response.data.totalRecords / limit);
         setTotalPages(calculatedTotalPages || 1);
@@ -63,16 +63,17 @@ function Employees() {
   return (
     <div className="main">
       <h2>Employee List</h2>
-      <Table data={tableData} 
-      handleSave={(updatedData, id) => {
-        console.log("Updated Data:", updatedData, "ID:", id);
-        // Call your API to save edited data
-      }}
-      deleteRow={(id) => {
-        console.log("Delete ID:", id);
-        // Call API to delete row
-      }}
-      statusOptions={["Active", "Inactive"]} // Ensure this is passed
+      <Table data={tableData}
+        className="main-table"
+        handleSave={(updatedData, id) => {
+          console.log("Updated Data:", updatedData, "ID:", id);
+          // Call your API to save edited data
+        }}
+        deleteRow={(id) => {
+          console.log("Delete ID:", id);
+          // Call API to delete row
+        }}
+        statusOptions={["Active", "Inactive"]} // Ensure this is passed
       />
 
       {/* Pagination Controls */}
