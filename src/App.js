@@ -17,13 +17,11 @@ import Attendance from "./components/employee/attendance";
 import PaySlipByEmployee from "./components/employee/paySlip";
 import ProductList from "./components/dealer/products";
 import Logout from "./components/logout";
-import { useEffect } from "react";
+
+
+
 
 function App() {
-  useEffect(() => {
-    localStorage.setItem("toolpad-mode", "light");
-    localStorage.setItem("toolpad-color-scheme-dark", "light");
-  }, []);
   const PrivateRoute = ({ element, roles = [] }) => {
     const token = localStorage.getItem("token");
 

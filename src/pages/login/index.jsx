@@ -41,6 +41,8 @@ const Login = () => {
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
         localStorage.setItem("name", name);
+        localStorage.setItem("toolpad-mode", "light");
+        localStorage.setItem("toolpad-color-scheme-dark", "light");
         const dashboardPath = roleDashboard[role];
 
         if (dashboardPath) {
