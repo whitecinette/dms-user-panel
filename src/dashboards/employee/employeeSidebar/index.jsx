@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BsGraphUpArrow } from "react-icons/bs";
 import { SlGraph } from "react-icons/sl";
 import { RiDashboardLine } from "react-icons/ri";
@@ -30,87 +30,16 @@ import PunchInAndPunchOut from "../../../pages/Employee/PunchInAndPunchOut";
 import Logout from "../../../components/logout";
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
-const name = localStorage.getItem("name");
-const EmployeeSidebar = [
-  { kind: "header", title: `Employee Panel - ${name}` },
-  {
-    segment: "employee/dashboard",
-    title: "Sales Dashboard",
-    icon: <RiDashboardLine size={22} {...iconStyle} />,
-  },
-  {
-    segment: "employee/dashboard/extraction",
-    title: "Extraction",
-    icon: <BsGraphUpArrow size={22} {...iconStyle} />,
-  },
-  {
-    segment: "employee/dashboard/pulse",
-    title: "Pulse",
-    icon: <SlGraph size={22} {...iconStyle} />,
-  },
-  {
-    segment: "employee/dashboard/beat-mapping",
-    title: "Beat Mapping",
-    icon: <TbMap2 size={22} {...iconStyle} />,
-  },
-
-  // HR Section with Dropdown
-  {
-    segment: "employee/dashboard/hr",
-    title: "Human Resources",
-    icon: <MdOutlineManageAccounts size={22} {...iconStyle} />,
-    children: [
-      {
-        segment: "attendance",
-        title: "Attendance",
-        icon: <LuClipboardList size={22} {...iconStyle} />,
-        link: "attendance", // ✅ Corrected link property
-      },
-      {
-        segment: "payslip",
-        title: "Payslip",
-        icon: <MdOutlineAccountBalanceWallet size={22} {...iconStyle} />,
-        link: "/employee/dashboard/hr/payslip",
-      },
-      {
-        segment: "vouchers",
-        title: "Vouchers",
-        icon: <CiMoneyBill size={22} {...iconStyle} />,
-        link: "/employee/dashboard/hr/vouchers",
-      },
-      {
-        segment: "announcements",
-        title: "Announcements",
-        icon: <HiOutlineSpeakerphone size={22} {...iconStyle} />,
-        link: "/employee/dashboard/hr/announcements",
-      },
-    ],
-  },
-  {
-    segment: "employee/dashboard/targets",
-    title: "Targets",
-    icon: <TbTargetArrow size={22} {...iconStyle} />,
-  },
-  {
-    segment: "employee/dashboard/punchInAndOut",
-    title: "Punch In/Out",
-    icon: <IoFingerPrintOutline size={22} {...iconStyle} />,
-  },
-  {
-    segment: "employee/dashboard/profile",
-    title: "Profile",
-    icon: <CgProfile size={22} {...iconStyle} />,
-  },
-  {
-    segment: "employee/dashboard/logout",
-    title: "Logout",
-    icon: <TfiLock size={22} {...iconStyle} />,
-  },
-];
 function SidebarEmployee(props) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [employeeName, setEmployeeName] = useState("");
+
+  useEffect(() => {
+    const name = localStorage.getItem("name");
+    setEmployeeName(name || "");
+  }, []);
 
   // Create a router object for AppProvider that integrates with React Router
   const router = {
@@ -118,6 +47,83 @@ function SidebarEmployee(props) {
     searchParams: new URLSearchParams(location.search),
     navigate: (path) => navigate(path),
   };
+
+  const EmployeeSidebar = [
+    { kind: "header", title: `Employee Panel - ${employeeName}` },
+    {
+      segment: "employee/dashboard",
+      title: "Sales Dashboard",
+      icon: <RiDashboardLine size={22} {...iconStyle} />,
+    },
+    {
+      segment: "employee/dashboard/extraction",
+      title: "Extraction",
+      icon: <BsGraphUpArrow size={22} {...iconStyle} />,
+    },
+    {
+      segment: "employee/dashboard/pulse",
+      title: "Pulse",
+      icon: <SlGraph size={22} {...iconStyle} />,
+    },
+    {
+      segment: "employee/dashboard/beat-mapping",
+      title: "Beat Mapping",
+      icon: <TbMap2 size={22} {...iconStyle} />,
+    },
+
+    // HR Section with Dropdown
+    {
+      segment: "employee/dashboard/hr",
+      title: "Human Resources",
+      icon: <MdOutlineManageAccounts size={22} {...iconStyle} />,
+      children: [
+        {
+          segment: "attendance",
+          title: "Attendance",
+          icon: <LuClipboardList size={22} {...iconStyle} />,
+          link: "attendance", // ✅ Corrected link property
+        },
+        {
+          segment: "payslip",
+          title: "Payslip",
+          icon: <MdOutlineAccountBalanceWallet size={22} {...iconStyle} />,
+          link: "/employee/dashboard/hr/payslip",
+        },
+        {
+          segment: "vouchers",
+          title: "Vouchers",
+          icon: <CiMoneyBill size={22} {...iconStyle} />,
+          link: "/employee/dashboard/hr/vouchers",
+        },
+        {
+          segment: "announcements",
+          title: "Announcements",
+          icon: <HiOutlineSpeakerphone size={22} {...iconStyle} />,
+          link: "/employee/dashboard/hr/announcements",
+        },
+      ],
+    },
+    {
+      segment: "employee/dashboard/targets",
+      title: "Targets",
+      icon: <TbTargetArrow size={22} {...iconStyle} />,
+    },
+    {
+      segment: "employee/dashboard/punchInAndOut",
+      title: "Punch In/Out",
+      icon: <IoFingerPrintOutline size={22} {...iconStyle} />,
+    },
+    {
+      segment: "employee/dashboard/profile",
+      title: "Profile",
+      icon: <CgProfile size={22} {...iconStyle} />,
+    },
+    {
+      segment: "employee/dashboard/logout",
+      title: "Logout",
+      icon: <TfiLock size={22} {...iconStyle} />,
+    },
+  ];
 
   return (
     <AppProvider
