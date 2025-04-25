@@ -1,0 +1,237 @@
+.punch-in-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 0 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+
+  .date-container {
+    display: flex;
+    padding: 5px;
+    width: 100%;
+    max-width: 20rem;
+    justify-content: space-between;
+    background-color: rgb(85 140 239);
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+  }
+
+  .webcam {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    aspect-ratio: 4/3;
+  }
+
+  .preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .captured-image {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    aspect-ratio: 4/3;
+  }
+
+  .capture-btn,
+  .recapture-btn,
+  .punch-in-button,
+  .punch-out-button {
+    padding: 10px 20px;
+    margin: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    width: auto;
+    min-width: 120px;
+  }
+
+  .success-message,
+  .error-message {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 6px;
+    color: #fff;
+    background-color: green;
+
+    &.error-message {
+      background-color: red;
+    }
+  }
+
+  .success-message {
+    color: green;
+    font-size: 14px;
+    margin-top: 0.5rem;
+  }
+
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 0.5rem;
+  }
+
+  .location-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    margin: 1rem 0;
+
+    p {
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .refresh-location-btn {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+
+      &:hover {
+        background-color: #45a049;
+      }
+    }
+  }
+
+  .punch-in-page-buttons {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    button {
+      padding: 0.5rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      min-width: 120px;
+
+      &.punch-in-button {
+        background-color: #16a34a;
+
+        &:hover {
+          background-color: #15803d;
+        }
+      }
+
+      &.punch-out-button {
+        background-color: #dc2626;
+
+        &:hover {
+          background-color: #b91c1c;
+        }
+      }
+    }
+  }
+}
+
+// Media Queries
+@media screen and (max-width: 768px) {
+  .punch-in-page {
+    margin-top: 1rem;
+    gap: 0.5rem;
+
+    .date-container {
+      font-size: 0.9rem;
+      padding: 4px;
+    }
+
+    .webcam,
+    .captured-image {
+      max-width: 100%;
+    }
+
+    .capture-btn,
+    .recapture-btn,
+    .punch-in-button,
+    .punch-out-button {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      min-width: 100px;
+    }
+
+    .location-info {
+      padding: 0.8rem;
+
+      p {
+        font-size: 0.9rem;
+      }
+    }
+
+    .punch-in-page-buttons {
+      gap: 0.5rem;
+
+      button {
+        padding: 0.4rem 1.2rem;
+        min-width: 100px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .punch-in-page {
+    padding: 0 0.5rem;
+
+    .date-container {
+      font-size: 0.8rem;
+    }
+
+    .capture-btn,
+    .recapture-btn,
+    .punch-in-button,
+    .punch-out-button {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .location-info {
+      padding: 0.6rem;
+
+      p {
+        font-size: 0.8rem;
+      }
+    }
+
+    .punch-in-page-buttons {
+      flex-direction: column;
+      align-items: center;
+
+      button {
+        width: 100%;
+        max-width: 200px;
+      }
+    }
+  }
+}

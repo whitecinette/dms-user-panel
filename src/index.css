@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Add these new styles to hide the theme toggle */
+.css-1d9cypr-MuiStack-root button {
+  display: none !important;
+}

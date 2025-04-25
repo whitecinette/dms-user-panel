@@ -4,6 +4,11 @@
     align-items: center;
     height: 100vh;
     background: linear-gradient(135deg, #f8871e, #4e99e9);
+    .error-message{
+      color: red;
+      font-size: 14px;
+      margin-top: 0.5rem;
+  }
   }
   
   .login-card {
@@ -33,7 +38,7 @@
   }
   
   .login-input {
-    width: 100%;
+    width: 90%;
     padding: 12px;
     margin: 10px 0;
     border: 1px solid #ccc;
@@ -62,5 +67,6 @@
     &:hover {
       background: #0056b3;
     }
+    
   }
   

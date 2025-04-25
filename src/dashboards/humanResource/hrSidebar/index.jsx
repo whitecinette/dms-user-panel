@@ -4,7 +4,7 @@ import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { useAuth } from "../../../context/AuthContext";
 import company_logo from "../../../company-logo.png";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { RiDashboardLine ,RiTimeLine,RiCoupon3Line } from "react-icons/ri";
 import { FaUserCheck, FaUsersLine } from "react-icons/fa6";
 import { GiTakeMyMoney } from "react-icons/gi";
@@ -26,30 +26,40 @@ import Report from "../report";
 import DealersAccounts from "../accounts";
 import HRRecruitment from "../../../components/humanResourceCom/RecruitmentPage";
 import Vouchers from "../vouchers";
+import Logout from "../../../components/logout";
 // import Payroll from "../../../components/payroll";
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
 const HumanResourceSidebar = [
   { kind: "header", title: "Human Resource" },
-  { segment: "hr-dashboard", title: "Dashboard", icon: <RiDashboardLine size={22} {...iconStyle} /> },
-  { segment: "attendance", title: "Attendance", icon: <FaUserCheck size={22} {...iconStyle} /> },
+  { segment: "hr/dashboard", title: "Dashboard", icon: <RiDashboardLine size={22} {...iconStyle} /> },
+  { segment: "hr/attendance", title: "Attendance", icon: <FaUserCheck size={22} {...iconStyle} /> },
   // =====hDs=====
-  { segment: "vouchers", title: "Vouchers", icon: <RiCoupon3Line size={22} {...iconStyle} /> },
+  { segment: "hr/vouchers", title: "Vouchers", icon: <RiCoupon3Line size={22} {...iconStyle} /> },
   // =====hDs=====
-  { segment: "timeline", title: "Timeline", icon: <RiTimeLine size={22} {...iconStyle} /> },
-  { segment: "beat-mapping", title: "Beat Mapping", icon: <CiMapPin size={22} {...iconStyle} /> },
+  { segment: "hr/timeline", title: "Timeline", icon: <RiTimeLine size={22} {...iconStyle} /> },
+  { segment: "hr/beat-mapping", title: "Beat Mapping", icon: <CiMapPin size={22} {...iconStyle} /> },
   // =====hDs=====
-  { segment: "announcements", title: "Announcements", icon: <TfiAnnouncement size={22} {...iconStyle} /> },
-  { segment: "hr-recruitment", title: "HR-Recruitment", icon: <GiHumanPyramid size={22} {...iconStyle} /> },
-  { segment: "employees-payroll", title: "Payroll", icon: <GiTakeMyMoney size={22} {...iconStyle} /> },
-  { segment: "hr-profile", title: "Profile", icon: <CgProfile size={22} {...iconStyle} /> },
-  { segment: "employees-todo", title: "ToDo", icon: <LuListTodo size={22} {...iconStyle} /> },
+  { segment: "hr/announcements", title: "Announcements", icon: <TfiAnnouncement size={22} {...iconStyle} /> },
+  { segment: "hr/hr-recruitment", title: "HR-Recruitment", icon: <GiHumanPyramid size={22} {...iconStyle} /> },
+  { segment: "hr/employees-payroll", title: "Payroll", icon: <GiTakeMyMoney size={22} {...iconStyle} /> },
+  { segment: "hr/hr-profile", title: "Profile", icon: <CgProfile size={22} {...iconStyle} /> },
+  { segment: "hr/employees-todo", title: "ToDo", icon: <LuListTodo size={22} {...iconStyle} /> },
   // =====hDs=====
-  { segment: "logout", title: "Logout", icon: <TfiLock size={22} {...iconStyle} /> },
+  { segment: "logout", title: "Logout", icon: <TfiLock size={22} {...iconStyle}  />,  },
 ];
 
 function HumanResource(props) {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Create a router object for AppProvider that integrates with React Router
+  const router = {
+    pathname: location.pathname,
+    searchParams: new URLSearchParams(location.search),
+    navigate: (path) => navigate(path),
+  }
 
   return (
     <AppProvider
@@ -59,23 +69,26 @@ function HumanResource(props) {
         title: "",
         homeUrl: "/toolpad/core/introduction",
       }}
+      router={router}
+      session={user}
     >
       <DashboardLayout slots={{ sidebarFooter: () => null }}>
         <Routes>
-          <Route path="/hr-dashboard" element={<Dashboard />} />
-          <Route path="/attendance" element={<Attendance />} />
+          <Route path="/hr/hr-dashboard" element={<Dashboard />} />
+          <Route path="/hr/attendance" element={<Attendance />} />
           {/* ========hDs====== */}
-          <Route path="/attendance-detail/:employeeCode" element={<AttendanceDetails />} />
-          <Route path="/employees-data" element={<Employees />} />
-          <Route path="/employees-payroll" element={<Payroll />} />
-          <Route path="/employees-todo" element={<ToDoForEmployee />} />
-          <Route path="/hr-profile" element={<Profile />}></Route>
-          <Route path="/holiday" element={<HolidayPage />}></Route>
-          <Route path="/announcements" element={<Announcements />}></Route>
-          <Route path="/report" element={<Report />}></Route>
-          <Route path="/hr-recruitment" element={<HRRecruitment />}></Route>
-          <Route path="/dealers-accounts" element={<DealersAccounts />}></Route>
-          <Route path="/vouchers" element={<Vouchers />}></Route>
+          <Route path="/hr/attendance-detail/:employeeCode" element={<AttendanceDetails />} />
+          <Route path="/hr/employees-data" element={<Employees />} />
+          <Route path="/hr/employees-payroll" element={<Payroll />} />
+          <Route path="/hr/employees-todo" element={<ToDoForEmployee />} />
+          <Route path="/hr/hr-profile" element={<Profile />}></Route>
+          <Route path="/hr/holiday" element={<HolidayPage />}></Route>
+          <Route path="/hr/announcements" element={<Announcements />}></Route>
+          <Route path="/hr/report" element={<Report />}></Route>
+          <Route path="/hr/hr-recruitment" element={<HRRecruitment />}></Route>
+          <Route path="/hr/dealers-accounts" element={<DealersAccounts />}></Route>
+          <Route path="/hr/vouchers" element={<Vouchers />}></Route>
+          <Route path="logout" element={<Logout />}></Route>
           {/* ========hDs====== */}
 
           {/* <Route path="/payroll" element={<Payroll />}></Route> */}

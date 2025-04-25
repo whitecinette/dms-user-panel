@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import EmployeeDashboard from "./dashboards/employee/employeeDashboard";
@@ -11,23 +16,111 @@ import SidebarDealer from "./dashboards/dealer/dealerSidebar";
 import Attendance from "./components/employee/attendance";
 import PaySlipByEmployee from "./components/employee/paySlip";
 import ProductList from "./components/dealer/products";
+import Logout from "./components/logout";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    localStorage.setItem("toolpad-mode", "light");
+    localStorage.setItem("toolpad-color-scheme-dark", "light");
+  }, []);
+  const PrivateRoute = ({ element, roles = [] }) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return <Navigate to="/login" replace />;
+
+    try {
+      const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+      const expiryTime = tokenPayload.exp * 1000;
+      const role = localStorage.getItem("role");
+
+      if (new Date(expiryTime) < Date.now()) {
+        localStorage.removeItem("token");
+        return <Navigate to="/login" replace />;
+      }
+
+      if (roles.length && !roles.includes(role)) {
+        return <Navigate to={`/${role}/dashboard`} replace />; // or show a 403 page
+      }
+
+      return element;
+    } catch (error) {
+      localStorage.removeItem("token");
+      return <Navigate to="/login" replace />;
+    }
+  };
+
+  const RoleRedirect = () => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token) return <Navigate to="/login" replace />;
+
+    try {
+      const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+      const expiryTime = tokenPayload.exp * 1000;
+
+      if (new Date(expiryTime) < Date.now()) {
+        localStorage.removeItem("token");
+        return <Navigate to="/login" replace />;
+      }
+
+      switch (role) {
+        case "employee":
+          return <Navigate to="/employee/dashboard" replace />;
+        case "dealer":
+          return <Navigate to="/dealer/dashboard" replace />;
+        case "mdd":
+          return <Navigate to="/mdd/dashboard" replace />;
+        case "hr":
+          return <Navigate to="/hr/dashboard" replace />;
+        default:
+          return <Navigate to="/login" replace />;
+      }
+    } catch (error) {
+      localStorage.removeItem("token");
+      return <Navigate to="/login" replace />;
+    }
+  };
+
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<RoleRedirect />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/employee/dashboard/*" element={<SidebarEmployee />} />
-          <Route path="/dealer/dashboard/*" element={<SidebarDealer />} />
-          <Route path="/mdd/dashboard/*" element={<MddDashboard />} />    
-          <Route path = "/*" element ={<HumanResource /> } />  
+          <Route path="/logout" element={<Logout />} />
+          <Route
+            path="/employee/dashboard/*"
+            element={
+              <PrivateRoute
+                roles={["employee"]}
+                element={<SidebarEmployee />}
+              />
+            }
+          />
+          <Route
+            path="/dealer/*"
+            element={
+              <PrivateRoute roles={["dealer"]} element={<SidebarDealer />} />
+            }
+          />
+          <Route
+            path="/mdd/*"
+            element={
+              <PrivateRoute roles={["mdd"]} element={<MddDashboard />} />
+            }
+          />
+          <Route
+            path="/hr/*"
+            element={
+              <PrivateRoute roles={["hr"]} element={<HumanResource />} />
+            }
+          />
           {/* ===========h.D.s========= */}
           {/* <Route path="/get-attendance" element={<Attendance />} /> */}
           <Route path="/get-pay-slip-by-emp" element={<PaySlipByEmployee />} />
           <Route path="/products-for-dealers" element={<ProductList />} />
-   
         </Routes>
       </Router>
     </AuthProvider>
