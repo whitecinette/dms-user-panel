@@ -16,15 +16,23 @@ import company_logo from "../../../company-logo.png";
 import { TfiLock } from "react-icons/tfi";
 import { useAuth } from "../../../context/AuthContext";
 import { AppProvider, DashboardLayout } from "@toolpad/core";
-import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import PaySlipByEmployee from "../../../components/employee/paySlip";
 import Attendance from "../../../components/employee/attendance";
 import { IoFingerPrintOutline } from "react-icons/io5";
 import PunchInAndPunchOut from "../../../pages/Employee/PunchInAndPunchOut";
 import Logout from "../../../components/logout";
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
+
+const name = localStorage.getItem("name");
 const EmployeeSidebar = [
-  { kind: "header", title: "Employee Panel" },
+  { kind: "header", title: `Employee Panel - ${name}` },
   {
     segment: "employee/dashboard",
     title: "Sales Dashboard",
@@ -109,8 +117,8 @@ function SidebarEmployee(props) {
     pathname: location.pathname,
     searchParams: new URLSearchParams(location.search),
     navigate: (path) => navigate(path),
-  }
-  
+  };
+
   return (
     <AppProvider
       navigation={EmployeeSidebar}

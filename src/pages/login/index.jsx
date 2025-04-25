@@ -35,10 +35,12 @@ const Login = () => {
       if (response.status === 200 && response.data.token) {
         const token = response.data.token;
         const user = response.data.user;
+        const name = user.name;
         const role = user.role.toLowerCase();
 
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
+        localStorage.setItem("name", name);
         const dashboardPath = roleDashboard[role];
 
         if (dashboardPath) {
