@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: .5rem;
   margin-top: 2rem;
-  padding: 0 1rem;
+  // padding: 0 1rem;
   width: 100%;
   max-width: 1200px;
   margin-left: auto;
@@ -50,7 +50,7 @@
   .punch-in-button,
   .punch-out-button {
     padding: 10px 20px;
-    margin: 8px;
+    // margin: 8px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -61,7 +61,7 @@
 
   .success-message,
   .error-message {
-    margin-top: 10px;
+    // margin-top: 10px;
     padding: 8px;
     border-radius: 6px;
     color: #fff;
@@ -75,13 +75,13 @@
   .success-message {
     color: green;
     font-size: 14px;
-    margin-top: 0.5rem;
+    // margin-top: 0.5rem;
   }
 
   .error-message {
     color: red;
     font-size: 14px;
-    margin-top: 0.5rem;
+    // margin-top: 0.5rem;
   }
 
   .location-info {
@@ -94,16 +94,15 @@
     padding: 1rem;
     background-color: #f5f5f5;
     border-radius: 8px;
-    margin: 1rem 0;
 
     p {
-      margin: 0.5rem 0;
+      // margin: 0.5rem 0;
       font-size: 1rem;
       text-align: center;
     }
 
     .refresh-location-btn {
-      padding: 8px 16px;
+      // padding: 8px 16px;
       background-color: #4CAF50;
       color: white;
       border: none;
@@ -111,7 +110,7 @@
       cursor: pointer;
       font-size: 14px;
       transition: background-color 0.3s;
-      margin-top: 1rem;
+      // margin-top: 1rem;
 
       &:hover {
         background-color: #45a049;
