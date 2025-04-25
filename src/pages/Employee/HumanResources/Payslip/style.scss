@@ -1,0 +1,243 @@
+.payslip-container {
+    margin: auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 900px;
+    max-width: 1000px;
+}
+
+.dwn-btn-container {
+    display: flex;
+    justify-content: flex-end;
+
+    .download-btn {
+        background: #ff1e00;
+        color: white;
+        border: none;
+        padding: 10px 12px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background 0.3s;
+        margin-bottom: 10px;
+
+        &:hover {
+            background: #eb4200;
+        }
+
+        svg {
+            margin-right: 5px;
+        }
+    }
+}
+
+.payslip-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s;
+    overflow-x: auto; // Enables scrolling for tables
+
+    &:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .company-name {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .company-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            // max-width: 600px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            // flex-wrap: wrap; // Ensures it wraps properly on small screens
+            h2{
+                font-size: 40px;
+                font-weight: bold;
+                color: #333;
+            }
+            // .logo {
+            //     flex: 1;
+            //     text-align: left;
+
+            //     img {
+            //         width: 80px;
+            //         height: auto;
+            //         border-radius: 8px;
+            //     }
+            // }
+
+            // .text-content {
+            //     flex: 2;
+            //     text-align: center;
+
+            //     h2 {
+            //         margin: 0;
+            //         font-size: 24px;
+            //         font-weight: bold;
+            //         color: #333;
+            //     }
+
+            //     p {
+            //         margin: 5px 0 0;
+            //         font-size: 16px;
+            //         color: #666;
+            //         text-align: center;
+            //     }
+            // }
+            
+        }
+    }
+}
+
+.title {
+    color: #333;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.header-section {
+    margin: 20px 0;
+    border: 1px solid #333;
+    border-radius: 10px;
+    overflow: hidden;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #f9f9f9;
+
+        th {
+            color: #333;
+            font-size: 18px;
+            padding: 10px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #727272;
+            font-size: 16px;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background: #eef2f7;
+        }
+    }
+}
+
+.salary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    transition: transform 0.3s;
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background: #333;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    tbody tr {
+        transition: background 0.3s ease-in-out;
+
+        &:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        &:hover {
+            background: #dbeafe;
+        }
+    }
+
+    tfoot {
+        font-weight: bold;
+        background: #007bff;
+        color: white;
+    }
+}
+
+// RESPONSIVENESS
+// @media (max-width: 768px) {
+//     .payslip-container {
+//         padding: 10px;
+//     }
+
+//     .download-btn {
+//         font-size: 14px;
+//         padding: 8px;
+//     }
+
+//     .company-details {
+//         flex-direction: column;
+//         align-items: center;
+
+//         .logo {
+//             text-align: center;
+
+//             img {
+//                 width: 70px;
+//             }
+//         }
+
+//         .text-content {
+//             text-align: center;
+//         }
+//     }
+
+//     .salary-table {
+//         font-size: 14px;
+//         overflow-x: auto;
+//     }
+// }
+
+// @media (max-width: 480px) {
+//     .company-details {
+//         flex-direction: column;
+//         align-items: center;
+
+//         .logo img {
+//             width: 60px;
+//         }
+
+//         .text-content h2 {
+//             font-size: 20px;
+//         }
+
+//         .text-content p {
+//             font-size: 14px;
+//         }
+//     }
+
+//     .salary-table th, .salary-table td {
+//         font-size: 12px;
+//         padding: 8px;
+//     }
+
+//     .download-btn {
+//         padding: 6px;
+//         font-size: 12px;
+//     }
+// }

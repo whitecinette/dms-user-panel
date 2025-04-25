@@ -23,11 +23,21 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import PaySlipByEmployee from "../../../components/employee/paySlip";
-import Attendance from "../../../components/employee/attendance";
 import { IoFingerPrintOutline } from "react-icons/io5";
 import PunchInAndPunchOut from "../../../pages/Employee/PunchInAndPunchOut";
 import Logout from "../../../components/logout";
+import Attendance from "../../../pages/Employee/HumanResources/Attendance";
+import Vouchers from "../../../pages/Employee/HumanResources/Vouchers";
+import Announcements from "../../../pages/Employee/HumanResources/Announcements";
+import PaySlipByEmployee from "../../../pages/Employee/HumanResources/Payslip";
+import SalesDashboard from "../../../pages/Employee/SalesDashboard";
+import Extraction from "../../../pages/Employee/Extraction";
+import Pulse from "../../../pages/Employee/Pulse";
+import BeatMapping from "../../../pages/Employee/BeatMapping";
+import Targets from "../../../pages/Employee/Targets";
+import Profile from "../../../pages/Employee/Profile";
+
+
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
 function SidebarEmployee(props) {
@@ -49,7 +59,7 @@ function SidebarEmployee(props) {
   };
 
   const EmployeeSidebar = [
-    { kind: "header", title: `Employee Panel - ${employeeName}` },
+    { kind: "header", title: `Employee Panel ` },
     {
       segment: "employee/dashboard",
       title: "Sales Dashboard",
@@ -138,15 +148,21 @@ function SidebarEmployee(props) {
     >
       <DashboardLayout slots={{ sidebarFooter: () => null }}>
         <Routes>
-          <Route path="employee/dashboard/" />
+          <Route path="/" element={<SalesDashboard />} />
+          <Route path="/extraction" element={<Extraction/>} />
+          <Route path="/beat-mapping" element={<BeatMapping/>} />
           <Route path="hr">
             <Route path="attendance" element={<Attendance />} />
             <Route path="payslip" element={<PaySlipByEmployee />} />
+            <Route path="vouchers" element={<Vouchers/>} />
+            <Route path="announcements" element={<Announcements/>} />
             {/* <Route path="vouchers" element={<PaySlipByEmployee />} />
             <Route path="announcements" element={<PaySlipByEmployee />} /> */}
           </Route>
           {/* <Route path="employee/dashboard/logout" element={<Logout />} /> */}
-          <Route path="pulse" element={<Attendance />} />
+          <Route path="profile" element={<Profile/>} />
+          <Route path="targets" element={<Targets/>} />
+          <Route path="pulse" element={<Pulse />} />
           <Route path="punchInAndOut" element={<PunchInAndPunchOut />} />
           <Route path="logout" element={<Logout />} />
           {/* <Route path="extraction" element={<Extraction />} /> */}
