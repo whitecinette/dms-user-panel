@@ -19,7 +19,7 @@ const Login = () => {
     employee: "/employee/dashboard/",
     dealer: "/dealer/dashboard/",
     mdd: "/mdd/dashboard/",
-    hr: "/hr/hr-dashboard/",
+    hr: "/hr/dashboard/",
   };
 
   const handleLogin = async () => {

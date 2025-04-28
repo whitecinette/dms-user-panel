@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import config from "../../../config";
-import Table from "../../../components/table";
+import config from "../../../../config";
+import Table from "../../../../components/table";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 
-import './style.scss'
+import "./style.scss";
 
 const backend_url = config.backend_url;
 
@@ -17,7 +17,9 @@ function Employees() {
 
   const fetchEmployees = async (page) => {
     try {
-      const response = await axios.get(`${backend_url}/get-emp-for-hr?page=${page}&limit=${limit}`);
+      const response = await axios.get(
+        `${backend_url}/get-emp-for-hr?page=${page}&limit=${limit}`
+      );
 
       console.log("API Response:", response.data); // Debugging API response
 
@@ -25,7 +27,9 @@ function Employees() {
         setEmployeesData(response.data.data);
 
         // Calculate total pages based on totalRecords
-        const calculatedTotalPages = Math.ceil(response.data.totalRecords / limit);
+        const calculatedTotalPages = Math.ceil(
+          response.data.totalRecords / limit
+        );
         setTotalPages(calculatedTotalPages || 1);
       } else {
         setEmployeesData([]);
@@ -63,7 +67,8 @@ function Employees() {
   return (
     <div className="main">
       <h2>Employee List</h2>
-      <Table data={tableData}
+      <Table
+        data={tableData}
         className="main-table"
         handleSave={(updatedData, id) => {
           console.log("Updated Data:", updatedData, "ID:", id);

@@ -4,7 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Home from "./pages/home";
+// import Home from "./pages/home";
 import Login from "./pages/login";
 import EmployeeDashboard from "./dashboards/employee/employeeDashboard";
 import DealerDashboard from "./dashboards/dealer/dealerDashboard";
@@ -13,8 +13,8 @@ import MddDashboard from "./dashboards/mdd/mddDashboard";
 import HumanResource from "./dashboards/humanResource/hrSidebar";
 import SidebarEmployee from "./dashboards/employee/employeeSidebar";
 import SidebarDealer from "./dashboards/dealer/dealerSidebar";
-import Attendance from "./components/employee/attendance";
-import PaySlipByEmployee from "./components/employee/paySlip";
+import Attendance from "./pages/Employee/attendance";
+import PaySlipByEmployee from "./pages/Employee/paySlip";
 import ProductList from "./components/dealer/products";
 import Logout from "./components/logout";
 

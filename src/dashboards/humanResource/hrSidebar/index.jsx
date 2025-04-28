@@ -12,28 +12,31 @@ import { CgProfile } from "react-icons/cg";
 import { TfiLock, TfiAnnouncement } from "react-icons/tfi";
 import { CiMapPin } from "react-icons/ci";
 import { GiHumanPyramid } from "react-icons/gi";
-import Attendance from "../../../components/humanResourceCom/attendance";
-import Dashboard from "../dashboardLayout";
-import Payroll from "../../../components/humanResourceCom/payroll";
+import Attendance from "../../../pages/Hr/attendance";
+// import Dashboard from "../dashboardLayout";
+import Payroll from "../../../pages/Hr/payroll";
 import { LuListTodo } from "react-icons/lu";
-import Employees from "../employees";
-import AttendanceDetails from "../../../components/humanResourceCom/attendance/AttendanceDetails";
-import ToDoForEmployee from "../toDo";
-import Profile from "../Profile";
-import HolidayPage from "../holidayPage";
-import Announcements from "../announcement";
-import Report from "../report";
-import DealersAccounts from "../accounts";
-import HRRecruitment from "../../../components/humanResourceCom/RecruitmentPage";
-import Vouchers from "../vouchers";
+import AttendanceDetails from "../../../pages/Hr/attendance/AttendanceDetails";
+import ToDoForEmployee from "../../../pages/Hr/toDo";
+import Profile from "../../../pages/Hr/Profile";
+import HolidayPage from "../../../pages/Hr/Dashboard/holidayPage";
+import Report from "../../../pages/Hr/report";
+import DealersAccounts from "../../../pages/Hr/accounts";
+import HRRecruitment from "../../../pages/Hr/RecruitmentPage";
+import Vouchers from "../../../pages/Hr/vouchers";
 import Logout from "../../../components/logout";
+import Dashboard from "../../../pages/Hr/Dashboard";
+import Announcements from "../../../pages/Hr/Announcements";
+import Timeline from "../../../pages/Hr/Timeline";
+import Employees from "../../../pages/Hr/Dashboard/employees";
+import BeatMapping from "../../../pages/Hr/BeatMapping";
 // import Payroll from "../../../components/payroll";
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
 const HumanResourceSidebar = [
   { kind: "header", title: "Human Resource" },
   {
-    segment: "hr/dashboard",
+    segment: "hr/dashboard/",
     title: "Dashboard",
     icon: <RiDashboardLine size={22} {...iconStyle} />,
   },
@@ -135,6 +138,8 @@ function HumanResource(props) {
           <Route path="hr-recruitment" element={<HRRecruitment />}></Route>
           <Route path="dealers-accounts" element={<DealersAccounts />}></Route>
           <Route path="vouchers" element={<Vouchers />}></Route>
+          <Route path="timeline" element={<Timeline />}></Route>
+          <Route path="beat-mapping" element={<BeatMapping />}></Route>
           <Route path="logout" element={<Logout />}></Route>
           {/* ========hDs====== */}
 
