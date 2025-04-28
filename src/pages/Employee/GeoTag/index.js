@@ -171,7 +171,7 @@ const GeoTagging = () => {
           maxWidth: 420,
           width: "100%",
           margin: "auto",
-          mt: 6,
+          mt: { xs: 0, sm: 6 },
           boxShadow: 4,
         }}
       >
@@ -210,14 +210,14 @@ const GeoTagging = () => {
 
           {!imageSrc ? (
             <Box className="preview-container" sx={{ mb: 2 }}>
-            <Webcam
-              audio={false}
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-              videoConstraints={{ facingMode: cameraFacingMode }}
-              className="geo-webcam"
-              style={{ borderRadius: 8, width: "100%", marginBottom: 12 }}
-            />
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                videoConstraints={{ facingMode: cameraFacingMode }}
+                className="geo-webcam"
+                style={{ borderRadius: 8, width: "100%", marginBottom: 12 }}
+              />
             </Box>
           ) : (
             <Box className="preview-container" sx={{ mb: 2 }}>
