@@ -1,0 +1,15 @@
+.hr-beat-mapping-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px);
+    padding: 20px;
+
+    .content-wrapper {
+        width: 100%;
+        max-width: 1200px;
+        text-align: center;
+        font-size: 24px;
+        color: #666;
+    }
+}

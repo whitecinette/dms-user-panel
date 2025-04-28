@@ -3,6 +3,7 @@ import Webcam from "react-webcam";
 import config from "../../../config";
 import "./style.scss";
 import axios from "axios";
+import CustomAlert from "../../../components/CustomAlert";
 
 const backendUrl = config.backend_url;
 
@@ -13,11 +14,19 @@ const PunchInAndPunchOut = () => {
   const [location, setLocation] = useState(null);
   const [isPunchingIn, setIsPunchingIn] = useState(false);
   const [isPunchingOut, setIsPunchingOut] = useState(false);
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+
+  const showAlert = (type, message) => {
+    setAlert({ show: true, type, message });
+    setTimeout(() => {
+      setAlert({ show: false, type: "", message: "" });
+    }, 5000);
+  };
 
   //get Location
   const getLocation = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation not supported by your browser.");
+      showAlert("error", "Geolocation not supported by your browser.");
       setLocation(null);
       return;
     }
@@ -30,7 +39,8 @@ const PunchInAndPunchOut = () => {
 
         if (accuracy > 100) {
           console.warn(`Low accuracy: ${accuracy} meters`);
-          alert(
+          showAlert(
+            "warning",
             `Your location accuracy is low (${accuracy} meters). Try moving to a better signal or enabling GPS.`
           );
         }
@@ -46,7 +56,7 @@ const PunchInAndPunchOut = () => {
       },
       (error) => {
         console.error("Error getting location:", error);
-        alert("Location access denied or unavailable.");
+        showAlert("error", "Location access denied or unavailable.");
         setLocation(null);
       },
       {
@@ -68,7 +78,7 @@ const PunchInAndPunchOut = () => {
   const captureImage = () => {
     const image = webcamRef.current.getScreenshot();
     if (!image) {
-      alert("Failed to capture image. Please try again.");
+      showAlert("error", "Failed to capture image. Please try again.");
       return;
     }
     setImageSrc(image);
@@ -76,12 +86,15 @@ const PunchInAndPunchOut = () => {
 
   const sendPunch = async (type) => {
     if (!imageSrc) {
-      alert("Please capture an image before punching.");
+      showAlert("error", "Please capture an image before punching.");
       return;
     }
 
     if (!location?.lat || !location?.lng) {
-      alert("Location not available. Please enable location services.");
+      showAlert(
+        "error",
+        "Location not available. Please enable location services."
+      );
       return;
     }
 
@@ -107,13 +120,14 @@ const PunchInAndPunchOut = () => {
         },
       });
 
-      alert(
+      showAlert(
+        "success",
         res.data.message || `Punch ${type === "in" ? "In" : "Out"} successful!`
       );
-      
     } catch (err) {
       console.error("Error sending punch:", err);
-      alert(
+      showAlert(
+        "error",
         err.response?.data?.message || "Something went wrong. Please try again."
       );
     } finally {
@@ -124,6 +138,14 @@ const PunchInAndPunchOut = () => {
 
   return (
     <div className="punch-in-page">
+      {alert.show && (
+        <CustomAlert
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert({ show: false, type: "", message: "" })}
+        />
+      )}
+
       <div className="date-container">
         <span className="date">{date.toISOString().split("T")[0]}</span>
         <span className="time">

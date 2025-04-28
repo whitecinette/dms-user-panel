@@ -23,7 +23,7 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { IoFingerPrintOutline } from "react-icons/io5";
+import { IoFingerPrintOutline, IoLocation } from "react-icons/io5";
 import PunchInAndPunchOut from "../../../pages/Employee/PunchInAndPunchOut";
 import Logout from "../../../components/logout";
 import Attendance from "../../../pages/Employee/HumanResources/Attendance";
@@ -36,6 +36,7 @@ import Pulse from "../../../pages/Employee/Pulse";
 import BeatMapping from "../../../pages/Employee/BeatMapping";
 import Targets from "../../../pages/Employee/Targets";
 import Profile from "../../../pages/Employee/Profile";
+import GeoTagging from "../../../pages/Employee/GeoTag";
 
 
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
@@ -79,6 +80,11 @@ function SidebarEmployee(props) {
       segment: "employee/dashboard/beat-mapping",
       title: "Beat Mapping",
       icon: <TbMap2 size={22} {...iconStyle} />,
+    },
+    {
+      segment: "employee/dashboard/geoTagging",
+      title: "Geo Tagging",
+      icon: <IoLocation size={22} {...iconStyle} />,
     },
 
     // HR Section with Dropdown
@@ -164,6 +170,7 @@ function SidebarEmployee(props) {
           <Route path="targets" element={<Targets/>} />
           <Route path="pulse" element={<Pulse />} />
           <Route path="punchInAndOut" element={<PunchInAndPunchOut />} />
+          <Route path="geoTagging" element={<GeoTagging />} />
           <Route path="logout" element={<Logout />} />
           {/* <Route path="extraction" element={<Extraction />} /> */}
           {/* <Route path="payroll" element={<Payroll />}></Route> */}

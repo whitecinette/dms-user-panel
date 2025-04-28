@@ -1,0 +1,93 @@
+.geo-tagging-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: calc(100vh - 100px);
+    padding: 32px 8px;
+    background: #fafbfc;
+
+    .content-wrapper {
+        width: 100%;
+        max-width: 1200px;
+        text-align: center;
+        font-size: 24px;
+        color: #666;
+    }
+}
+
+.geo-tag-form {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    padding: 32px 24px;
+    max-width: 400px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.geo-webcam {
+    width: 100%;
+    max-width: 350px;
+    border-radius: 8px;
+    margin: 0 auto 10px auto;
+    background: #222;
+}
+
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.captured-image {
+    width: 100%;
+    max-width: 350px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.geo-tag-actions {
+    display: flex;
+    gap: 12px;
+    margin: 10px 0 0 0;
+}
+
+.geo-location-info {
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+    color: #444;
+    margin-top: 8px;
+    .geo-location-info-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .geo-location-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+}
+
+@media (max-width: 600px) {
+    .geo-tag-form {
+        padding: 16px 4px;
+        max-width: 98vw;
+    }
+    .geo-webcam-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .geo-webcam,
+    .captured-image {
+        max-width: 100vw;
+    }
+}
