@@ -13,7 +13,6 @@ import { TfiLock, TfiAnnouncement } from "react-icons/tfi";
 import { CiMapPin } from "react-icons/ci";
 import { GiHumanPyramid } from "react-icons/gi";
 import Attendance from "../../../pages/Hr/attendance";
-// import Dashboard from "../dashboardLayout";
 import Payroll from "../../../pages/Hr/payroll";
 import { LuListTodo } from "react-icons/lu";
 import AttendanceDetails from "../../../pages/Hr/attendance/AttendanceDetails";
