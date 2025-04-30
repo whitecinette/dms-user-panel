@@ -1,227 +1,356 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./style.scss";
 import config from "../../../../config";
+import {
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  TextField,
+  MenuItem,
+  CircularProgress,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  TablePagination,
+} from "@mui/material";
+import "./style.scss";
 
-const { backend_url } = config;
+const backendUrl = config.backend_url;
 
-function Attendance() {
-  const [attendance, setAttendance] = useState([]);
-  const [summary, setSummary] = useState({ present: 0, absent: 0, halfDay: 0 });
-  const [leaveRecords, setLeaveRecords] = useState([]);
+const Attendance = () => {
+  const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showLeaveModal, setShowLeaveModal] = useState(false);
-  const [leaveData, setLeaveData] = useState({
-    startDate: "",
-    endDate: "",
-    leaveType: "",
-    leaveDescription: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [totalRecords, setTotalRecords] = useState(0);
 
-  const code = "RAJF001423";
+  const statusOptions = [
+    { value: "Present", label: "Present" },
+    { value: "Absent", label: "Absent" },
+    { value: "Pending", label: "Pending" },
+    { value: "Half Day", label: "Half Day" },
+    { value: "Approved", label: "Approved" },
+    { value: "Rejected", label: "Rejected" },
+  ];
 
-  useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${backend_url}/get-attandance/${code}`);
-        console.log("Full API Response:", response.data);
-        
-        setAttendance(response.data.attendance);
-        console.log("Attendance Data:", response.data.attendance);
-        
-        setSummary(response.data.summary);
-      } catch (err) {
-        setError("Error fetching attendance data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchLeaveRecords = async () => {
-      try {
-        const response = await axios.get(`${backend_url}/get-emp-leave/${code}`);
-        console.log("Leave Records:", response.data.data);
-        
-        setLeaveRecords(response.data.data);
-      } catch (err) {
-        console.error("Error fetching leave records:", err);
-      }
-    };
-
-    fetchAttendance();
-    fetchLeaveRecords();
-  }, []);
-
-  const handleLeaveRequest = async () => {
-    if (isSubmitting) return;
-
-    const isConfirmed = window.confirm("Are you sure you want to request leave?");
-    if (!isConfirmed) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const response = await axios.post(
-        `${backend_url}/request-leave/${code}`,
-        leaveData
-      );
-      console.log("Leave request response:", response.data);
-
-      alert("Leave requested successfully!");
-      setShowLeaveModal(false);
-
-      // Refresh leave records after requesting leave
-      const updatedLeaveRecords = await axios.get(`${backend_url}/get-emp-leave/${code}`);
-      setLeaveRecords(updatedLeaveRecords.data.data);
-    } catch (err) {
-      console.error("Error requesting leave:", err.response?.data || err.message);
-      alert(`Failed to request leave: ${err.response?.data?.message || "Unknown error"}`);
-    } finally {
-      setIsSubmitting(false);
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "present":
+        return "#28a745";
+      case "absent":
+        return "#dc3545";
+      case "pending":
+        return "#ffc107";
+      default:
+        return "#6c757d";
     }
   };
 
+  const fetchAttendance = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${backendUrl}/get-attandance`, {
+        params: {
+          status: statusFilter,
+          startDate: startDate,
+          endDate: endDate,
+          page: page + 1,
+          limit: rowsPerPage,
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      });
+
+      console.log(response);
+      setAttendanceData(response.data.data);
+      if (response.data.pagination) {
+        setTotalRecords(response.data.pagination.totalRecords || 0);
+        setPage((response.data.pagination.currentPage || 1) - 1);
+        setRowsPerPage(response.data.pagination.pageSize || 5);
+      }
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching attendance:", error);
+      setError("Failed to fetch attendance data. Please try again later.");
+      setAttendanceData([]);
+      setTotalRecords(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    setStartDate("");
+    setEndDate("");
+    setStatusFilter("");
+    setPage(0);
+  };
+
+  const getTotalPages = (total, rowsPerPage) => {
+    return rowsPerPage > 0 ? Math.max(1, Math.ceil(total / rowsPerPage)) : 1;
+  };
+
+  const getDisplayedRows = (page, rowsPerPage, total) => {
+    if (total === 0) return { from: 0, to: 0 };
+    const from = page * rowsPerPage + 1;
+    const to = Math.min((page + 1) * rowsPerPage, total);
+    return { from, to };
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  useEffect(() => {
+    fetchAttendance();
+  }, [startDate, endDate, statusFilter, page, rowsPerPage]);
+
   return (
-    <div className="attendance-page">
-      <div className="attendance-container">
-        <div className="header">
-          <div>
-            <h1>Employee Attendance</h1>
-            <p>View attendance records and request leave here</p>
-          </div>
-          {/* <h2>Attendance Summary</h2> */}
-          <button className="request-leave-btn" onClick={() => setShowLeaveModal(true)}>
-            Request Leave
-          </button>
-        </div>
-        {summary && (
-  <div className="status-emp">
-    <div>Present: <span className="present">{summary.present}</span></div>
-    <div>Absent: <span className="absent">{summary.absent}</span></div>
-    <div>Half-Day: <span className="halfday">{summary.halfDay}</span></div>
-    <div>Pending: <span className="pending">{summary.halfDay}</span></div>
-  </div>
-)}
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        {localStorage.getItem("name")}
+      </Typography>
 
-
-        {/* Attendance Records Table */}
-        <h3>Attendance Records</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-  {attendance.map((record) => (
-    <tr key={record._id}>
-      <td>{new Date(record.date).toLocaleString()}</td> {/* Show Date & Time */}
-      <td
-        style={{
-          color:
-            record.status === "Present"
-              ? "green"
-              : record.status === "Absent"
-                ? "red"
-                : "orange",
-          fontWeight: "bold",
-        }}
-      >
-        {record.status}
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-        </table>
-
-        {/* Leave Records Table */}
-        <h3>Leave Records</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Leave Type</th>
-              <th>Description</th>
-              <th>Days</th>
-              <th>Leave Status</th>
-              <th>Requested On</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leaveRecords.map((leave) => (
-              <tr key={leave._id}>
-                <td>{leave.leaveType}</td>
-                <td>{leave.leaveDescription}</td>
-                <td>{leave.leaveDays}</td>
-                <td
-                  style={{
-                    color:
-                      leave.leaveStatus === "Approved"
-                        ? "green"
-                        : leave.leaveStatus === "Pending"
-                          ? "orange"
-                          : "red",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {leave.leaveStatus}
-                </td>
-                <td>{new Date(leave.createdAt).toLocaleDateString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Request Leave Modal */}
-      {showLeaveModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Request Leave</h3>
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <input
-                type="date"
-                value={leaveData.startDate}
-                onChange={(e) => setLeaveData({ ...leaveData, startDate: e.target.value })}
-              />
-              <input
-                type="date"
-                value={leaveData.endDate}
-                onChange={(e) => setLeaveData({ ...leaveData, endDate: e.target.value })}
-              />
-            </div>
-            <select
-              value={leaveData.leaveType}
-              onChange={(e) => setLeaveData({ ...leaveData, leaveType: e.target.value })}
-            >
-              <option value="">Select Leave Type</option>
-              <option value="Sick">Sick Leave</option>
-              <option value="Casual">Casual Leave</option>
-              <option value="Paid">Paid Leave</option>
-              <option value="Unpaid">Unpaid Leave</option>
-            </select>
-            <textarea
-              placeholder="Leave Description"
-              value={leaveData.leaveDescription}
-              onChange={(e) => setLeaveData({ ...leaveData, leaveDescription: e.target.value })}
-            ></textarea>
-            <div>
-              <button className="submit-btn" onClick={handleLeaveRequest} disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit"}
-              </button>
-              <button className="cancel-btn" onClick={() => setShowLeaveModal(false)}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
       )}
-    </div>
+
+      <Paper sx={{ p: 2, mb: 2 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={3}>
+            <TextField
+              label="Start Date"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              label="End Date"
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              select
+              label="Status"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              fullWidth
+            >
+              {statusOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleReset}
+              fullWidth
+              sx={{ height: "56px" }}
+            >
+              Reset Filters
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
+
+      <Paper sx={{ width: "100%" }}>
+        {loading ? (
+          <Box
+            sx={{
+              height: 400,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : attendanceData.length === 0 ? (
+          <Box
+            sx={{
+              height: 400,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography>No attendance records found</Typography>
+          </Box>
+        ) : (
+          <TableContainer sx={{ maxHeight: "calc(100vh - 300px)" }}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>Date</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>Punch IN Image</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>Punch In</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>Punch Out</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>Punch Out Image</TableCell>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {attendanceData.map((record, index) => (
+                  <TableRow key={index}>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      {new Date(record.date).toISOString().split("T")[0]}
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      {record.punchInImage ? (
+                        <img
+                          src={record.punchInImage}
+                          alt="Punch In"
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            borderRadius: "50%",
+                          }}
+                        />
+                      ) : (
+                        "-"
+                      )}
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {record.punchIn ? new Date(record.punchIn).toLocaleTimeString("en-IN", {
+                      timeZone: "Asia/Kolkata",
+                    }) : "-"}
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      {record.punchOut ? new Date(record.punchOut).toLocaleTimeString("en-IN", {
+                        timeZone: "Asia/Kolkata",
+                      }) : "-"}
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      {record.punchOutImage ? (
+                        <img
+                          src={record.punchOutImage}
+                          alt="Punch Out"
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            borderRadius: "50%",
+                          }}
+                        />
+                      ) : (
+                        "-"
+                      )}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: getStatusColor(record.status),
+                        fontWeight: "bold",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {record.status || "Pending"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <TablePagination
+              rowsPerPageOptions={[25, 50, 100]}
+              component="div"
+              count={totalRecords}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              labelDisplayedRows={() => {
+                const totalPages = getTotalPages(totalRecords, rowsPerPage);
+                const { from, to } = getDisplayedRows(
+                  page,
+                  rowsPerPage,
+                  totalRecords
+                );
+                return (
+                  <Typography component="span" variant="body2">
+                    <Box
+                      component="span"
+                      sx={{ display: { xs: "none", sm: "inline" } }}
+                    >
+                      Page {totalRecords === 0 ? 0 : page + 1} of {totalPages}
+                    </Box>
+                    <Box
+                      component="span"
+                      sx={{ display: { xs: "none", md: "inline" }, ml: 1 }}
+                    >
+                      ({from}-{to} of {totalRecords})
+                    </Box>
+                    <Box
+                      component="span"
+                      sx={{ display: { xs: "inline", sm: "none" } }}
+                    >
+                      {totalRecords === 0 ? 0 : page + 1}/{totalPages}
+                    </Box>
+                  </Typography>
+                );
+              }}
+              labelRowsPerPage={
+                <Typography
+                  component="span"
+                  variant="body2"
+                  sx={{ display: { xs: "none", sm: "inline" } }}
+                >
+                  Rows per page:
+                </Typography>
+              }
+              sx={{
+                position: "sticky",
+                bottom: 0,
+                backgroundColor: "white",
+                zIndex: 2,
+                "& .MuiTablePagination-selectLabel": {
+                  display: { xs: "none", sm: "block" },
+                },
+                "& .MuiTablePagination-displayedRows": {
+                  margin: { xs: 0, sm: "auto" },
+                },
+                "& .MuiTablePagination-actions": {
+                  marginLeft: { xs: 0, sm: "auto" },
+                },
+              }}
+            />
+          </TableContainer>
+        )}
+      </Paper>
+    </Box>
   );
-}
+};
 
 export default Attendance;

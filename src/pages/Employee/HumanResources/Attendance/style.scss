@@ -1,182 +1,93 @@
 .attendance-page {
-    display: flex;
-    justify-content: center;
-    align-items: start;
-    min-height: 100vh;
-    // background-color: #f5f5f5;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+
+  .loading,
+  .no-data {
+    text-align: center;
     padding: 20px;
-  
-    .attendance-container {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 800px;
-  
-      .header {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-  
-        h2 {
-          font-size: 22px;
-          color: #333;
-          text-align: right;
-        }
-  
-        .request-leave-btn {
-          background: #00ad00;
-          color: white;
-          border: none;
-          padding: 8px 15px;
-          font-size: 14px;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background 0.3s;
-  
-          &:hover {
-            background: #01db01;
-          }
-        }
-      }
-  
-      .status-emp {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        padding: 10px;
-        background: #e9ecef;
-        border-radius: 5px;
-  
-        div {
-          font-weight: bold;
-        }
-  
-        .present {
-          color: green;
-        }
-  
-        .absent {
-          color: red;
-        }
-  
-        .halfday {
-          color: orange;
-        }
-      }
-  
-      h3 {
-        font-size: 18px;
-        margin-bottom: 10px;
-        color: #444;
-      }
-  
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 5px;
-        overflow: hidden;
-        margin-bottom: 20px;
-  
-        th, td {
-          padding: 10px;
-          border: 1px solid #ddd;
-          text-align: center;
-        }
-  
-        th {
-          background: #333;
-          color: white;
-          font-weight: bold;
-        }
-  
-        tbody {
-          tr:nth-child(even) {
-            background: #f9f9f9;
-          }
-  
-          td {
-            font-weight: bold;
-          }
-        }
-      }
+    color: #666;
+    font-size: 16px;
+  }
+
+  .attendance-table-container {
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
     }
-  
-    // Modal Styles
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-  
-      .modal {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        width: 90%;
-        max-width: 400px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        text-align: center;
-  
-        h3 {
-          margin-bottom: 15px;
-          color: #333;
-        }
-  
-        input,
-        select,
-        textarea {
-          width: 100%;
-          margin-bottom: 10px;
-          padding: 8px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          font-size: 14px;
-        }
-  
-        textarea {
-          height: 80px;
-          resize: none;
-        }
-  
-        .submit-btn {
-          background: #28a745;
-          color: white;
-          border: none;
-          padding: 8px 15px;
-          border-radius: 5px;
-          cursor: pointer;
-          margin-right: 10px;
-          transition: background 0.3s;
-  
-          &:hover {
-            background: #218838;
-          }
-        }
-  
-        .cancel-btn {
-          background: #dc3545;
-          color: white;
-          border: none;
-          padding: 8px 15px;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background 0.3s;
-  
-          &:hover {
-            background: #c82333;
-          }
-        }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #333;
+    }
+
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    .status {
+      text-transform: capitalize;
+      font-weight: 500;
+
+      &.present {
+        color: #28a745;
+      }
+
+      &.absent {
+        color: #dc3545;
+      }
+
+      &.pending {
+        color: #ffc107;
       }
     }
   }
-  
+
+  .MuiDataGrid-root {
+    border: none;
+  }
+
+  .MuiDataGrid-cell {
+    border-bottom: 1px solid rgba(224, 224, 224, 0.5);
+  }
+
+  .MuiDataGrid-columnHeaders {
+    background-color: #f5f5f5;
+  }
+
+  .MuiDataGrid-footerContainer {
+    border-top: 1px solid rgba(224, 224, 224, 0.5);
+  }
+
+  .status-present {
+    color: #28a745;
+  }
+
+  .status-absent {
+    color: #dc3545;
+  }
+
+  .status-pending {
+    color: #ffc107;
+  }
+}

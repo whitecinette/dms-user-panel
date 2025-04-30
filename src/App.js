@@ -13,7 +13,6 @@ import MddDashboard from "./dashboards/mdd/mddDashboard";
 import HumanResource from "./dashboards/humanResource/hrSidebar";
 import SidebarEmployee from "./dashboards/employee/employeeSidebar";
 import SidebarDealer from "./dashboards/dealer/dealerSidebar";
-import Attendance from "./pages/Employee/attendance";
 import PaySlipByEmployee from "./pages/Employee/paySlip";
 import ProductList from "./components/dealer/products";
 import Logout from "./components/logout";
@@ -116,7 +115,6 @@ function App() {
             }
           />
           {/* ===========h.D.s========= */}
-          {/* <Route path="/get-attendance" element={<Attendance />} /> */}
           <Route path="/get-pay-slip-by-emp" element={<PaySlipByEmployee />} />
           <Route path="/products-for-dealers" element={<ProductList />} />
         </Routes>

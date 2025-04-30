@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./style.scss";
@@ -13,7 +13,6 @@ import {
   YAxis,
   Bar,
 } from "recharts";
-import { FaMale, FaFemale } from "react-icons/fa";
 import config from "../../../config";
 import axios from "axios";
 import { FiUsers } from "react-icons/fi";
@@ -97,6 +96,7 @@ const Dashboard = () => {
     // { id: 2, message: "Submit your attendance by 5 PM." },
     // { id: 3, message: "New HR policies have been updated." }
   ]);
+  const sidebarRef = useRef(null);
 
   useEffect(() => {
     const storedNotices = localStorage.getItem("todayAnnouncement");
@@ -194,6 +194,24 @@ const Dashboard = () => {
     { name: "Leave", value: attendanceCount.leave, color: "#f39c12" }, // Warm Orange
     { name: "Half Day", value: attendanceCount.halfDay, color: "#3498db" }, // Bright Blue
   ];
+
+  // Add click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        !event.target.closest(".calendar-events-container")
+      ) {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="dashboard">
@@ -297,9 +315,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Event Sidebar - Moved outside the container */}
+        {/* Event Sidebar */}
         {isExpanded && (
           <div
+            ref={sidebarRef}
             className="event-sidebar expanded"
             onClick={(e) => e.stopPropagation()}
           >

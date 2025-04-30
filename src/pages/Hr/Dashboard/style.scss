@@ -47,9 +47,27 @@ body {
 
   .charts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     width: 100%;
+
+    // Desktop view (1024px and above) - 3 graphs in a row
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    // Tablet view (768px to 1023px) - attendance graph full width
+    @media (min-width: 768px) and (max-width: 1023px) {
+      grid-template-columns: 1fr;
+
+      .chart-content {
+        grid-column: 1 / -1;
+      }
+    }
+
+    // Mobile view (below 768px) - single column
+    @media (max-width: 767px) {
+      grid-template-columns: 1fr;
+    }
 
     .chart-content {
       background: $card-bg;
@@ -372,7 +390,7 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 24px;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 20px;  
 
   .card {
     min-width: 0;

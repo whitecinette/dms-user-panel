@@ -30,8 +30,6 @@ const Login = () => {
         password,
       });
 
-      console.log("API Response:", response.data);
-
       if (response.status === 200 && response.data.token) {
         const token = response.data.token;
         const user = response.data.user;
