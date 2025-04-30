@@ -29,7 +29,7 @@ import Announcements from "../../../pages/Hr/Announcements";
 import Timeline from "../../../pages/Hr/Timeline";
 import Employees from "../../../pages/Hr/Dashboard/employees";
 import BeatMapping from "../../../pages/Hr/BeatMapping";
-// import Payroll from "../../../components/payroll";
+
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
 const HumanResourceSidebar = [

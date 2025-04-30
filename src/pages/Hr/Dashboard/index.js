@@ -2,7 +2,17 @@ import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./style.scss";
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, BarChart, XAxis, YAxis, Bar } from "recharts";
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  BarChart,
+  XAxis,
+  YAxis,
+  Bar,
+} from "recharts";
 import { FaMale, FaFemale } from "react-icons/fa";
 import config from "../../../config";
 import axios from "axios";
@@ -15,8 +25,6 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { IoCloseSharp } from "react-icons/io5";
 import Employees from "./employees";
 import { NavLink, useNavigate } from "react-router-dom";
-
-
 
 const backend_url = config.backend_url;
 
@@ -73,9 +81,12 @@ const growthData = [
 ];
 
 const Dashboard = () => {
+  const [attendanceCount, setAttendanceCount] = useState([]);
   const navigate = useNavigate();
   const [date, setDate] = useState(new Date());
-  const selectedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+  const selectedDate = new Date(
+    date.getTime() - date.getTimezoneOffset() * 60000
+  )
     .toISOString()
     .split("T")[0];
   const [isExpanded, setIsExpanded] = useState(false);
@@ -90,28 +101,29 @@ const Dashboard = () => {
   useEffect(() => {
     const storedNotices = localStorage.getItem("todayAnnouncement");
     setNotices(storedNotices ? JSON.parse(storedNotices) : []);
-}, []);
+  }, []);
 
   const handleNavigation = (sectionId) => {
     navigate(`/announcements#${sectionId}`);
   };
   const removeNotice = (id) => {
-    setNotices(notices.filter(notice => notice.id !== id));
+    setNotices(notices.filter((notice) => notice.id !== id));
   };
   const [allEmployees, setAllEmployees] = useState([]);
   const fetchEmpThroughActorCode = async () => {
     try {
-      const response = await axios.get(`${backend_url}/actorCode/get-actorCode-for-admin`);
+      const response = await axios.get(
+        `${backend_url}/actorCode/get-actorCode-for-admin`
+      );
       const employeeList = response.data.employeeList || [];
 
       // Filter only those whose role is 'employee'
       const employeeCount = employeeList.length;
       setAllEmployees(employeeList);
       console.log("Employee Listttttttttttttttttt:", employeeList);
-      
+
       setTotalEmployees(employeeCount);
       console.log("Total Employeesssss:", employeeCount);
-
     } catch (err) {
       console.error("Failed to fetch employee data:", err);
       setTotalEmployees(0);
@@ -129,54 +141,31 @@ const Dashboard = () => {
   // Fetch Attendance Data from API
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
   useEffect(() => {
-    const fetchAttendance = async () => {
+    const getAttendanceCount = async () => {
       try {
-        const response = await axios.get(`${backend_url}/get-attendance-by-date/${today}`);
-        const data = response.data;
-    
-        if (response.status === 200) {
-          processAttendanceData(data.attendance);
-          console.log("AttendanceOfEmployees:::", data.attendance);
-        } else {
-          console.error("Error fetching attendance:", data.message);
-        }
-      } catch (error) {
-        console.error("Error:", error);
+        const response = await axios.get(
+          `${backend_url}/get-attendance-by-date/${selectedDate}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          }
+        );
+        setAttendanceCount(response.data.attendanceCount);
+      } catch (err) {
+        console.error("Error fetching attendance:", err);
       }
     };
-    
-    fetchAttendance();
+
+    getAttendanceCount();
   }, []);
-
-  // Process attendance data
-  const processAttendanceData = (attendanceRecords) => {
-    let presentCount = 0;
-    let absentCount = 0;
-    let halfDayCount = 0;
-    let approvedLeaveCount = 0;
-    let pendingLeaveCount = 0;
-
-    attendanceRecords.forEach((record) => {
-      if (record.status === "Present") presentCount++;
-      else if (record.status === "Half Day") halfDayCount++;
-      else if (record.status === "Absent") absentCount++;
-      else if (record.status === "Approved") approvedLeaveCount++;
-      else if (record.status === "Pending") pendingLeaveCount++;
-    });
-
-    setAttendanceData([
-      { name: "Present", value: presentCount, color: COLORS[0] },
-      { name: "Absent", value: absentCount, color: COLORS[1] },
-      { name: "Approved", value: approvedLeaveCount, color: COLORS[2] },
-      { name: "PunchIn", value: pendingLeaveCount, color: COLORS[3] },
-      { name: "Half Day", value: halfDayCount, color: COLORS[4] },
-    ]);
-  };
 
   // Function to highlight dates with events
   const tileContent = ({ date, view }) => {
     if (view === "month") {
-      const formattedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+      const formattedDate = new Date(
+        date.getTime() - date.getTimezoneOffset() * 60000
+      )
         .toISOString()
         .split("T")[0];
       const hasBirthday = staticBirthdays[formattedDate];
@@ -194,42 +183,94 @@ const Dashboard = () => {
     return null;
   };
 
+  //give chart data color
+  const chartData = [
+    {
+      name: "Present",
+      value: (attendanceCount.present || 0) + (attendanceCount.pending || 0),
+      color: "#2ecc71",
+    }, // Bright Green
+    { name: "Absent", value: attendanceCount.absent, color: "#e74c3c" }, // Vibrant Red
+    { name: "Leave", value: attendanceCount.leave, color: "#f39c12" }, // Warm Orange
+    { name: "Half Day", value: attendanceCount.halfDay, color: "#3498db" }, // Bright Blue
+  ];
+
   return (
     <div className="dashboard">
       <div>
         <h2>Hello HR,</h2>
-        <span>Measure How Fast You’re Growing Monthly Recurring Revenue. </span>
+        <span>Measure How Fast You're Growing Monthly Recurring Revenue. </span>
       </div>
       <div className="chart-container">
         <div className="announcements">
           <div>
             {/* Marquee Container */}
             <div className="marquee-container">
-            <marquee>
-                {notices.length > 0 ? notices.join(" | ") : "No announcements for today."}
-            </marquee>
-        </div>
+              <marquee>
+                {notices.length > 0
+                  ? notices.join(" | ")
+                  : "No announcements for today."}
+              </marquee>
+            </div>
 
             {/* Announcements List as Cards */}
             <div className="announcements-list">
-              <div className="announcement-card" onClick={() => handleNavigation("employee-announcement")}>
-                <img src="https://media.istockphoto.com/id/1344512181/vector/icon-red-loudspeaker.jpg?s=612x612&w=0&k=20&c=MSi3Z2La8OYjSY-pr0bB6f33NOuUKAQ_LBUooLhLQsk=" width={50} style={{ borderRadius: '100%' }} alt="" />
+              <div
+                className="announcement-card"
+                onClick={() => handleNavigation("employee-announcement")}
+              >
+                <img
+                  src="https://media.istockphoto.com/id/1344512181/vector/icon-red-loudspeaker.jpg?s=612x612&w=0&k=20&c=MSi3Z2La8OYjSY-pr0bB6f33NOuUKAQ_LBUooLhLQsk="
+                  width={50}
+                  style={{ borderRadius: "100%" }}
+                  alt=""
+                />
                 <span>Employee Related Announcement</span>
               </div>
-              <div className="announcement-card" onClick={() => handleNavigation("policy-training")}>
-                <img src="https://cdn-icons-png.freepik.com/256/11336/11336991.png?semt=ais_hybrid" width={50} alt="" />
+              <div
+                className="announcement-card"
+                onClick={() => handleNavigation("policy-training")}
+              >
+                <img
+                  src="https://cdn-icons-png.freepik.com/256/11336/11336991.png?semt=ais_hybrid"
+                  width={50}
+                  alt=""
+                />
                 <span>Policy & Training Announcement</span>
               </div>
-              <div className="announcement-card" onClick={() => handleNavigation("event-celebration")}>
-                <img src="https://thumbs.dreamstime.com/b/events-icon-calendar-icon-white-background-events-icon-calendar-icon-simple-vector-icon-122490266.jpg" width={50} style={{ borderRadius: '100%' }} alt="" />
+              <div
+                className="announcement-card"
+                onClick={() => handleNavigation("event-celebration")}
+              >
+                <img
+                  src="https://thumbs.dreamstime.com/b/events-icon-calendar-icon-white-background-events-icon-calendar-icon-simple-vector-icon-122490266.jpg"
+                  width={50}
+                  style={{ borderRadius: "100%" }}
+                  alt=""
+                />
                 <span>Event & Celebration Announcement</span>
               </div>
-              <div className="announcement-card" onClick={() => handleNavigation("performance-announcement")}>
-                <img src="https://cdn-icons-png.freepik.com/256/3732/3732623.png?semt=ais_hybrid" width={50} alt="" />
+              <div
+                className="announcement-card"
+                onClick={() => handleNavigation("performance-announcement")}
+              >
+                <img
+                  src="https://cdn-icons-png.freepik.com/256/3732/3732623.png?semt=ais_hybrid"
+                  width={50}
+                  alt=""
+                />
                 <span>Performance Announcement</span>
               </div>
-              <div className="announcement-card" onClick={() => handleNavigation("administrative-announcement")}>
-                <img src="https://img.freepik.com/premium-vector/audit-document-icon-comic-style-result-report-vector-cartoon-illustration-white-isolated-background-verification-control-business-concept-splash-effect_157943-8622.jpg" width={50} style={{ borderRadius: '100%' }} alt="" />
+              <div
+                className="announcement-card"
+                onClick={() => handleNavigation("administrative-announcement")}
+              >
+                <img
+                  src="https://img.freepik.com/premium-vector/audit-document-icon-comic-style-result-report-vector-cartoon-illustration-white-isolated-background-verification-control-business-concept-splash-effect_157943-8622.jpg"
+                  width={50}
+                  style={{ borderRadius: "100%" }}
+                  alt=""
+                />
                 <span>Administrative Announcement</span>
               </div>
             </div>
@@ -237,26 +278,50 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="main-option">
-        <NavLink className="option" to="/hr/employees-data"><div className="option1"><FiUsers className="icons" /> <span>Employees</span></div></NavLink>
-        <NavLink className="option" to='/hr/holiday'><div className="option1"><PiThumbsUpLight className="icons" /> <span>Holiday</span></div>
+        <NavLink className="option" to="/hr/employees-data">
+          <div className="option1">
+            <FiUsers className="icons" /> <span>Employees</span>
+          </div>
         </NavLink>
-        <div className="option calendar-events-container" onClick={() => setIsExpanded(!isExpanded)}>
-          <div className="option1"><IoCalendarOutline className="icons" /> <span>Events</span></div>
+        <NavLink className="option" to="/hr/holiday">
+          <div className="option1">
+            <PiThumbsUpLight className="icons" /> <span>Holiday</span>
+          </div>
+        </NavLink>
+        <div
+          className="option calendar-events-container"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <div className="option1">
+            <IoCalendarOutline className="icons" /> <span>Events</span>
+          </div>
+        </div>
+
+        {/* Event Sidebar - Moved outside the container */}
+        {isExpanded && (
           <div
-            className={`event-sidebar ${isExpanded ? "expanded" : ""}`}
-            onClick={(e) => e.stopPropagation()} // Stop click from closing the sidebar
+            className="event-sidebar expanded"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="event-table">
               {/* Close Button */}
-              <div style={{ display: 'flex', justifyContent: 'end' }}>
-                <button className="close-btn" onClick={() => setIsExpanded(false)}>
+              <div style={{ display: "flex", justifyContent: "end" }}>
+                <button
+                  className="close-btn"
+                  onClick={() => setIsExpanded(false)}
+                >
                   <IoCloseSharp color="grey" fontSize={30} />
                 </button>
               </div>
               <div className="calendar-container">
-                <Calendar onChange={setDate} value={date} view="month" tileContent={tileContent} />
+                <Calendar
+                  onChange={setDate}
+                  value={date}
+                  view="month"
+                  tileContent={tileContent}
+                />
               </div>
-              <div style={{ display: 'flex' }}>
+              <div style={{ display: "flex" }}>
                 <h2>Birthdays & Events</h2>
               </div>
               <table>
@@ -288,42 +353,59 @@ const Dashboard = () => {
               </table>
             </div>
           </div>
-        </div>
+        )}
 
-        <NavLink className="option" to='/hr/employees-payroll'><div className="option1"><IoCardOutline className="icons" /> <span>PayRoll</span></div></NavLink>
-        <NavLink className="option" to='/hr/dealers-accounts'><div className="option1">< SlCalculator className="icons" /> <span>Accounts</span></div></NavLink>
-        <NavLink className="option" to='/hr/report'><div className="option1">< TbReportAnalytics className="icons" /> <span>Report</span></div></NavLink>
+        <NavLink className="option" to="/hr/employees-payroll">
+          <div className="option1">
+            <IoCardOutline className="icons" /> <span>PayRoll</span>
+          </div>
+        </NavLink>
+        <NavLink className="option" to="/hr/dealers-accounts">
+          <div className="option1">
+            <SlCalculator className="icons" /> <span>Accounts</span>
+          </div>
+        </NavLink>
+        <NavLink className="option" to="/hr/report">
+          <div className="option1">
+            <TbReportAnalytics className="icons" /> <span>Report</span>
+          </div>
+        </NavLink>
       </div>
-
 
       <div className="charts">
         <div className="chart-content">
-
           {/* Center: Combined Pie Charts */}
           <div className="chart-center">
             <div className="attendance-header">
               <h2>Attendance:</h2>
-              <h6>Total Employees: <span>{totalEmployees}</span></h6>
-              <h5>Date: <span>{today}</span></h5>
+              <h6>
+                Total Employees:{" "}
+                <span>
+                  {attendanceCount.present +
+                    attendanceCount.pending +
+                    attendanceCount.leave +
+                    attendanceCount.halfDay +
+                    attendanceCount.absent}
+                </span>
+              </h6>
+              <h5>
+                Date: <span>{today}</span>
+              </h5>
             </div>
-            <div style={{ display: "flex" }}>
-              <ResponsiveContainer width={300} height={200}>
+            <div style={{ display: "flex", width: "500px", height: "250px" }}>
+              <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={attendanceData}
+                    data={chartData}
                     cx="50%"
                     cy="50%"
-                    outerRadius={70}
-                    innerRadius={50}
-                    // label={({ name, value }) =>
-                    //   totalEmployees > 0
-                    //     ? `${name} ${(value / totalEmployees * 100).toFixed(0)}%`
-                    //     : `${name} 0%`
-                    // }
+                    innerRadius={70}
+                    outerRadius={110}
+                    paddingAngle={3}
                     dataKey="value"
                   >
-                    {attendanceData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    {chartData.map((entry, index) => (
+                      <Cell key={index} fill={entry.color} />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -332,40 +414,45 @@ const Dashboard = () => {
 
               {/* Right: Leave Approval Stats */}
               <div className="chart-right">
-
-
                 {/* <div style={{ display: "flex", gap: "10px", justifyContent: 'space-between' }}> */}
                 <div className="employee-stat present">
                   <div className="indicator present-indicator"></div>
-                  <h6>Present: <span>{attendanceData.find((item) => item.name === "Present")?.value || 0}</span></h6>
+                  <h6>
+                    Present:
+                    <span>
+                      {attendanceCount.present + attendanceCount.pending || 0}
+                    </span>
+                  </h6>
                 </div>
                 <div className="employee-stat absent">
                   <div className="indicator absent-indicator"></div>
-                  <h6>Absent: <span>{attendanceData.find((item) => item.name === "Absent")?.value || 0}</span></h6>
+                  <h6>
+                    Absent:
+                    <span>{attendanceCount.absent || 0}</span>
+                  </h6>
                 </div>
                 {/* </div> */}
 
                 {/* <div style={{ display: 'flex', gap: "10px", justifyContent: 'space-between' }}> */}
                 <div className="employee-stat approved">
                   <div className="indicator approved-indicator"></div>
-                  <h6>Approved: <span>{attendanceData.find((item) => item.name === "Approved")?.value || 0}</span></h6>
-                </div>
-                <div className="employee-stat pending">
-                  <div className="indicator pending-indicator"></div>
-                  {/* <h6>Pending: <span>{attendanceData.find((item) => item.name === "Pending")?.value || 0}</span></h6> */}
-                  <h6>PunchIn: <span>{attendanceData.find((item) => item.name === "PunchIn")?.value || 0}</span></h6>
+                  <h6>
+                    Leave:
+                    <span>{attendanceCount.leave || 0}</span>
+                  </h6>
                 </div>
                 {/* </div> */}
                 <div className="employee-stat halfDay">
                   <div className="indicator halfDay-indicator"></div>
-                  <h6>Half Day: <span>{attendanceData.find((item) => item.name === "Half Day")?.value || 0}</span></h6>
+                  <h6>
+                    Half Day:
+                    <span>{attendanceCount.halfDay || 0}</span>
+                  </h6>
                 </div>
               </div>
             </div>
-            <NavLink to='/hr/attendance'>show more</NavLink>
+            <NavLink to="/hr/attendance">show more</NavLink>
           </div>
-
-
         </div>
         {/* <div className=""> */}
 
@@ -378,7 +465,7 @@ const Dashboard = () => {
         <div className="card performance">
           <h4>PERFORMANCE</h4>
           <p>
-            Measure How Fast You’re Growing Monthly Recurring Revenue.
+            Measure How Fast You're Growing Monthly Recurring Revenue.
             <span className="learn-more"> Learn More</span>
           </p>
           {performanceData.map((item) => (
@@ -389,13 +476,16 @@ const Dashboard = () => {
               <div className="progress-bar">
                 <div
                   className="progress-fill"
-                  style={{ width: `${item.value}%`, backgroundColor: item.color }}
+                  style={{
+                    width: `${item.value}%`,
+                    backgroundColor: item.color,
+                  }}
                 ></div>
               </div>
             </div>
           ))}
         </div>
-        {/* </div> */}
+        {/* revenue */}
         <div className="revenue-card">
           <h4>REVENUE</h4>
           <PieChart width={120} height={120}>
@@ -417,7 +507,10 @@ const Dashboard = () => {
           <div className="legend">
             {initialDataPie.map((item, index) => (
               <div key={index} className="legend-item">
-                <span className="dot" style={{ backgroundColor: item.color }}></span>
+                <span
+                  className="dot"
+                  style={{ backgroundColor: item.color }}
+                ></span>
                 {item.name}
               </div>
             ))}
@@ -429,8 +522,7 @@ const Dashboard = () => {
           <button className="report-btn">Send Report</button>
         </div>
       </div>
-      <div style={{ display: 'flex', flex: 'wrap', gap: '10px' }}>
-
+      <div className="chart-container-bottom">
         {/* Employee Structure */}
         <div className="card employee-structure">
           <h4>EMPLOYEE STRUCTURE</h4>
