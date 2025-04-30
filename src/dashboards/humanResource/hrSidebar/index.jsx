@@ -22,7 +22,7 @@ import HolidayPage from "../../../pages/Hr/Dashboard/holidayPage";
 import Report from "../../../pages/Hr/report";
 import DealersAccounts from "../../../pages/Hr/accounts";
 import HRRecruitment from "../../../pages/Hr/RecruitmentPage";
-import Vouchers from "../../../pages/Hr/vouchers";
+import Vouchers from "../../../pages/Hr/vouchers/index.jsx";
 import Logout from "../../../components/logout";
 import Dashboard from "../../../pages/Hr/Dashboard";
 import Announcements from "../../../pages/Hr/Announcements";
