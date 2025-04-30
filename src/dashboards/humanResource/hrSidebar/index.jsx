@@ -16,7 +16,7 @@ import Attendance from "../../../pages/Hr/attendance";
 import Payroll from "../../../pages/Hr/payroll/index.jsx";
 import { LuListTodo } from "react-icons/lu";
 import AttendanceDetails from "../../../pages/Hr/attendance/AttendanceDetails";
-import ToDoForEmployee from "../../../pages/Hr/toDo";
+import ToDoForEmployee from "../../../pages/Hr/toDo/index.jsx";
 import Profile from "../../../pages/Hr/Profile";
 import HolidayPage from "../../../pages/Hr/Dashboard/holidayPage";
 import Report from "../../../pages/Hr/report";
