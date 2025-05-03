@@ -59,87 +59,174 @@ function SidebarEmployee(props) {
     navigate: (path) => navigate(path),
   };
 
-  const EmployeeSidebar = [
-    { kind: "header", title: `Employee Panel ` },
-    {
-      segment: "employee/dashboard",
-      title: "Sales Dashboard",
-      icon: <RiDashboardLine size={22} {...iconStyle} />,
-    },
-    {
-      segment: "employee/dashboard/extraction",
-      title: "Extraction",
-      icon: <BsGraphUpArrow size={22} {...iconStyle} />,
-    },
-    {
-      segment: "employee/dashboard/pulse",
-      title: "Pulse",
-      icon: <SlGraph size={22} {...iconStyle} />,
-    },
-    {
-      segment: "employee/dashboard/beat-mapping",
-      title: "Beat Mapping",
-      icon: <TbMap2 size={22} {...iconStyle} />,
-    },
-    {
-      segment: "employee/dashboard/geoTagging",
-      title: "Geo Tagging",
-      icon: <IoLocation size={22} {...iconStyle} />,
-    },
+  const position = localStorage.getItem("position");
+  let EmployeeSidebar = [];
 
-    // HR Section with Dropdown
-    {
-      segment: "employee/dashboard/hr",
-      title: "Human Resources",
-      icon: <MdOutlineManageAccounts size={22} {...iconStyle} />,
-      children: [
-        {
-          segment: "attendance",
-          title: "Attendance",
-          icon: <LuClipboardList size={22} {...iconStyle} />,
-          link: "attendance", // ✅ Corrected link property
-        },
-        {
-          segment: "payslip",
-          title: "Payslip",
-          icon: <MdOutlineAccountBalanceWallet size={22} {...iconStyle} />,
-          link: "/employee/dashboard/hr/payslip",
-        },
-        {
-          segment: "vouchers",
-          title: "Vouchers",
-          icon: <CiMoneyBill size={22} {...iconStyle} />,
-          link: "/employee/dashboard/hr/vouchers",
-        },
-        {
-          segment: "announcements",
-          title: "Announcements",
-          icon: <HiOutlineSpeakerphone size={22} {...iconStyle} />,
-          link: "/employee/dashboard/hr/announcements",
-        },
-      ],
-    },
-    {
-      segment: "employee/dashboard/targets",
-      title: "Targets",
-      icon: <TbTargetArrow size={22} {...iconStyle} />,
-    },
-    {
-      segment: "employee/dashboard/punchInAndOut",
-      title: "Punch In/Out",
-      icon: <IoFingerPrintOutline size={22} {...iconStyle} />,
-    },
-    {
-      segment: "employee/dashboard/profile",
-      title: "Profile",
-      icon: <CgProfile size={22} {...iconStyle} />,
-    },
-    {
-      segment: "employee/dashboard/logout",
-      title: "Logout",
-      icon: <TfiLock size={22} {...iconStyle} />,
-    },
-  ];
+  if (position === "asm") {
+    EmployeeSidebar = [
+      { kind: "header", title: `Employee Panel ` },
+      {
+        segment: "employee/dashboard",
+        title: "Sales Dashboard",
+        icon: <RiDashboardLine size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/extraction",
+        title: "Extraction",
+        icon: <BsGraphUpArrow size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/pulse",
+        title: "Pulse",
+        icon: <SlGraph size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/beat-mapping",
+        title: "Beat Mapping",
+        icon: <TbMap2 size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/geoTagging",
+        title: "Geo Tagging",
+        icon: <IoLocation size={22} {...iconStyle} />,
+      },
+
+      // HR Section with Dropdown
+      {
+        segment: "employee/dashboard/hr",
+        title: "Human Resources",
+        icon: <MdOutlineManageAccounts size={22} {...iconStyle} />,
+        children: [
+          {
+            segment: "attendance",
+            title: "Attendance",
+            icon: <LuClipboardList size={22} {...iconStyle} />,
+            link: "attendance", // ✅ Corrected link property
+          },
+          {
+            segment: "payslip",
+            title: "Payslip",
+            icon: <MdOutlineAccountBalanceWallet size={22} {...iconStyle} />,
+            link: "/employee/dashboard/hr/payslip",
+          },
+          {
+            segment: "vouchers",
+            title: "Vouchers",
+            icon: <CiMoneyBill size={22} {...iconStyle} />,
+            link: "/employee/dashboard/hr/vouchers",
+          },
+          {
+            segment: "announcements",
+            title: "Announcements",
+            icon: <HiOutlineSpeakerphone size={22} {...iconStyle} />,
+            link: "/employee/dashboard/hr/announcements",
+          },
+        ],
+      },
+      {
+        segment: "employee/dashboard/targets",
+        title: "Targets",
+        icon: <TbTargetArrow size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/punchInAndOut",
+        title: "Punch In/Out",
+        icon: <IoFingerPrintOutline size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/profile",
+        title: "Profile",
+        icon: <CgProfile size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/logout",
+        title: "Logout",
+        icon: <TfiLock size={22} {...iconStyle} />,
+      },
+    ];
+  }else{
+    EmployeeSidebar = [
+      { kind: "header", title: `Employee Panel ` },
+      {
+        segment: "employee/dashboard",
+        title: "Sales Dashboard",
+        icon: <RiDashboardLine size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/extraction",
+        title: "Extraction",
+        icon: <BsGraphUpArrow size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/pulse",
+        title: "Pulse",
+        icon: <SlGraph size={22} {...iconStyle} />,
+      },
+      // {
+      //   segment: "employee/dashboard/beat-mapping",
+      //   title: "Beat Mapping",
+      //   icon: <TbMap2 size={22} {...iconStyle} />,
+      // },
+      {
+        segment: "employee/dashboard/geoTagging",
+        title: "Geo Tagging",
+        icon: <IoLocation size={22} {...iconStyle} />,
+      },
+
+      // HR Section with Dropdown
+      {
+        segment: "employee/dashboard/hr",
+        title: "Human Resources",
+        icon: <MdOutlineManageAccounts size={22} {...iconStyle} />,
+        children: [
+          {
+            segment: "attendance",
+            title: "Attendance",
+            icon: <LuClipboardList size={22} {...iconStyle} />,
+            link: "attendance", // ✅ Corrected link property
+          },
+          {
+            segment: "payslip",
+            title: "Payslip",
+            icon: <MdOutlineAccountBalanceWallet size={22} {...iconStyle} />,
+            link: "/employee/dashboard/hr/payslip",
+          },
+          {
+            segment: "vouchers",
+            title: "Vouchers",
+            icon: <CiMoneyBill size={22} {...iconStyle} />,
+            link: "/employee/dashboard/hr/vouchers",
+          },
+          {
+            segment: "announcements",
+            title: "Announcements",
+            icon: <HiOutlineSpeakerphone size={22} {...iconStyle} />,
+            link: "/employee/dashboard/hr/announcements",
+          },
+        ],
+      },
+      {
+        segment: "employee/dashboard/targets",
+        title: "Targets",
+        icon: <TbTargetArrow size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/punchInAndOut",
+        title: "Punch In/Out",
+        icon: <IoFingerPrintOutline size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/profile",
+        title: "Profile",
+        icon: <CgProfile size={22} {...iconStyle} />,
+      },
+      {
+        segment: "employee/dashboard/logout",
+        title: "Logout",
+        icon: <TfiLock size={22} {...iconStyle} />,
+      },
+    ];
+  }
 
   return (
     <AppProvider
@@ -155,19 +242,19 @@ function SidebarEmployee(props) {
       <DashboardLayout slots={{ sidebarFooter: () => null }}>
         <Routes>
           <Route path="/" element={<SalesDashboard />} />
-          <Route path="/extraction" element={<Extraction/>} />
-          <Route path="/beat-mapping" element={<BeatMapping/>} />
+          <Route path="/extraction" element={<Extraction />} />
+          <Route path="/beat-mapping" element={<BeatMapping />} />
           <Route path="hr">
             <Route path="attendance" element={<Attendance />} />
             <Route path="payslip" element={<PaySlipByEmployee />} />
-            <Route path="vouchers" element={<Vouchers/>} />
-            <Route path="announcements" element={<Announcements/>} />
+            <Route path="vouchers" element={<Vouchers />} />
+            <Route path="announcements" element={<Announcements />} />
             {/* <Route path="vouchers" element={<PaySlipByEmployee />} />
             <Route path="announcements" element={<PaySlipByEmployee />} /> */}
           </Route>
           {/* <Route path="employee/dashboard/logout" element={<Logout />} /> */}
-          <Route path="profile" element={<Profile/>} />
-          <Route path="targets" element={<Targets/>} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="targets" element={<Targets />} />
           <Route path="pulse" element={<Pulse />} />
           <Route path="punchInAndOut" element={<PunchInAndPunchOut />} />
           <Route path="geoTagging" element={<GeoTagging />} />

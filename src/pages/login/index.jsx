@@ -35,9 +35,11 @@ const Login = () => {
         const user = response.data.user;
         const name = user.name;
         const role = user.role.toLowerCase();
+        const position = user.position
 
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
+        localStorage.setItem("position", position);
         localStorage.setItem("name", name);
         localStorage.setItem("toolpad-mode", "light");
         localStorage.setItem("toolpad-color-scheme-dark", "light");
