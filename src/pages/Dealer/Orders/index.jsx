@@ -6,7 +6,7 @@ import "./style.scss";
 
 const { backend_url } = config;
 
-const OrderOfDealers = () => {
+const Orders = () => {
   const [orders, setOrders] = useState([]); // State to store fetched orders
   const [filters, setFilters] = useState({
     startDate: "",
@@ -198,4 +198,4 @@ const OrderOfDealers = () => {
   );
 };
 
-export default OrderOfDealers;
+export default Orders;
