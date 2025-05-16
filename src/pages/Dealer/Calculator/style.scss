@@ -1,0 +1,161 @@
+// Variables
+$primary: #1976d2;
+$primary-dark: #125ea2;
+$secondary-bg: #f5f7fa;
+$header-bg: #e3eaf6;
+$border-radius: 12px;
+$shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+
+.calculator-container {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+
+    .header-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+
+        .title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .amount-display {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #222;
+            background: $secondary-bg;
+            border-radius: $border-radius;
+            padding: 12px 28px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+            .currency {
+                font-size: 2.2rem;
+                color: #2e7d32;
+                margin-right: 4px;
+            }
+
+            .action-btn {
+                background: $primary;
+                border: none;
+                border-radius: 8px;
+                color: #fff;
+                padding: 8px 12px;
+                cursor: pointer;
+                transition: background 0.2s;
+                display: flex;
+                align-items: center;
+
+                &:hover {
+                    background: $primary-dark;
+                }
+            }
+        }
+    }
+
+    .tables-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+        gap: 24px;
+    }
+
+    .table-section {
+        background: #f9fafb;
+        border-radius: $border-radius;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        padding: 18px 12px 12px 12px;
+        min-width: 0;
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: $primary;
+        }
+
+        .table-responsive {
+            max-height: 16rem;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+
+            th,
+            td {
+                padding: 10px 12px;
+                text-align: left;
+                font-size: 1rem;
+                white-space: nowrap;
+            }
+
+            th {
+                position: sticky;
+                top: 0;
+                z-index: 2;
+                background: $header-bg;
+                color: #222;
+                font-weight: 600;
+            }
+
+            tbody tr {
+                transition: background 0.15s;
+
+                &:hover {
+                    background: #f1f7ff;
+                }
+            }
+        }
+
+        .no-rows {
+            text-align: center;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: $primary;
+            cursor: pointer;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .tables-grid {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .header-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .amount-display {
+            font-size: 2rem;
+            padding: 10px 18px;
+        }
+
+        .table-section {
+            .table-responsive {
+                max-height: 10rem;
+            }
+        }
+    }
+}

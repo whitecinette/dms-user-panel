@@ -21,7 +21,7 @@ const CustomAlert = ({ type, message, onClose }) => {
   };
 
   return (
-    <div className={`custom-alert ${type}`} role="alert">
+    <div className={`custom-alert custom-alert-${type}`} role="alert">
       <div className="alert-content">
         <span className="alert-icon">{getIcon()}</span>
         <span className="alert-message">{message}</span>

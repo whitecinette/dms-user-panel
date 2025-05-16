@@ -239,7 +239,11 @@ function SidebarEmployee(props) {
       router={router}
       session={user}
     >
-      <DashboardLayout slots={{ sidebarFooter: () => null }}>
+      <DashboardLayout
+        slots={{
+          sidebarFooter: () => null,
+        }}
+      >
         <Routes>
           <Route path="/" element={<SalesDashboard />} />
           <Route path="/extraction" element={<Extraction />} />

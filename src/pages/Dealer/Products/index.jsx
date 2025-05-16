@@ -142,7 +142,7 @@ const Products = () => {
 
       const requestData = {
         Products: products,
-        remarks: remark || "",
+        Remark: remark || "",
       };
 
       console.log("Order Payload:", requestData); // Debugging
@@ -164,6 +164,7 @@ const Products = () => {
           type: "success",
         });
         setCartItems([]); // Clear cart
+        localStorage.removeItem("cart");
       }
     } catch (error) {
       console.error(

@@ -7,15 +7,16 @@ import "./style.scss";
 const { backend_url } = config;
 
 const Orders = () => {
-  const [orders, setOrders] = useState([]); // State to store fetched orders
+  const [orders, setOrders] = useState([]); // State to store all orders
+  const [filteredOrders, setFilteredOrders] = useState([]); // State to store filtered orders
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
     search: "",
     status: "",
-  }); // State to store filters
-  const [loading, setLoading] = useState(false); // State to handle loading
-  const [error, setError] = useState(""); // State to handle errors
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Function to fetch orders from the API
   const fetchOrders = async () => {
@@ -23,46 +24,24 @@ const Orders = () => {
     setError("");
 
     try {
-      const { startDate, endDate, search, status } = filters;
+      const token = localStorage.getItem("token");
 
-      const queryParams = new URLSearchParams({
-        ...(startDate && { startDate }),
-        ...(endDate && { endDate }),
-        ...(search && { search }),  
-        ...(status && { status }),
-      }).toString();
+      if (!token) {
+        alert("You are not authenticated. Please log in again.");
+        return;
+      }
 
-        // Retrieve the token from localStorage
-        const token = localStorage.getItem("token");
-    
-        if (!token) {
-            alert("You are not authenticated. Please log in again.");
-            return;
+      const response = await axios.get(
+        `${backend_url}/order/get-all-orders-by-dealer`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-    
-        // Decode the token to extract dealer information
-        // const decodedToken = jwtDecode(token);
-
-
-
-        const response = await axios.post(
-            `${backend_url}/dealer/orders`,
-            {
-              // Request body content goes here (if any)
-              startDate: "",
-              endDate: "",
-              search: "",
-              status: "",
-            },
-            // {
-            //   headers: {
-            //     Authorization: `Bearer ${token}`, // Correct placement of Authorization header
-            //   },
-            // }
-          );
-          
+      );
 
       setOrders(response.data.orders || []);
+      setFilteredOrders(response.data.orders || []);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch orders");
     } finally {
@@ -70,12 +49,42 @@ const Orders = () => {
     }
   };
 
-  // Handle filter changes and fetch orders automatically
+  // Apply filters whenever filters state changes
   useEffect(() => {
-    fetchOrders();
-  }, [filters]);
+    let result = [...orders];
 
-  // Function to handle filter input changes
+    // Apply search filter
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      result = result.filter((order) =>
+        order.OrderNumber.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Apply status filter
+    if (filters.status) {
+      result = result.filter(
+        (order) =>
+          order.OrderStatus.toLowerCase() === filters.status.toLowerCase()
+      );
+    }
+
+    // Apply date range filter
+    if (filters.startDate) {
+      const startDate = new Date(filters.startDate);
+      result = result.filter((order) => new Date(order.OrderDate) >= startDate);
+    }
+
+    if (filters.endDate) {
+      const endDate = new Date(filters.endDate);
+      endDate.setHours(23, 59, 59, 999); // Set to end of day
+      result = result.filter((order) => new Date(order.OrderDate) <= endDate);
+    }
+
+    setFilteredOrders(result);
+  }, [filters, orders]);
+
+  // Handle filter input changes
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
@@ -94,11 +103,13 @@ const Orders = () => {
     });
   };
 
+  // Initial fetch of orders
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   return (
     <div className="orders-main">
-      <h1>Orders</h1>
-
       {/* Filters Section */}
       <div className="filters">
         <input
@@ -120,14 +131,14 @@ const Orders = () => {
           name="search"
           value={filters.search}
           onChange={handleFilterChange}
-          placeholder="Search"
+          placeholder="Search by Order Number or Product"
         />
         <select
           name="status"
           value={filters.status}
           onChange={handleFilterChange}
         >
-          <option value="">All Statuses</option>
+          <option value="">All Status</option>
           <option value="pending">Pending</option>
           <option value="completed">Completed</option>
         </select>
@@ -139,60 +150,92 @@ const Orders = () => {
         <p>Loading...</p>
       ) : error ? (
         <p className="error">{error}</p>
-      ) : orders.length === 0 ? (
+      ) : filteredOrders.length === 0 ? (
         <p>No orders found.</p>
       ) : (
-    <>
-    <div className="orders-sub">
-
-        {orders.map((order) => (
-            <div key={order._id} className="order-box">
+        <>
+          <div className="orders-sub">
+            {filteredOrders.map((order) => (
+              <div key={order._id} className="order-box">
                 <div className="order-dets-top">
-                    <div className="order-dets-top-left">
-                    <p>{order._id}</p>
-                    <p className="order-tot-qt">{order.Products.reduce((total, product) => total + product.Quantity, 0)}N | {new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2 }).format(order.TotalPrice)} INR</p>
-                    <p className="order-date">{new Date(order.OrderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} | {new Date(order.OrderDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
-                    <div className={`order-status ${order.OrderStatus.toLowerCase()}`}>
-                        {order.OrderStatus.toUpperCase()}
+                  <div className="order-dets-top-left">
+                    <p>Order Number: {order.OrderNumber}</p>
+                    <p className="order-tot-qt">
+                      Total Quantity:{" "}
+                      {order.Products.reduce(
+                        (total, product) => total + product.Quantity,
+                        0
+                      )}{" "}
+                      | Total Price:{" "}
+                      {new Intl.NumberFormat("en-IN", {
+                        maximumFractionDigits: 2,
+                      }).format(order.TotalPrice)}{" "}
+                      INR
+                    </p>
+                    <p className="order-date">
+                      Order Date:{" "}
+                      {new Date(order.OrderDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}{" "}
+                      | Order Time:{" "}
+                      {new Date(order.OrderDate).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                    <div
+                      className={`order-status ${order.OrderStatus.toLowerCase()}`}
+                    >
+                      {order.OrderStatus.toUpperCase()}
                     </div>
-                    </div>
-                        <div className="order-dets-top-right">
-                        {order.OrderStatus.toUpperCase() === "PENDING" && (
-                                <>
-                                <a href="">Edit</a>
-                                <a href="">Delete</a>
-                                </>
-                            )}
-                        </div>
                 </div>
                 <div className="order-dets-bottom">
-                    {order.Products.map((product) => (
+                  <div className="order-products-container">
+                  {order.Products.map((product) => (
                     <div key={product._id} className="order-products">
-                        <div className="order-products-left">
+                      <div className="order-products-left">
                         <p className="product-name">
-                            {product.Model} | {product.ProductCode}
+                          {product.ProductId.product_name}
                         </p>
                         <p className="product-price">
-                        {product.Quantity} x {new Intl.NumberFormat('en-IN').format(product.Price)} INR
+                          {product.Quantity} x{" "}
+                          {new Intl.NumberFormat("en-IN").format(
+                            product.ProductId.price
+                          )}{" "}
+                          INR
                         </p>
-                        </div>
-                        <div className="order-products-right">
+                      </div>
+                      <div className="order-products-right">
                         <p className="order-total">
-                        {new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2 }).format(
-                            product.Quantity * product.Price
-                        )} INR
+                          {new Intl.NumberFormat("en-IN", {
+                            maximumFractionDigits: 2,
+                          }).format(
+                            product.Quantity * product.ProductId.price
+                          )}{" "}
+                          INR
                         </p>
-                        </div>
+                      </div>
                     </div>
                     ))}
+                  </div>
+                  <p className="order-total">
+                    Total Price:
+                    {new Intl.NumberFormat("en-IN", {
+                      maximumFractionDigits: 2,
+                    }).format(order.TotalPrice)}{" "}
+                    INR
+                  </p>
+                  <p className="order-remark">
+                    Remark: {order.Remark || "No remark"}
+                  </p>
                 </div>
-            </div>
-        ))}
-
-
-    </div>
-    </>
-
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

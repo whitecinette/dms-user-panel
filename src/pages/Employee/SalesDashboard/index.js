@@ -3,7 +3,7 @@ import "./style.scss";
 
 const SalesDashboard = () => {
   return (
-    <div className="sales-dashboard-container">
+    <div className="sales-dashboard-container-employee">
       <div className="content-wrapper">In Process...</div>
     </div>
   );

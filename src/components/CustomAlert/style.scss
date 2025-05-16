@@ -11,22 +11,22 @@
     overflow: hidden;
     background: #fff;
 
-    &.success {
+    &.custom-alert-success {
         background-color: #d4edda;
         border-left: 4px solid #28a745;
     }
 
-    &.error {
+    &.custom-alert-error {
         background-color: #f8d7da;
         border-left: 4px solid #dc3545;
     }
 
-    &.warning {
+    &.custom-alert-warning {
         background-color: #fff3cd;
         border-left: 4px solid #ffc107;
     }
 
-    &.info {
+    &.custom-alert-info {
         background-color: #e3f2fd;
         border-left: 4px solid #2196f3;
     }
