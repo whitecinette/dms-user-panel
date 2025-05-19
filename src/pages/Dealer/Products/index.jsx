@@ -33,6 +33,8 @@ const Products = () => {
   const [showMobileFilters, setShowMobileFilters] = useState(false); // For mobile filter toggle
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [remark, setRemark] = useState("");
+  const [quantityMap, setQuantityMap] = useState({});
+
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -88,30 +90,42 @@ const Products = () => {
   //     });
   // };
   const handleAddToCart = (product, quantity = 1) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item._id === product._id);
-      let updatedCart;
-
-      if (existingItem) {
-        updatedCart = prevItems.map((item) =>
-          item._id === product._id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      } else {
-        updatedCart = [...prevItems, { ...product, quantity }];
-      }
-
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
-      return updatedCart;
-    });
-    setAlert({
-      open: true,
-      message: `Added ${product.product_name} to cart!`,
-      type: "success",
-    });
-    setTimeout(() => setAlert((a) => ({ ...a, open: false })), 2000);
-  };
+   if (quantity <= 0) {
+     setAlert({
+       open: true,
+       message: "Please enter a valid quantity!",
+       type: "warning",
+     });
+     setTimeout(() => setAlert((a) => ({ ...a, open: false })), 2000);
+     return;
+   }
+ 
+   setCartItems((prevItems) => {
+     const existingItem = prevItems.find((item) => item._id === product._id);
+     let updatedCart;
+ 
+     if (existingItem) {
+       updatedCart = prevItems.map((item) =>
+         item._id === product._id
+           ? { ...item, quantity: item.quantity + quantity }
+           : item
+       );
+     } else {
+       updatedCart = [...prevItems, { ...product, quantity }];
+     }
+ 
+     localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
+     return updatedCart;
+   });
+ 
+   setAlert({
+     open: true,
+     message: `Added ${product.product_name} to cart!`,
+     type: "success",
+   });
+   setTimeout(() => setAlert((a) => ({ ...a, open: false })), 2000);
+ };
+ 
 
   const placeOrder = async (cartItems) => {
     if (cartItems.length === 0) {
@@ -160,7 +174,7 @@ const Products = () => {
       if (response.status === 201) {
         setAlert({
           open: true,
-          message: "Order placed successfully!",
+          message: "Order requested successfully!",
           type: "success",
         });
         setCartItems([]); // Clear cart
@@ -241,7 +255,15 @@ const Products = () => {
     setMaxPrice("");
     setSortBy("price_asc");
   };
-
+  const handleQuantityChange = (productId, value) => {
+   if (value > 0) {
+     setQuantityMap((prev) => ({
+       ...prev,
+       [productId]: value,
+     }));
+   }
+ };
+ 
   return (
     <div className="product-page">
       {alert.open && (
@@ -352,21 +374,64 @@ const Products = () => {
       </div>
 
       {/* Product Grid */}
-      <div className="product-grid">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <ProductCard
-              key={product._id}
-              product={product}
-              onAddToCart={handleAddToCart}
-            />
-          ))
-        ) : (
-          <div className="no-products">
-            No products match the selected filters.
-          </div>
-        )}
-      </div>
+      <div className="product-table">
+  {filteredProducts.length > 0 ? (
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Segment</th>
+          <th>Name</th>
+          <th>Model Code</th>
+          <th>Product Code</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+  {filteredProducts.map((product) => {
+    const productQuantity = quantityMap[product._id] || 0;
+
+    return (
+      <tr key={product._id}>
+        <td>{product.product_category}</td>
+        <td>{product.segment}</td>
+        <td>{product.product_name}</td>
+        <td>{product.model_code}</td>
+        <td>{product.product_code}</td>
+        <td>₹{product.price}</td>
+        <td>
+          <input
+            type="number"
+            min="1"
+            value={productQuantity}
+            onChange={(e) =>
+              handleQuantityChange(product._id, Number(e.target.value))
+            }
+            style={{ width: "60px" }}
+          />
+        </td>
+        <td>
+          <button
+            onClick={() =>
+              handleAddToCart(product, productQuantity)
+            }
+          >
+            Add
+          </button>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
+    </table>
+  ) : (
+    <div className="no-products">No products match the selected filters.</div>
+  )}
+</div>
+
 
       {/* Cart Sidebar */}
       <div className={`cart-sidebar ${isSidebarOpen ? "open" : ""}`}>
@@ -424,7 +489,7 @@ const Products = () => {
                   className="place-order-btn"
                   onClick={() => placeOrder([...cartItems])}
                 >
-                  Place Order
+                  Request Order
                 </button>
                 <button className="empty-cart-btn" onClick={emptyCart}>
                   Empty Cart
@@ -457,8 +522,7 @@ const ProductCard = ({ product, onAddToCart }) => {
       </div>
 
       <div className="product-content">
-        <h3 className="product-name">{product.product_name}
-        </h3>
+        <h3 className="product-name">{product.product_name}</h3>
         <p className="model-code">Model: {product.model_code}</p>
         <p className="product-code">Code: {product.product_code}</p>
         <p className="price">{product.price}</p>
@@ -466,18 +530,15 @@ const ProductCard = ({ product, onAddToCart }) => {
 
       <div className="product-actions">
         <div className="quantity-controls">
-          <button
-            className="qty-btn"
-            onClick={decreaseQty}
-            disabled={quantity === 1}
-          >
-            -
-          </button>
-          <span className="quantity">{quantity}</span>
-          <button className="qty-btn" onClick={increaseQty}>
-            +
-          </button>
+          <input
+            type="number"
+            className="quantity-input"
+            value={quantity}
+            min="1"
+            onChange={(e) => setQuantity(Number(e.target.value))}
+          />
         </div>
+
         <button
           className="add-to-cart-btn"
           onClick={() => onAddToCart(product, quantity)}

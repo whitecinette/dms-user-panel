@@ -187,171 +187,45 @@ $transition: all 0.3s ease;
 }
 
 // Product Card
-.product-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    height: 100%;
-    background: white;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
-    overflow: hidden;
-    transition: $transition;
-    position: relative;
-    min-height: 370px;
+.product-table {
+ width: 100%;
+ overflow-x: auto;
 
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    }
+ table {
+   width: 100%;
+   border-collapse: collapse;
+   margin-top: 1rem;
+   background: #fff;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 
-    .product-header {
-        padding: 12px 16px;
-        display: flex;
-        gap: 8px;
-        background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+   th, td {
+     padding: 12px 16px;
+     text-align: left;
+     border-bottom: 1px solid #eee;
+   }
 
-        .category-tag,
-        .segment-tag {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+   th {
+     background-color: #f5f5f5;
+     font-weight: 600;
+   }
 
-        .category-tag {
-            background: rgba($primary-color, 0.1);
-            color: $primary-color;
-        }
+   input[type="number"] {
+     padding: 4px 8px;
+   }
 
-        .segment-tag {
-            background: rgba(#9c27b0, 0.1);
-            color: #9c27b0;
-        }
-    }
+   button {
+     background-color: #1976d2;
+     color: white;
+     padding: 6px 10px;
+     border: none;
+     border-radius: 4px;
+     cursor: pointer;
 
-    .product-content {
-        flex: 1 1 auto;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        min-height: 120px;
-
-        .product-name {
-            margin: 0 0 12px 0;
-            font-size: 20px;
-            color: $text-color;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        .model-code,
-        .product-code {
-            color: #6c757d;
-            margin: 8px 0;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-
-            &::before {
-                content: '';
-                display: inline-block;
-                width: 4px;
-                height: 4px;
-                background: #adb5bd;
-                border-radius: 50%;
-            }
-        }
-
-        .price {
-            font-size: 24px;
-            font-weight: 700;
-            color: $primary-color;
-            margin: 16px 0;
-            display: flex;
-            align-items: baseline;
-            gap: 4px;
-
-            &::before {
-                content: '₹';
-                font-size: 16px;
-                font-weight: 500;
-            }
-        }
-    }
-
-    .product-actions {
-        flex-shrink: 0;
-        padding: 20px;
-        border-top: 1px solid #e9ecef;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        background: #f8f9fa;
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: white;
-            padding: 4px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-            .qty-btn {
-                width: 32px;
-                height: 32px;
-                border: none;
-                background: #f8f9fa;
-                border-radius: 6px;
-                cursor: pointer;
-                @include flex-center;
-                transition: $transition;
-                color: $text-color;
-
-                &:disabled {
-                    opacity: 0.5;
-                    cursor: not-allowed;
-                }
-
-                &:hover:not(:disabled) {
-                    background: #e9ecef;
-                    color: $primary-color;
-                }
-            }
-
-            .quantity {
-                min-width: 32px;
-                text-align: center;
-                font-weight: 600;
-                color: $text-color;
-            }
-        }
-
-        .add-to-cart-btn {
-            background: linear-gradient(45deg, $primary-color, $secondary-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: $transition;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            flex: 1;
-
-            &:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba($primary-color, 0.2);
-            }
-        }
-    }
+     &:hover {
+       background-color: #115293;
+     }
+   }
+ }
 }
 
 // Cart Sidebar
