@@ -66,7 +66,6 @@ function MddDashboard(props) {
       theme={demoTheme}
       window={demoWindow}
       session={user}
-      
     >
       <DashboardLayout slots={{ sidebarFooter: () => null }}>
         <DemoPageContent pathname={pathname} />

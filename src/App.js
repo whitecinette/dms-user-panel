@@ -13,6 +13,7 @@ import MddDashboard from "./dashboards/mdd/mddDashboard";
 import HumanResource from "./dashboards/humanResource/hrSidebar";
 import SidebarEmployee from "./dashboards/employee/employeeSidebar";
 import SidebarDealer from "./dashboards/dealer/dealerSidebar";
+import SidebarMdd from "./dashboards/mdd/mddSidebar";
 import PaySlipByEmployee from "./pages/Employee/paySlip";
 import Logout from "./components/logout";
 
@@ -104,7 +105,7 @@ function App() {
           <Route
             path="/mdd/*"
             element={
-              <PrivateRoute roles={["mdd"]} element={<MddDashboard />} />
+              <PrivateRoute roles={["mdd"]} element={<SidebarMdd />} />
             }
           />
           <Route

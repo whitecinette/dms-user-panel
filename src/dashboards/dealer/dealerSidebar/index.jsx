@@ -61,7 +61,7 @@ const DealerSidebar = [
   { kind: "header", title: "Dealer Panel" },
   {
     segment: "dealer/dashboard",
-    title: "Finance Dashboard",
+    title: "Dashboard",
     icon: <RiDashboardLine size={22} {...iconStyle} />,
   },
   {
