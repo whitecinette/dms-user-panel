@@ -140,7 +140,10 @@ const Orders = () => {
         >
           <option value="">All Status</option>
           <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
         </select>
         <button onClick={resetFilters}>Reset Filters</button>
       </div>
