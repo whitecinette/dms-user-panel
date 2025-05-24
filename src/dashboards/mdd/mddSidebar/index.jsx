@@ -95,7 +95,7 @@ const MddSidebar = [
     icon: <CgProfile size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/logout",
+    segment: "mdd/logout",
     title: "Logout",
     icon: <TfiLock size={22} {...iconStyle} />,
   },
