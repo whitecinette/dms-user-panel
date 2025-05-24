@@ -33,6 +33,7 @@ const Login = () => {
       if (response.status === 200 && response.data.token) {
         const token = response.data.token;
         const user = response.data.user;
+        const code = user.code;
         const name = user.name;
         const role = user.role.toLowerCase();
         const position = user.position
@@ -40,6 +41,7 @@ const Login = () => {
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
         localStorage.setItem("position", position);
+        localStorage.setItem("code", code);
         localStorage.setItem("name", name);
         localStorage.setItem("toolpad-mode", "light");
         localStorage.setItem("toolpad-color-scheme-dark", "light");

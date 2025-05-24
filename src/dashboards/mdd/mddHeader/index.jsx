@@ -1,43 +1,21 @@
 import React, { useEffect, useState } from "react";
-import {
-  Stack,
-  Toolbar,
-  Typography,
-  IconButton,
-  Tooltip,
-  Box,
-} from "@mui/material";
-import SettingsIcon from "@mui/icons-material/Settings";
-import axios from "axios";
-import config from "../../../config";
+import { Stack, Typography } from "@mui/material";
 import { orange } from "@mui/material/colors";
 
-const backend_url = config.backend_url; // Get backend URL from config
-
 const MddHeader = () => {
-  const [user, setUser] = useState(null);
+  const [name, setName] = useState("Distributor");
+  const [code, setCode] = useState("Code")
+
 
   useEffect(() => {
-    const getUser = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const response = await axios.get(
-          `${backend_url}/fetch-dealer-credit-limit`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setUser(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-    getUser();
+    const storedName = localStorage.getItem("name");
+    const storedCode = localStorage.getItem("code");
+    if (storedName) setName(storedName);
+    if (storedCode) setCode(storedCode);
   }, []);
 
-  // Helper to format credit limit
+  const dummyCreditLimit = 55678776;
+
   const formatCredit = (amount) =>
     amount?.toLocaleString("en-IN", { maximumFractionDigits: 0 });
 
@@ -55,7 +33,7 @@ const MddHeader = () => {
         }}
       >
         <Typography variant="h5" sx={{ color: orange[600], fontWeight: 600 }}>
-          ₹ {formatCredit(user?.creditLimit) || "0"}
+          ₹ {formatCredit(dummyCreditLimit)}
         </Typography>
         <Typography
           variant="div"
@@ -65,7 +43,7 @@ const MddHeader = () => {
           Available Credit Limit
         </Typography>
         <Typography variant="div">
-          {user?.name || "Dealer"} {user?.code ? `| ${user.code}` : ""}
+          {name} | {code}
         </Typography>
       </Stack>
     </Stack>

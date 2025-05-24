@@ -18,7 +18,7 @@ import SchemeLetters from "../../../pages/Dealer/SchemeLetters";
 import Targets from "../../../pages/Dealer/Targets";
 import { LuClipboardList } from "react-icons/lu";
 import { MdOutlineShoppingBag } from "react-icons/md";
-import DealerHeader from "../../dealer/dealerHeader";
+import MddHeader from "../mddHeader";
 import { createTheme } from "@mui/material/styles";
 import { Stack } from "@mui/material";
 import { SlCalculator } from "react-icons/sl";
@@ -58,7 +58,7 @@ const demoTheme = createTheme({
 });
 
 const MddSidebar = [
-  { kind: "header", title: "Dealer Panel" },
+  { kind: "header", title: "Distributor Panel" },
   {
     segment: "dealer/dashboard",
     title: "Dashboard",
@@ -102,7 +102,7 @@ const MddSidebar = [
 ];
 // Toolbar Actions Component
 function ToolbarActions() {
-  return <DealerHeader />;
+  return <MddHeader />;
 }
 
 function SidebarMdd(props) {
