@@ -23,6 +23,7 @@ import { createTheme } from "@mui/material/styles";
 import { Stack } from "@mui/material";
 import { SlCalculator } from "react-icons/sl";
 import Calculator from "../../../pages/Dealer/Calculator";
+import FinanceDashboard from "../../../pages/Mdd/financeDashboard";
 
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
@@ -140,7 +141,7 @@ function SidebarMdd(props) {
         }}
       >
         <Routes>
-          <Route path="dashboard" element={<SalesDashboard />} />
+          <Route path="dashboard" element={<FinanceDashboard />} />
           <Route path="profile" element={<Profile />} />
           <Route path="scheme-letters" element={<SchemeLetters />} />
           <Route path="targets" element={<Targets />} />

@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import "./style.scss";
+import { formatNumberIndian } from "../../../utils/format";
 
 const backend_url = config.backend_url;
 
@@ -54,7 +55,7 @@ const ordersChartData = [
   { month: "Dec", views: 6000, downloads: 4000 },
 ];
 
-const SalesDashboard = () => {
+const FinanceDashboard = () => {
   const [overview, setOverview] = useState({
     todayTotalOS: 0,
     todayDue: 0,
@@ -65,54 +66,76 @@ const SalesDashboard = () => {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
     const fetchOverview = async () => {
-      const token = localStorage.getItem("token");
       try {
-        const response = await axios.get(`${backend_url}/finnace/finance-overview`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axios.get(`${backend_url}/finance/finance-overview`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
         if (response.data.success) {
           setOverview(response.data.data);
-          setTransactions(response.data.data.transactions || []);
         }
       } catch (err) {
         console.error("Failed to fetch finance overview:", err);
       }
     };
+
+    const fetchBreakup = async () => {
+      try {
+        const response = await axios.get(`${backend_url}/finance/outstanding-breakup`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.data.success) {
+          setTransactions(response.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch outstanding breakup:", err);
+      }
+    };
+
     fetchOverview();
+    fetchBreakup();
   }, []);
 
-  const formatCurrency = (num) => `₹ ${Number(num || 0).toLocaleString()}`;
+  const formatCurrency = (num) => `₹ ${Number(num || 0).toLocaleString("en-IN")}`;
+
+    const totalInvoice = transactions.reduce((sum, t) => sum + (t.invoiceAmount || 0), 0);
+    const totalReceived = transactions.reduce((sum, t) => sum + ((t.invoiceAmount || 0) - (t.pendingAmount || 0)), 0);
+    const totalPending = transactions.reduce((sum, t) => sum + (t.pendingAmount || 0), 0);
+    const totalOverdue = transactions.reduce((sum, t) => (
+        t.remarks === "Overdue" || t.remarks === "Today Due"
+        ? sum + (t.pendingAmount || 0)
+        : sum
+    ), 0);
 
   return (
     <div className="finance-dashboard-container">
       <div className="finance-summary-cards">
         <div className="finance-summary-card">
-          <div className="finance-summary-title">Todayyy Total OS</div>
-          <div className="finance-summary-value">{formatCurrency(overview.todayTotalOS)}</div>
+          <div className="finance-summary-title">Today Total OS</div>
+          <div className="finance-summary-value">{formatNumberIndian(overview.todayTotalOS)}</div>
           <ResponsiveContainer width="100%" height={50}>
             <LineChart data={creditLineData}><Line type="monotone" dataKey="value" stroke="#22c55e" strokeWidth={2} dot={false} /></LineChart>
           </ResponsiveContainer>
         </div>
         <div className="finance-summary-card">
           <div className="finance-summary-title">Today Due</div>
-          <div className="finance-summary-value">{formatCurrency(overview.todayDue)}</div>
+          <div className="finance-summary-value">{formatNumberIndian(overview.todayDue)}</div>
           <ResponsiveContainer width="100%" height={50}>
             <LineChart data={usedLineData}><Line type="monotone" dataKey="value" stroke="#ef4444" strokeWidth={2} dot={false} /></LineChart>
           </ResponsiveContainer>
         </div>
         <div className="finance-summary-card">
           <div className="finance-summary-title">Today Overdue</div>
-          <div className="finance-summary-value">{formatCurrency(overview.todayOverdue)}</div>
+          <div className="finance-summary-value">{formatNumberIndian(overview.todayOverdue)}</div>
           <ResponsiveContainer width="100%" height={50}>
             <LineChart data={availableLineData}><Line type="monotone" dataKey="value" stroke="#3b82f6" strokeWidth={2} dot={false} /></LineChart>
           </ResponsiveContainer>
         </div>
         <div className="finance-summary-card">
           <div className="finance-summary-title">Total Due Overdue</div>
-          <div className="finance-summary-value">{formatCurrency(overview.totalDueOverdue)}</div>
+          <div className="finance-summary-value">{formatNumberIndian(overview.totalDueOverdue)}</div>
           <ResponsiveContainer width="100%" height={50}>
             <LineChart data={availableLineData}><Line type="monotone" dataKey="value" stroke="#ffb84d" strokeWidth={2} dot={false} /></LineChart>
           </ResponsiveContainer>
@@ -122,49 +145,66 @@ const SalesDashboard = () => {
       {/* OS breakup table  */}
       <div className="os-breakup-table">
         <h3>Outstanding Breakup</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Invoice No</th>
-              <th>Date of Invoice</th>
-              <th>Due Date</th>
-              <th>Amt</th>
-              <th>Payment Rcd</th>
-              <th>Balance Payment</th>
-              <th>OD Days</th>
-              <th>Total Due Overdue</th>
-              <th>Remarks</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((row, i) => (
-              <tr key={i}>
-                <td>{row.invoiceNumber}</td>
-                <td>{row.date}</td>
-                <td>{row.dueDate}</td>
-                <td>{formatCurrency(row.invoiceAmount)}</td>
-                <td>{formatCurrency(row.invoiceAmount - row.pendingAmount)}</td>
-                <td>{formatCurrency(row.pendingAmount)}</td>
-                <td className={
-                  row.overDueDays > 0 ? "od-positive" :
-                  row.overDueDays === 0 ? "od-zero" : "od-negative"
-                }>
-                  <p>{row.overDueDays}</p>
-                </td>
-                <td>{row.remarks === "Overdue" || row.remarks === "Today Due" ? formatCurrency(row.pendingAmount) : 0}</td>
-                <td>
-                  <span className={
-                    row.remarks === "Overdue" ? "badge overdue" :
-                    row.remarks === "Today Due" ? "badge today" :
-                    "badge upcoming"
-                  }>
-                    {row.remarks}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {transactions.length === 0 ? (
+          <p style={{ padding: "1rem", color: "#888" }}>No data found.</p>
+        ) : (
+          <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Invoice No</th>
+                  <th>Date of Invoice</th>
+                  <th>Due Date</th>
+                  <th>Amt</th>
+                  <th>Payment Rcd</th>
+                  <th>Balance Payment</th>
+                  <th>OD Days</th>
+                  <th>Total Due Overdue</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.map((row, i) => (
+                  <tr key={i}>
+                    <td>{row.invoiceNumber}</td>
+                    <td>{row.date}</td>
+                    <td>{row.dueDate}</td>
+                    <td>{formatCurrency(row.invoiceAmount)}</td>
+                    <td>{formatCurrency(row.invoiceAmount - row.pendingAmount)}</td>
+                    <td>{formatCurrency(row.pendingAmount)}</td>
+                    <td className={
+                      row.overDueDays < 0 ? "od-negative" :
+                      row.overDueDays === 0 ? "od-zero" : "od-positive"
+                    }>
+                      <p>{row.overDueDays}</p>
+                    </td>
+                    <td>{row.remarks === "Overdue" || row.remarks === "Today Due" ? formatCurrency(row.pendingAmount) : 0}</td>
+                    <td>
+                      <span className={
+                        row.remarks === "Overdue" ? "badge overdue" :
+                        row.remarks === "Today Due" ? "badge today" :
+                        "badge upcoming"
+                      }>
+                        {row.remarks}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="3"><strong>Total</strong></td>
+                  <td>{formatCurrency(totalInvoice)}</td>
+                  <td>{formatCurrency(totalReceived)}</td>
+                  <td>{formatCurrency(totalPending)}</td>
+                  <td></td>
+                  <td>{formatCurrency(totalOverdue)}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        )}
       </div>
 
       <div className="finance-charts-row">
@@ -203,4 +243,4 @@ const SalesDashboard = () => {
   );
 };
 
-export default SalesDashboard;
+export default FinanceDashboard;
