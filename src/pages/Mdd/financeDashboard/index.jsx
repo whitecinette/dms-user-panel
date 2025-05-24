@@ -173,8 +173,8 @@ const FinanceDashboard = () => {
                     <td>{formatCurrency(row.invoiceAmount - row.pendingAmount)}</td>
                     <td>{formatCurrency(row.pendingAmount)}</td>
                     <td className={
-                      row.overDueDays < 0 ? "od-negative" :
-                      row.overDueDays === 0 ? "od-zero" : "od-positive"
+                      row.overDueDays < 0 ? "od-positive" :
+                      row.overDueDays === 0 ? "od-zero" : "od-negative"
                     }>
                       <p>{row.overDueDays}</p>
                     </td>
