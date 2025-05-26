@@ -29,6 +29,7 @@ import { BsFileEarmarkArrowDown, BsFileEarmarkArrowUp } from "react-icons/bs";
 import { PiSirenLight } from "react-icons/pi";
 import { GiReceiveMoney } from "react-icons/gi";
 import { HiOutlineSpeakerphone } from "react-icons/hi";
+import CreditNotes from "../../../pages/Mdd/creditNotes";
 
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
@@ -81,37 +82,37 @@ const MddSidebar = [
     icon: <LuClipboardList size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/scheme-letters",
+    segment: "mdd/credit-notes",
     title: "Credit Notes",
     icon: <BsFileEarmarkArrowDown size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/targets",
+    segment: "mdd/purchase-history",
     title: "Purchase History",
     icon: <TbTargetArrow size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/calculator",
+    segment: "mdd/pending-payments",
     title: "Pending Payments",
     icon: <MdOutlinePayments size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/profile",
+    segment: "mdd/debit-notes",
     title: "Debit Notes",
     icon: <BsFileEarmarkArrowUp size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/profile",
+    segment: "mdd/doa-claims",
     title: "DOA Claims",
     icon: <PiSirenLight size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/profile",
+    segment: "mdd/cn-working",
     title: "CN Working",
     icon: <GiReceiveMoney size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/profile",
+    segment: "mdd/marketing-invoices",
     title: "Marketing Invoices",
     icon: <HiOutlineSpeakerphone size={22} {...iconStyle} />,
   },
@@ -162,9 +163,13 @@ function SidebarMdd(props) {
       >
         <Routes>
           <Route path="dashboard" element={<FinanceDashboard />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="scheme-letters" element={<SchemeLetters />} />
-          <Route path="targets" element={<Targets />} />
+          <Route path="credit-notes" element={<CreditNotes /> } />
+          <Route path="purchase-history" element={<CreditNotes /> } />
+          <Route path="pending-payments" element={<CreditNotes /> } />
+          <Route path="debit-notes" element={<CreditNotes /> } />
+          <Route path="doa-claims" element={<CreditNotes /> } />
+          <Route path="cn-working" element={<CreditNotes /> } />
+          <Route path="marketing-invoices" element={<CreditNotes /> } />
           <Route path="products" element={<Products />} />
           <Route path="orders" element={<Orders />} />
           <Route path="calculator" element={<Calculator />} />
