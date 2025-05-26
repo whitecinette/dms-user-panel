@@ -9,6 +9,21 @@
     color: #ff7f27;
   }
 
+    .no-data {
+    text-align: center;
+    font-size: 15px;
+    color: #666;
+    margin-top: 40px;
+    background: #fff3e8;
+    border: 1px dashed #ff7f27;
+    padding: 12px 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+
   .filters {
     display: flex;
     flex-wrap: wrap;
@@ -49,7 +64,7 @@
     th, td {
       padding: 10px 14px;
       border-bottom: 1px solid #eee;
-      text-align: center;
+      text-align: left;
       font-size: 14px;
       vertical-align: middle;
     }
@@ -67,15 +82,18 @@
 
     .action-btn {
       padding: 6px 12px;
-      border: none;
+      border: 1px solid #e0e0e0;
       background-color: #f1f1f1;
       color: #333;
       border-radius: 4px;
       cursor: pointer;
       font-size: 13px;
+      transition: all 0.25s ease; 
 
       &:hover {
-        background-color: #ddd;
+        background-color: #ff7f27;
+        border: 1px solid #ff6600;
+        color: #f1f1f1;
       }
     }
   }

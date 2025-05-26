@@ -30,7 +30,12 @@ function CreditNotes() {
           new Date(endDate).toISOString().split("T")[0] + "T23:59:59.999Z",
       });
 
-      const res = await fetch(`${backendUrl}/finance/credit-notes?${query}`);
+      const res = await fetch(`${backendUrl}/finance/credit-notes?${query}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+        });
+
       const json = await res.json();
       if (json.success) {
         setData(json.data);
@@ -45,6 +50,15 @@ function CreditNotes() {
   useEffect(() => {
     fetchData();
   }, [search, startDate, endDate]);
+
+  const formatNumberIndian = (num) => {
+    if (isNaN(num)) return num;
+    return Number(num).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString();
@@ -74,17 +88,20 @@ function CreditNotes() {
       </div>
 
       {loading ? (
-        <p className="loader">Loading...</p>
-      ) : (
+            <p className="loader">Loading...</p>
+          ) : data.length === 0 ? (
+            <p className="no-data">Oops! No data found. Try adjusting your date range or search criteria.</p>
+          ): (
         <table className="finance-table">
           <thead>
             <tr>
               <th>Scheme Name</th>
               <th>Duration</th>
-              <th>CN Amount</th>
-              <th>CN Date</th>
-              <th>CN Number</th>
-              <th>CN Download</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>CN No.</th>
+              <th>Download</th>
+              <th>Working</th>
             </tr>
           </thead>
           <tbody>
@@ -92,12 +109,15 @@ function CreditNotes() {
               <tr key={index}>
                 <td>{entry.label}</td>
                 <td>
-                  {formatDate(entry.startDate)} to{" "}
-                  {formatDate(entry.endDate)}
+                  {entry.startDateFormatted} to{" "}
+                  {entry.endDateFormatted}
                 </td>
-                <td>₹{Number(entry["Final Payout"] || 0).toFixed(2)}</td>
+                <td>₹{formatNumberIndian(entry["Final Payout"] || 0)}</td>
                 <td>{entry["CN Date"]}</td>
                 <td>{entry["CN Number"]}</td>
+                <td>
+                  <button className="action-btn">Invoice</button>
+                </td>
                 <td>
                   <button className="action-btn">Download</button>
                 </td>
