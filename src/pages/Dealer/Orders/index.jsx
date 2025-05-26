@@ -188,40 +188,61 @@ const Orders = () => {
                         minute: "2-digit",
                       })}
                     </p>
+                    {order.DeliveryDate && (
+                      <p className="delivery-date">
+                        Delivery Date:{" "}
+                        {new Date(order.DeliveryDate).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}{" "}
+                        | Delivery Time:{" "}
+                        {new Date(order.DeliveryDate).toLocaleTimeString(
+                          "en-US",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      </p>
+                    )}
                   </div>
-                    <div
-                      className={`order-status ${order.OrderStatus.toLowerCase()}`}
-                    >
-                      {order.OrderStatus.toUpperCase()}
-                    </div>
+                  <div
+                    className={`order-status ${order.OrderStatus.toLowerCase()}`}
+                  >
+                    {order.OrderStatus.toUpperCase()}
+                  </div>
                 </div>
                 <div className="order-dets-bottom">
                   <div className="order-products-container">
-                  {order.Products.map((product) => (
-                    <div key={product._id} className="order-products">
-                      <div className="order-products-left">
-                        <p className="product-name">
-                          {product.ProductId.product_name}
-                        </p>
-                        <p className="product-price">
-                          {product.Quantity} x{" "}
-                          {new Intl.NumberFormat("en-IN").format(
-                            product.ProductId.price
-                          )}{" "}
-                          INR
-                        </p>
+                    {order.Products.map((product) => (
+                      <div key={product._id} className="order-products">
+                        <div className="order-products-left">
+                          <p className="product-name">
+                            {product.ProductId.product_name}
+                          </p>
+                          <p className="product-price">
+                            {product.Quantity} x{" "}
+                            {new Intl.NumberFormat("en-IN").format(
+                              product.ProductId.price
+                            )}{" "}
+                            INR
+                          </p>
+                        </div>
+                        <div className="order-products-right">
+                          <p className="order-total">
+                            {new Intl.NumberFormat("en-IN", {
+                              maximumFractionDigits: 2,
+                            }).format(
+                              product.Quantity * product.ProductId.price
+                            )}{" "}
+                            INR
+                          </p>
+                        </div>
                       </div>
-                      <div className="order-products-right">
-                        <p className="order-total">
-                          {new Intl.NumberFormat("en-IN", {
-                            maximumFractionDigits: 2,
-                          }).format(
-                            product.Quantity * product.ProductId.price
-                          )}{" "}
-                          INR
-                        </p>
-                      </div>
-                    </div>
                     ))}
                   </div>
                   <p className="order-total">
