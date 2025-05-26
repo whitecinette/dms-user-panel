@@ -5,8 +5,6 @@ import { AppProvider, DashboardLayout } from "@toolpad/core";
 import PropTypes from "prop-types";
 import company_logo from "../../../company-logo.png";
 import { useAuth } from "../../../context/AuthContext";
-import Products from "../../../pages/Dealer/Products";
-import Orders from "../../../pages/Dealer/Orders";
 import Logout from "../../../components/logout";
 import SalesDashboard from "../../../pages/Dealer/SalesDashboard";
 import Profile from "../../../pages/Dealer/Profile";
@@ -30,6 +28,8 @@ import { PiSirenLight } from "react-icons/pi";
 import { GiReceiveMoney } from "react-icons/gi";
 import { HiOutlineSpeakerphone } from "react-icons/hi";
 import CreditNotes from "../../../pages/Mdd/creditNotes";
+import Products from "../../../pages/Mdd/Products";
+import Orders from "../../../pages/Mdd/Orders";
 
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
@@ -72,12 +72,12 @@ const MddSidebar = [
     icon: <RiDashboardLine size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/products",
+    segment: "mdd/products",
     title: "Products",
     icon: <MdOutlineShoppingBag size={22} {...iconStyle} />,
   },
   {
-    segment: "dealer/orders",
+    segment: "mdd/orders",
     title: "Order",
     icon: <LuClipboardList size={22} {...iconStyle} />,
   },

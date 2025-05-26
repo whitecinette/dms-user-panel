@@ -1,0 +1,314 @@
+// Variables
+$primary-color: #1a237e;
+$secondary-color: #2962ff;
+$success-color: #00c853;
+$warning-color: #ffd600;
+$danger-color: #ff1744;
+$light-gray: #f8f9fa;
+$border-color: #e0e0e0;
+$text-color: #1a237e;
+$shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+$gradient-primary: linear-gradient(to right, #635ac2, #00bcd4);
+$gradient-success: linear-gradient(135deg, #00c853 0%, #69f0ae 100%);
+$gradient-warning: linear-gradient(135deg, #ffd600 0%, #ffecb3 100%);
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin glass-effect {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@mixin responsive($breakpoint) {
+    @if $breakpoint ==tablet {
+        @media (max-width: 768px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint ==mobile {
+        @media (max-width: 480px) {
+            @content;
+        }
+    }
+}
+
+// Main Container
+.orders-main {
+    padding: 2rem;
+    // max-width: 1200px;
+    // margin: 0 auto;
+    background: $light-gray;
+    // min-height: 100vh;
+}
+
+// Filters Section
+.filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    @include glass-effect;
+    border-radius: 16px;
+    box-shadow: $shadow;
+
+    input,
+    select {
+        padding: 1rem;
+        border: 2px solid $border-color;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+
+        &:focus {
+            outline: none;
+            border-color: $secondary-color;
+            box-shadow: 0 0 0 4px rgba($secondary-color, 0.1);
+            transform: translateY(-2px);
+        }
+    }
+
+    button {
+        padding: 1rem 2rem;
+        background: $gradient-primary;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba($secondary-color, 0.3);
+        }
+
+        &:active {
+            transform: translateY(-1px);
+        }
+    }
+
+    @include responsive(mobile) {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+    }
+}
+
+// Orders Container
+.orders-sub {
+    display: grid;
+    gap: 2rem;
+}
+
+// Order Box
+.order-box {
+    background: white;
+    border-radius: 16px;
+    box-shadow: $shadow;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    border: 1px solid rgba($border-color, 0.5);
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+}
+
+// Order Details Top
+.order-dets-top {
+    @include flex-between;
+    padding: 2rem;
+    background: $gradient-primary;
+    color: white;
+
+    &-left {
+        p {
+            margin: 0.4rem 0;
+            color: white;
+
+            &:first-child {
+                font-weight: 700;
+                font-size: 1.2rem;
+                letter-spacing: 0.5px;
+            }
+        }
+
+        .order-tot-qt {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .order-date {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .delivery-date {
+         font-size: 0.9rem;
+         color: rgba(255, 255, 255, 0.8);
+     }
+    }
+
+    &-right {
+        a {
+            margin-left: 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.2);
+                transform: translateY(-2px);
+            }
+        }
+    }
+}
+
+// Order Status
+.order-status {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-top: 0.8rem;
+    letter-spacing: 1px;
+
+    &.pending {
+        background: $gradient-warning;
+        color: darken($warning-color, 30%);
+    }
+
+    &.completed {
+        background: $gradient-success;
+        color: darken($success-color, 30%);
+    }
+}
+
+
+
+// Order Products
+.order-dets-bottom {
+
+    padding: 2rem;
+
+    .order-total {
+        display: flex;
+        justify-content: flex-end;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: $secondary-color;
+    }
+
+    .order-products-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .order-products {
+        @include flex-between;
+        padding: 1.2rem ;
+        border-radius: 16px;
+        border: 2px solid $border-color;
+
+
+        &-left {
+            .product-name {
+                font-weight: 600;
+                color: $text-color;
+                margin-bottom: 0.4rem;
+                font-size: 1.1rem;
+            }
+
+            .product-price {
+                font-size: 0.95rem;
+                color: lighten($text-color, 20%);
+            }
+        }
+
+        &-right {
+            .order-total {
+                font-weight: 700;
+                color: $secondary-color;
+                font-size: 1.1rem;
+            }
+        }
+    }
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 3rem;
+    color: $text-color;
+    font-size: 1.2rem;
+    @include glass-effect;
+    border-radius: 16px;
+    margin: 2rem 0;
+}
+
+.error {
+    color: $danger-color;
+    background: rgba($danger-color, 0.1);
+}
+
+// Responsive Adjustments
+@include responsive(tablet) {
+    .orders-main {
+        padding: 1.5rem;
+
+        h1 {
+            font-size: 2rem;
+        }
+    }
+
+    .order-dets-top {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+
+        &-right {
+            margin-top: 1rem;
+        }
+    }
+}
+
+@include responsive(mobile) {
+    .order-products {
+        flex-direction: column;
+        gap: 0.8rem;
+        text-align: center;
+        padding: 1rem;
+
+        &-right {
+            margin-top: 0.8rem;
+        }
+    }
+
+    .filters {
+        gap: 1rem;
+    }
+}

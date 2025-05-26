@@ -64,16 +64,16 @@ const DealerSidebar = [
     title: "Dashboard",
     icon: <RiDashboardLine size={22} {...iconStyle} />,
   },
-  {
-    segment: "dealer/products",
-    title: "Products",
-    icon: <MdOutlineShoppingBag size={22} {...iconStyle} />,
-  },
-  {
-    segment: "dealer/orders",
-    title: "Order",
-    icon: <LuClipboardList size={22} {...iconStyle} />,
-  },
+  // {
+  //   segment: "dealer/products",
+  //   title: "Products",
+  //   icon: <MdOutlineShoppingBag size={22} {...iconStyle} />,
+  // },
+  // {
+  //   segment: "dealer/orders",
+  //   title: "Order",
+  //   icon: <LuClipboardList size={22} {...iconStyle} />,
+  // },
   {
     segment: "dealer/scheme-letters",
     title: "Scheme Letters",
@@ -144,8 +144,8 @@ function SidebarDealer(props) {
           <Route path="profile" element={<Profile />} />
           <Route path="scheme-letters" element={<SchemeLetters />} />
           <Route path="targets" element={<Targets />} />
-          <Route path="products" element={<Products />} />
-          <Route path="orders" element={<Orders />} />
+          {/* <Route path="products" element={<Products />} />
+          <Route path="orders" element={<Orders />} /> */}
           <Route path="calculator" element={<Calculator />} />
           <Route path="logout" element={<Logout />} />
         </Routes>
