@@ -235,6 +235,240 @@
         }
     }
 
+    .payment-calculator-main{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+
+        .pc-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            line-height: 1.1;
+
+            h3{
+                font-size: 1.4rem;
+            }
+
+            h2{
+                font-size: 2.1rem;
+            }
+
+            .pc-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            }
+
+            .download-button {
+            background-color: #f1f1f1;
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s ease;
+            }
+
+            .download-button:hover {
+            background-color: #e0e0e0;
+            }
+
+            .tooltip-wrapper {
+            position: relative;
+            display: inline-block;
+            }
+
+            .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            width: max-content;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 6px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 0.3s;
+            font-size: 12px;
+            white-space: nowrap;
+            }
+
+            .tooltip-wrapper:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            }
+
+        }
+
+        .payment-calculator-sub{
+            width: 100%;
+            display: flex;
+            gap: 10px;
+
+
+            .pc-table {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            position: relative;
+            height: 600px;
+            width: 33%;
+
+            .table-wrapper {
+                height: 540px;
+                overflow-y: auto;
+                border-radius: 8px;
+                scrollbar-width: thin;
+                scrollbar-color: #cbd5e1 transparent;
+
+                &::-webkit-scrollbar {
+                width: 8px;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                background-color: #cbd5e1;
+                border-radius: 8px;
+                }
+
+                &::-webkit-scrollbar-track {
+                background: transparent;
+                }
+            }
+
+            table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0 8px;
+
+                thead th {
+                position: sticky;
+                top: 0;
+                z-index: 2;
+                background: #f9fafb;
+                }
+
+                tfoot {
+                position: sticky;
+                bottom: 0;
+                z-index: 2;
+                background: #f9fafb;
+                }
+            }
+
+            h3 {
+                margin-bottom: 18px;
+                color: #111827;
+                font-size: 18px;
+                font-weight: 600;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0 8px;
+                font-size: 11px;
+                color: #333;
+
+                thead th {
+                background: #f9fafb;
+                font-weight: 600;
+                text-align: left;
+                padding: 12px 16px;
+                color: #374151;
+                border-bottom: 1px solid #e5e7eb;
+                }
+
+                tbody tr {
+                background: #ffffff;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                border-radius: 6px;
+                }
+
+                td {
+                padding: 12px 16px;
+                vertical-align: middle;
+                border-bottom: 1px solid #f1f1f1;
+                }
+
+                td:nth-child(7), td:nth-child(8), td:nth-child(9) {
+                text-align: center;
+                }
+
+                // OD Days color logic
+                td.od-positive {
+                    p{
+                        color: #b91c1c;
+                        background-color: #fee2e2;
+                        border-radius: 4px;
+                        font-weight: 500;
+                        padding: 4px 10px;
+                        width: fit-content;
+                    }
+
+                }
+
+                td.od-zero {
+                    p{
+                        color: #92400e;
+                        background-color: #fef3c7;
+                        border-radius: 4px;
+                        font-weight: 500;
+                        padding: 4px 10px;
+                        width: fit-content;
+                    }
+                }
+
+                td.od-negative {
+                    p{
+                        color: #065f46;
+                        background-color: #d1fae5;
+                        border-radius: 4px;
+                        font-weight: 500;
+                        padding: 4px 10px;
+                        width: fit-content;
+                    }
+                }
+
+                // Remarks badge style
+                .badge {
+                display: inline-block;
+                padding: 4px 10px;
+                font-size: 10px;
+                font-weight: 500;
+                border-radius: 999px;
+                }
+
+                .badge.overdue {
+                background: #fee2e2;
+                color: #b91c1c;
+                }
+
+                .badge.today {
+                background: #fef3c7;
+                color: #92400e;
+                }
+
+                .badge.upcoming {
+                background: #d1fae5;
+                color: #065f46;
+                }
+
+                tfoot td {
+                font-weight: 600;
+                background: #f9fafb;
+                }
+            }
+        }
+        }
+    }
+
 
 
     .finance-charts-row {
