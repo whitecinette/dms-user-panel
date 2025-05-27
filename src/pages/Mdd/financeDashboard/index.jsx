@@ -17,6 +17,8 @@ import "./style.scss";
 import { formatNumberIndian } from "../../../utils/format";
 import { FiDownload } from "react-icons/fi";
 import { useSpring, animated } from '@react-spring/web';
+import * as XLSX from "xlsx";
+
 
 
 const backend_url = config.backend_url;
@@ -215,19 +217,73 @@ const FinanceDashboard = () => {
 
   const formatCurrency = (num) => `₹ ${Number(num || 0).toLocaleString("en-IN")}`;
 
-    const totalInvoice = transactions.reduce((sum, t) => sum + (t.invoiceAmount || 0), 0);
-    const totalReceived = transactions.reduce((sum, t) => sum + ((t.invoiceAmount || 0) - (t.pendingAmount || 0)), 0);
-    const totalPending = transactions.reduce((sum, t) => sum + (t.pendingAmount || 0), 0);
-    const totalOverdue = transactions.reduce((sum, t) => (
-        t.remarks === "Overdue" || t.remarks === "Today Due"
-        ? sum + (t.pendingAmount || 0)
-        : sum
-    ), 0);
+  const totalInvoice = transactions.reduce((sum, t) => sum + (t.invoiceAmount || 0), 0);
+  const totalReceived = transactions.reduce((sum, t) => sum + ((t.invoiceAmount || 0) - (t.pendingAmount || 0)), 0);
+  const totalPending = transactions.reduce((sum, t) => sum + (t.pendingAmount || 0), 0);
+  const totalOverdue = transactions.reduce((sum, t) => (
+      t.remarks === "Overdue" || t.remarks === "Today Due"
+      ? sum + (t.pendingAmount || 0)
+      : sum
+  ), 0);
 
     const handleDownload = () => {
-        // trigger your download logic here
-        console.log("Download triggered");
-      };
+      const allData = [
+        ...selectedInvoices.map((row) => ({
+          Type: "Invoice",
+          "Invoice No": row.invoiceNumber,
+          "Date of Invoice": row.date,
+          "Due Date": row.dueDate,
+          "Invoice Amount": row.invoiceAmount,
+          "Payment Received": row.invoiceAmount - row.pendingAmount,
+          "Pending Amount": row.pendingAmount,
+          "OD Days": row.overDueDays,
+          "Remarks": row.remarks
+        })),
+        ...selectedDebitNotes.map((row) => ({
+          Type: "Debit Note",
+          "Invoice No": row.invoiceNumber,
+          "Date of Invoice": row.date,
+          "Due Date": row.dueDate,
+          "Invoice Amount": row.invoiceAmount,
+          "Payment Received": row.invoiceAmount - row.pendingAmount,
+          "Pending Amount": row.pendingAmount,
+          "OD Days": row.overDueDays,
+          "Remarks": row.remarks
+        })),
+        ...selectedCreditNotes.map((row) => ({
+          Type: "Credit Note",
+          "Invoice No": row.invoiceNumber,
+          "Date of Invoice": row.date,
+          "Due Date": row.dueDate,
+          "Invoice Amount": -row.invoiceAmount,
+          "Payment Received": -(row.invoiceAmount - row.pendingAmount),
+          "Pending Amount": -row.pendingAmount,
+          "OD Days": row.overDueDays,
+          "Remarks": row.remarks
+        }))
+      ];
+
+      const total = allData.reduce((sum, row) => sum + (row["Pending Amount"] || 0), 0);
+
+      allData.push({
+        Type: "Total",
+        "Invoice No": "",
+        "Date of Invoice": "",
+        "Due Date": "",
+        "Invoice Amount": "",
+        "Payment Received": "",
+        "Pending Amount": total,
+        "OD Days": "",
+        "Remarks": ""
+      });
+
+      const worksheet = XLSX.utils.json_to_sheet(allData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Breakup");
+
+      XLSX.writeFile(workbook, "finance_breakup.xlsx");
+    };
+
 
 
   return (
