@@ -30,6 +30,7 @@ import { HiOutlineSpeakerphone } from "react-icons/hi";
 import CreditNotes from "../../../pages/Mdd/creditNotes";
 import Products from "../../../pages/Mdd/Products";
 import Orders from "../../../pages/Mdd/Orders";
+import DebitNotes from "../../../pages/Mdd/debitNotes";
 
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
@@ -87,6 +88,11 @@ const MddSidebar = [
     icon: <BsFileEarmarkArrowDown size={22} {...iconStyle} />,
   },
   {
+    segment: "mdd/debit-notes",
+    title: "Debit Notes",
+    icon: <BsFileEarmarkArrowUp size={22} {...iconStyle} />,
+  },
+  {
     segment: "mdd/purchase-history",
     title: "Purchase History",
     icon: <TbTargetArrow size={22} {...iconStyle} />,
@@ -95,11 +101,6 @@ const MddSidebar = [
     segment: "mdd/pending-payments",
     title: "Pending Payments",
     icon: <MdOutlinePayments size={22} {...iconStyle} />,
-  },
-  {
-    segment: "mdd/debit-notes",
-    title: "Debit Notes",
-    icon: <BsFileEarmarkArrowUp size={22} {...iconStyle} />,
   },
   {
     segment: "mdd/doa-claims",
@@ -166,7 +167,7 @@ function SidebarMdd(props) {
           <Route path="credit-notes" element={<CreditNotes /> } />
           <Route path="purchase-history" element={<CreditNotes /> } />
           <Route path="pending-payments" element={<CreditNotes /> } />
-          <Route path="debit-notes" element={<CreditNotes /> } />
+          <Route path="debit-notes" element={<DebitNotes /> } />
           <Route path="doa-claims" element={<CreditNotes /> } />
           <Route path="cn-working" element={<CreditNotes /> } />
           <Route path="marketing-invoices" element={<CreditNotes /> } />
