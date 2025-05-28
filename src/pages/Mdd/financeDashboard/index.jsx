@@ -728,7 +728,7 @@ const FinanceDashboard = () => {
 
 
 
-      <div className="finance-charts-row">
+      {/* <div className="finance-charts-row">
         <div className="finance-chart-card">
           <div className="finance-chart-title">Limit</div>
           <div className="finance-chart-subtitle">Limit used according to date</div>
@@ -759,7 +759,7 @@ const FinanceDashboard = () => {
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div> */}
 
     </div>
   );
