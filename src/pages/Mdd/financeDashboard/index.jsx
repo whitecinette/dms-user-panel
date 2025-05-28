@@ -284,6 +284,43 @@ const FinanceDashboard = () => {
       XLSX.writeFile(workbook, "finance_breakup.xlsx");
     };
 
+    const getInvoiceTotals = () => {
+      const data = selectedInvoices.length > 0 ? selectedInvoices : invoices;
+      return {
+        amount: data.reduce((sum, r) => sum + (r.invoiceAmount || 0), 0),
+        received: data.reduce((sum, r) => sum + ((r.invoiceAmount || 0) - (r.pendingAmount || 0)), 0),
+        pending: data.reduce((sum, r) => sum + (r.pendingAmount || 0), 0),
+        overdue: data.reduce((sum, r) => (["Overdue", "Today Due"].includes(r.remarks) ? sum + (r.pendingAmount || 0) : sum), 0),
+      };
+    };
+
+    const getDebitTotals = () => {
+      const data = selectedDebitNotes.length > 0 ? selectedDebitNotes : debitNotes;
+      return {
+        amount: data.reduce((sum, r) => sum + (r.invoiceAmount || 0), 0),
+        received: data.reduce((sum, r) => sum + ((r.invoiceAmount || 0) - (r.pendingAmount || 0)), 0),
+        pending: data.reduce((sum, r) => sum + (r.pendingAmount || 0), 0),
+        overdue: data.reduce((sum, r) => (["Overdue", "Today Due"].includes(r.remarks) ? sum + (r.pendingAmount || 0) : sum), 0),
+      };
+    };
+
+    const getCreditTotals = () => {
+      const data = selectedCreditNotes.length > 0 ? selectedCreditNotes : creditNotes;
+      return {
+        amount: data.reduce((sum, r) => sum + (r.invoiceAmount || 0), 0),
+        received: data.reduce((sum, r) => sum + ((r.invoiceAmount || 0) - (r.pendingAmount || 0)), 0),
+        pending: data.reduce((sum, r) => sum + (r.pendingAmount || 0), 0),
+        overdue: data.reduce((sum, r) => (["Overdue", "Today Due"].includes(r.remarks) ? sum + (r.pendingAmount || 0) : sum), 0),
+      };
+    };
+
+      const invoiceTotals = getInvoiceTotals();
+      const debitTotals = getDebitTotals();
+      const creditTotals = getCreditTotals();
+
+
+
+
 
 
   return (
@@ -437,12 +474,13 @@ const FinanceDashboard = () => {
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td colSpan="3"><strong>Total</strong></td>
-                      <td>{formatCurrency(totalInvoice)}</td>
-                      <td>{formatCurrency(totalReceived)}</td>
-                      <td>{formatCurrency(totalPending)}</td>
                       <td></td>
-                      <td>{formatCurrency(totalOverdue)}</td>
+                      <td colSpan="3"><strong>Total</strong></td>
+                      <td>{formatCurrency(invoiceTotals.amount)}</td>
+                      <td>{formatCurrency(invoiceTotals.received)}</td>
+                      <td>{formatCurrency(invoiceTotals.pending)}</td>
+                      <td></td>
+                      <td>{formatCurrency(invoiceTotals.overdue)}</td>
                       <td></td>
                     </tr>
                   </tfoot>
@@ -520,12 +558,13 @@ const FinanceDashboard = () => {
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td colSpan="3"><strong>Total</strong></td>
-                      <td>{formatCurrency(totalInvoice)}</td>
-                      <td>{formatCurrency(totalReceived)}</td>
-                      <td>{formatCurrency(totalPending)}</td>
                       <td></td>
-                      <td>{formatCurrency(totalOverdue)}</td>
+                      <td colSpan="3"><strong>Total</strong></td>
+                      <td>{formatCurrency(debitTotals.amount)}</td>
+                      <td>{formatCurrency(debitTotals.received)}</td>
+                      <td>{formatCurrency(debitTotals.pending)}</td>
+                      <td></td>
+                      <td>{formatCurrency(debitTotals.overdue)}</td>
                       <td></td>
                     </tr>
                   </tfoot>
@@ -602,12 +641,13 @@ const FinanceDashboard = () => {
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td colSpan="3"><strong>Total</strong></td>
-                      <td>{formatCurrency(totalInvoice)}</td>
-                      <td>{formatCurrency(totalReceived)}</td>
-                      <td>{formatCurrency(totalPending)}</td>
                       <td></td>
-                      <td>{formatCurrency(totalOverdue)}</td>
+                      <td colSpan="3"><strong>Total</strong></td>
+                      <td>{formatCurrency(creditTotals.amount)}</td>
+                      <td>{formatCurrency(creditTotals.received)}</td>
+                      <td>{formatCurrency(creditTotals.pending)}</td>
+                      <td></td>
+                      <td>{formatCurrency(creditTotals.overdue)}</td>
                       <td></td>
                     </tr>
                   </tfoot>
