@@ -188,7 +188,12 @@ $transition: all 0.3s ease;
 .product-table {
   width: 100%;
   overflow-x: auto;
-
+  .table-scroll-container {
+   max-height: 500px; /* or 60vh, adjust as needed */
+   overflow-y: auto;
+   overflow-x: auto;
+ }
+ 
   table {
     width: 100%;
     border-collapse: collapse;

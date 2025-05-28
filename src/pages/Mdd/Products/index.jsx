@@ -46,18 +46,19 @@ const Products = () => {
     localStorage.removeItem("cart");
   };
 
-  useEffect(() => {
-    axios
-      .get(`${backend_url}/dealer/get-all-products`) // Adjust API URL if needed
-      .then((response) => {
-        setProducts(response.data.data || []);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to fetch products");
-        setLoading(false);
-      });
-  }, []);
+  const fetchProducts = async () => {
+   try {
+     const response = await axios.get(`${backend_url}/dealer/get-all-products`);
+     setProducts(response.data.data || []);
+   } catch (error) {
+     setError("Failed to fetch products");
+   } finally {
+     setLoading(false);
+   }
+ };
+ useEffect(() => {
+  fetchProducts();
+}, []);
   // =============================================================================
   // If you're fetching cart items from the backend, use this instead:
 
@@ -376,61 +377,63 @@ const Products = () => {
       {/* Product Grid */}
       <div className="product-table">
   {filteredProducts.length > 0 ? (
-    <table>
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Segment</th>
-          <th>Name</th>
-          <th>Model Code</th>
-          <th>Product Code</th>
-          <th>Price</th>
-          <th>Quantity</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-  {filteredProducts.map((product) => {
-    const productQuantity = quantityMap[product._id] || 0;
+    <div className="table-scroll-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Segment</th>
+            <th>Name</th>
+            <th>Model Code</th>
+            <th>Product Code</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredProducts.map((product) => {
+            const productQuantity = quantityMap[product._id] || 1;
 
-    return (
-      <tr key={product._id}>
-        <td>{product.product_category}</td>
-        <td>{product.segment}</td>
-        <td>{product.product_name}</td>
-        <td>{product.model_code}</td>
-        <td>{product.product_code}</td>
-        <td>₹{product.price}</td>
-        <td>
-          <input
-            type="number"
-            min="1"
-            value={productQuantity}
-            onChange={(e) =>
-              handleQuantityChange(product._id, Number(e.target.value))
-            }
-            style={{ width: "60px" }}
-          />
-        </td>
-        <td>
-          <button
-            onClick={() =>
-              handleAddToCart(product, productQuantity)
-            }
-          >
-            Add
-          </button>
-        </td>
-      </tr>
-    );
-  })}
-</tbody>
-
-    </table>
+            return (
+              <tr key={product._id}>
+                <td>{product.product_category}</td>
+                <td>{product.segment}</td>
+                <td>{product.product_name}</td>
+                <td>{product.model_code}</td>
+                <td>{product.product_code}</td>
+                <td>₹{product.price}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    value={productQuantity}
+                    onChange={(e) =>
+                      handleQuantityChange(product._id, Number(e.target.value))
+                    }
+                    style={{ width: "60px" }}
+                  />
+                </td>
+                <td>
+                  <button
+                    onClick={() =>
+                      handleAddToCart(product, productQuantity)
+                    }
+                  >
+                    Add
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   ) : (
     <div className="no-products">No products match the selected filters.</div>
   )}
 </div>
+
 
 
       {/* Cart Sidebar */}
