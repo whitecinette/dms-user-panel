@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import { firebaseAuth  } from "../../firebase.config";
 import axios from "axios";
 import config from "../../config";
 import "./style.scss";
@@ -17,6 +15,8 @@ const Login = () => {
   const [step, setStep] = useState("start"); // 'start' | 'otp'
   const [mode, setMode] = useState("code"); // 'code' | 'phone'
   const [loading, setLoading] = useState(false);
+  const [sessionId, setSessionId] = useState("");
+
   const [error, setError] = useState("");
 
   const roleDashboard = {
@@ -66,47 +66,35 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Clear old verifier if present
-      if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
+      const response = await axios.post(`${backend_url}/send-otp`, {
+        phone,
+      });
+
+      if (response.data.success) {
+        setSessionId(response.data.sessionId); // <-- store it
+        setStep("otp");
+      } else {
+        setError("Failed to send OTP. Please try again.");
       }
-
-      // Create new reCAPTCHA verifier
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        "recaptcha-container",
-        {
-          size: "invisible",
-          callback: (response) => {
-            // You can handle success here if needed
-          },
-          "expired-callback": () => {
-            setError("reCAPTCHA expired. Please try again.");
-          },
-        },
-        firebaseAuth // <- Ensure this is the Firebase Auth instance
-      );
-
-      const confirmationResult = await signInWithPhoneNumber(firebaseAuth, phone, window.recaptchaVerifier);
-      window.confirmationResult = confirmationResult;
-      setStep("otp");
     } catch (err) {
-      console.error("OTP send failed", err);
-      setError("Failed to send OTP. Check phone format or network.");
+      console.error("OTP send failed:", err);
+      setError(err.response?.data?.message || "Failed to send OTP.");
     } finally {
       setLoading(false);
     }
   };
 
 
+
+
   const handleOTPVerify = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const result = await window.confirmationResult.confirm(otp);
-      const firebaseUser = result.user;
-
-      const response = await axios.post(`${backend_url}/app/user/firebase-mdd-login-by-phone`, {
-        phone: firebaseUser.phoneNumber,
+      const response = await axios.post(`${backend_url}/verify-otp`, {
+        sessionId,
+        otp,
+        phone
       });
 
       const { token, user } = response.data;
@@ -122,7 +110,7 @@ const Login = () => {
       navigate("/mdd/dashboard/");
     } catch (err) {
       console.error("OTP verification failed:", err);
-      setError("Invalid OTP or verification failed");
+      setError(err.response?.data?.message || "Invalid OTP or verification failed");
     } finally {
       setLoading(false);
     }
@@ -191,7 +179,6 @@ const Login = () => {
           />
         )}
 
-        <div id="recaptcha-container"></div>
 
         <button type="submit" className="login-btn" disabled={loading}>
           {loading
