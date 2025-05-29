@@ -94,19 +94,17 @@
             overflow-y: auto;
             border-radius: 8px;
             scrollbar-width: thin;
-            scrollbar-color: #cbd5e1 transparent;
-
             &::-webkit-scrollbar {
-            width: 8px;
+                width: 8px;
             }
 
             &::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 8px;
+                background-color: transparent;
+                transition: background-color 0.3s;
             }
 
-            &::-webkit-scrollbar-track {
-            background: transparent;
+            &:hover::-webkit-scrollbar-thumb {
+                background-color: rgba(100, 116, 139, 0.4);
             }
         }
 
@@ -311,6 +309,38 @@
             display: flex;
             gap: 10px;
 
+            .invoices-table{
+                width: 45%;
+            }
+
+            .dn-table{
+                width: 27%;
+            }
+
+            .cn-table{
+                width: 27%;
+            }
+
+            
+            .pc-table .table-wrapper {
+            overflow-y: auto;
+            scrollbar-width: 1px;
+            scrollbar-color: rgba(100, 116, 139, 0.116) !important;
+
+            &::-webkit-scrollbar {
+                width: 2px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background-color: rgba(100, 116, 139, 0.3); // Transparent
+                border-radius: 8px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            }
+
 
             .pc-table {
             background: #ffffff;
@@ -319,28 +349,22 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
             position: relative;
             height: 600px;
-            width: 33%;
+            // width: 33%;
 
-            .table-wrapper {
-                height: 540px;
-                overflow-y: auto;
-                border-radius: 8px;
-                scrollbar-width: thin;
-                scrollbar-color: #cbd5e1 transparent;
-
-                &::-webkit-scrollbar {
-                width: 8px;
-                }
-
-                &::-webkit-scrollbar-thumb {
-                background-color: #cbd5e1;
-                border-radius: 8px;
-                }
-
-                &::-webkit-scrollbar-track {
-                background: transparent;
-                }
+            // Row highlight backgrounds
+            .row-overdue {
+            background-color: #fef2f2 !important; // soft red
             }
+
+            .row-today {
+            background-color: #fff7ed !important; // soft yellow
+            }
+
+            .row-upcoming {
+            background-color: #ecfdf5 !important; // soft green
+            }
+
+
 
             table {
                 width: 100%;

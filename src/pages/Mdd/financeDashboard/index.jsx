@@ -406,12 +406,12 @@ const FinanceDashboard = () => {
 
 
         <div className="payment-calculator-sub">
-          <div className="pc-table">
+          <div className="pc-table invoices-table">
             <h3>Invoices</h3>
             {invoices.length === 0 ? (
               <p style={{ padding: "1rem", color: "#888" }}>No data found.</p>
             ) : (
-              <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+              <div style={{ maxHeight: "500px", overflowY: "auto" }} className="table-wrapper">
                 <table>
                   <thead>
                     <tr>
@@ -426,20 +426,25 @@ const FinanceDashboard = () => {
                               }
                             />
                           </th>
-                      <th>Invoice No</th>
-                      <th>Date of Invoice</th>
+                      <th>Invoice No.</th>
+                      <th>Invoice Date</th>
+                      <th>Amount</th>
+                      <th>TDS</th>
                       <th>Due Date</th>
-                      <th>Amt</th>
-                      <th>Payment Rcd</th>
-                      <th>Balance Payment</th>
                       <th>OD Days</th>
-                      <th>Total Due Overdue</th>
                       <th>Remarks</th>
+                      {/* <th>Amt</th> */}
+                      {/* <th>Balance Payment</th> */}
+                      {/* <th>Payment Rcd</th> */}
                     </tr>
                   </thead>
                   <tbody>
                     {invoices.map((row, i) => (
-                      <tr key={i}>
+                      <tr key={i} className={
+                          row.remarks === "Overdue" ? "row-overdue" :
+                          row.remarks === "Today Due" ? "row-today" :
+                          row.remarks === "Upcoming" ? "row-upcoming" : ""
+                      }>
                         <td>
                           <input
                             type="checkbox"
@@ -449,17 +454,16 @@ const FinanceDashboard = () => {
                         </td>
                         <td>{row.invoiceNumber}</td>
                         <td>{row.date}</td>
+                        <td>{row.remarks === "Overdue" || row.remarks === "Today Due" ? formatCurrency(row.pendingAmount) : 0}</td>
+                        <td>{formatCurrency(row.tds)}</td>
                         <td>{row.dueDate}</td>
-                        <td>{formatCurrency(row.invoiceAmount)}</td>
-                        <td>{formatCurrency(row.invoiceAmount - row.pendingAmount)}</td>
-                        <td>{formatCurrency(row.pendingAmount)}</td>
                         <td className={
                           row.overDueDays < 0 ? "od-positive" :
                           row.overDueDays === 0 ? "od-zero" : "od-negative"
                         }>
                           <p>{row.overDueDays}</p>
                         </td>
-                        <td>{row.remarks === "Overdue" || row.remarks === "Today Due" ? formatCurrency(row.pendingAmount) : 0}</td>
+
                         <td>
                           <span className={
                             row.remarks === "Overdue" ? "badge overdue" :
@@ -469,18 +473,24 @@ const FinanceDashboard = () => {
                             {row.remarks}
                           </span>
                         </td>
+                            {/* <td>{formatCurrency(row.invoiceAmount)}</td>
+                            <td>{formatCurrency(row.invoiceAmount - row.pendingAmount)}</td>
+                            <td>{formatCurrency(row.pendingAmount)}</td> */}
+
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
                     <tr>
                       <td></td>
-                      <td colSpan="3"><strong>Total</strong></td>
-                      <td>{formatCurrency(invoiceTotals.amount)}</td>
-                      <td>{formatCurrency(invoiceTotals.received)}</td>
-                      <td>{formatCurrency(invoiceTotals.pending)}</td>
-                      <td></td>
+                      <td colSpan="2"><strong>Total</strong></td>
                       <td>{formatCurrency(invoiceTotals.overdue)}</td>
+                      {/* <td>{formatCurrency(invoiceTotals.pending)}</td>
+                      <td>{formatCurrency(invoiceTotals.amount)}</td>
+                      <td>{formatCurrency(invoiceTotals.received)}</td> */}
+                      <td></td>
+                      <td></td>
+                      <td></td>
                       <td></td>
                     </tr>
                   </tfoot>
@@ -489,96 +499,12 @@ const FinanceDashboard = () => {
             )}
           </div>
 
-
-          <div className="pc-table">
-            <h3>Debit Notes</h3>
-            {debitNotes.length === 0 ? (
-              <p style={{ padding: "1rem", color: "#888" }}>No data found.</p>
-            ) : (
-              <div style={{ maxHeight: "500px", overflowY: "auto" }}>
-                <table>
-                  <thead>
-                    <tr>
-                     <th>
-                        <input
-                          type="checkbox"
-                          checked={selectedDebitNotes.length === debitNotes.length}
-                          onChange={(e) =>
-                            setSelectedDebitNotes(
-                              e.target.checked ? debitNotes : []
-                            )
-                          }
-                        />
-                      </th>
-                      <th>Invoice No</th>
-                      <th>Date of Invoice</th>
-                      <th>Due Date</th>
-                      <th>Amt</th>
-                      <th>Payment Rcd</th>
-                      <th>Balance Payment</th>
-                      <th>OD Days</th>
-                      <th>Total Due Overdue</th>
-                      <th>Remarks</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {debitNotes.map((row, i) => (
-                      <tr key={i}>
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={selectedDebitNotes.some(e => e.invoiceNumber === row.invoiceNumber)}
-                            onChange={() => handleSelect("debit", row)}
-                          />
-                        </td>
-                        <td>{row.invoiceNumber}</td>
-                        <td>{row.date}</td>
-                        <td>{row.dueDate}</td>
-                        <td>{formatCurrency(row.invoiceAmount)}</td>
-                        <td>{formatCurrency(row.invoiceAmount - row.pendingAmount)}</td>
-                        <td>{formatCurrency(row.pendingAmount)}</td>
-                        <td className={
-                          row.overDueDays < 0 ? "od-positive" :
-                          row.overDueDays === 0 ? "od-zero" : "od-negative"
-                        }>
-                          <p>{row.overDueDays}</p>
-                        </td>
-                        <td>{row.remarks === "Overdue" || row.remarks === "Today Due" ? formatCurrency(row.pendingAmount) : 0}</td>
-                        <td>
-                          <span className={
-                            row.remarks === "Overdue" ? "badge overdue" :
-                            row.remarks === "Today Due" ? "badge today" :
-                            "badge upcoming"
-                          }>
-                            {row.remarks}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td></td>
-                      <td colSpan="3"><strong>Total</strong></td>
-                      <td>{formatCurrency(debitTotals.amount)}</td>
-                      <td>{formatCurrency(debitTotals.received)}</td>
-                      <td>{formatCurrency(debitTotals.pending)}</td>
-                      <td></td>
-                      <td>{formatCurrency(debitTotals.overdue)}</td>
-                      <td></td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            )}
-          </div>
-
-            <div className="pc-table">
+            <div className="pc-table cn-table">
             <h3>Credit Notes</h3>
             {creditNotes.length === 0 ? (
               <p style={{ padding: "1rem", color: "#888" }}>No data found.</p>
             ) : (
-              <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+              <div style={{ maxHeight: "500px", overflowY: "auto" }} className="table-wrapper">
                 <table>
                   <thead>
                     <tr>
@@ -593,20 +519,21 @@ const FinanceDashboard = () => {
                           }
                         />
                       </th>
-                      <th>Invoice No</th>
-                      <th>Date of Invoice</th>
+                      <th>CN No.</th>
+                      <th>CN Date</th>
+                      <th>Amount</th>
+                      {/* <th>TDS</th>
                       <th>Due Date</th>
-                      <th>Amt</th>
-                      <th>Payment Rcd</th>
-                      <th>Balance Payment</th>
                       <th>OD Days</th>
-                      <th>Total Due Overdue</th>
-                      <th>Remarks</th>
+                      <th>Remarks</th> */}
+                      {/* <th>Amt</th> */}
+                      {/* <th>Balance Payment</th> */}
+                      {/* <th>Payment Rcd</th> */}
                     </tr>
                   </thead>
                   <tbody>
                     {creditNotes.map((row, i) => (
-                      <tr key={i}>
+                      <tr key={i} >
                         <td>
                           <input
                             type="checkbox"
@@ -616,17 +543,16 @@ const FinanceDashboard = () => {
                         </td>
                         <td>{row.invoiceNumber}</td>
                         <td>{row.date}</td>
+                        <td>{row.remarks === "Overdue" || row.remarks === "Today Due" ? formatCurrency(row.pendingAmount) : 0}</td>
+                        {/* <td>{formatCurrency(row.tds)}</td>
                         <td>{row.dueDate}</td>
-                        <td>{formatCurrency(row.invoiceAmount)}</td>
-                        <td>{formatCurrency(row.invoiceAmount - row.pendingAmount)}</td>
-                        <td>{formatCurrency(row.pendingAmount)}</td>
                         <td className={
                           row.overDueDays < 0 ? "od-positive" :
                           row.overDueDays === 0 ? "od-zero" : "od-negative"
                         }>
                           <p>{row.overDueDays}</p>
                         </td>
-                        <td>{row.remarks === "Overdue" || row.remarks === "Today Due" ? formatCurrency(row.pendingAmount) : 0}</td>
+
                         <td>
                           <span className={
                             row.remarks === "Overdue" ? "badge overdue" :
@@ -635,26 +561,121 @@ const FinanceDashboard = () => {
                           }>
                             {row.remarks}
                           </span>
-                        </td>
+                        </td> */}
+                            {/* <td>{formatCurrency(row.invoiceAmount)}</td>
+                            <td>{formatCurrency(row.invoiceAmount - row.pendingAmount)}</td>
+                            <td>{formatCurrency(row.pendingAmount)}</td> */}
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
                     <tr>
                       <td></td>
-                      <td colSpan="3"><strong>Total</strong></td>
-                      <td>{formatCurrency(creditTotals.amount)}</td>
-                      <td>{formatCurrency(creditTotals.received)}</td>
-                      <td>{formatCurrency(creditTotals.pending)}</td>
-                      <td></td>
+                      <td colSpan="2"><strong>Total</strong></td>
                       <td>{formatCurrency(creditTotals.overdue)}</td>
+                      {/* <td>{formatCurrency(creditTotals.amount)}</td>
+                      <td>{formatCurrency(creditTotals.received)}</td>
+                      <td>{formatCurrency(creditTotals.pending)}</td> */}
+                      {/* <td></td>
                       <td></td>
+                      <td></td>
+                      <td></td> */}
                     </tr>
                   </tfoot>
                 </table>
               </div>
             )}
           </div>
+
+          <div className="pc-table dn-table">
+            <h3>Debit Notes</h3>
+            {debitNotes.length === 0 ? (
+              <p style={{ padding: "1rem", color: "#888" }}>No data found.</p>
+            ) : (
+              <div style={{ maxHeight: "500px", overflowY: "auto" }} className="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                     <th>
+                        <input
+                          type="checkbox"
+                          checked={selectedDebitNotes.length === debitNotes.length}
+                          onChange={(e) =>
+                            setSelectedDebitNotes(
+                              e.target.checked ? debitNotes : []
+                            )
+                          }
+                        />
+                      </th>
+                      <th>DN No.</th>
+                      <th>DN Date</th>
+                      <th>Amount</th>
+                      {/* <th>TDS</th>
+                      <th>Due Date</th>
+                      <th>OD Days</th>
+                      <th>Remarks</th> */}
+                      {/* <th>Amt</th> */}
+                      {/* <th>Balance Payment</th> */}
+                      {/* <th>Payment Rcd</th> */}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {debitNotes.map((row, i) => (
+                      <tr key={i} >
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={selectedDebitNotes.some(e => e.invoiceNumber === row.invoiceNumber)}
+                            onChange={() => handleSelect("debit", row)}
+                          />
+                        </td>
+                        <td>{row.invoiceNumber}</td>
+                        <td>{row.date}</td>
+                        <td>{row.remarks === "Overdue" || row.remarks === "Today Due" ? formatCurrency(row.pendingAmount) : 0}</td>
+                        {/* <td>{formatCurrency(row.tds)}</td>
+                        <td>{row.dueDate}</td>
+                        <td className={
+                          row.overDueDays < 0 ? "od-positive" :
+                          row.overDueDays === 0 ? "od-zero" : "od-negative"
+                        }>
+                          <p>{row.overDueDays}</p>
+                        </td>
+
+                        <td>
+                          <span className={
+                            row.remarks === "Overdue" ? "badge overdue" :
+                            row.remarks === "Today Due" ? "badge today" :
+                            "badge upcoming"
+                          }>
+                            {row.remarks}
+                          </span>
+                        </td> */}
+                            {/* <td>{formatCurrency(row.invoiceAmount)}</td>
+                            <td>{formatCurrency(row.invoiceAmount - row.pendingAmount)}</td>
+                            <td>{formatCurrency(row.pendingAmount)}</td> */}
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td></td>
+                      <td colSpan="2"><strong>Total</strong></td>
+                      <td>{formatCurrency(debitTotals.overdue)}</td>
+                      {/* <td>{formatCurrency(debitTotals.amount)}</td>
+                      <td>{formatCurrency(debitTotals.received)}</td>
+                      <td>{formatCurrency(debitTotals.pending)}</td> */}
+                      {/* <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td> */}
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            )}
+          </div>
+
+
 
         </div>
       </div>
