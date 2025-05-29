@@ -47,7 +47,7 @@ $gradient-warning: linear-gradient(135deg, #ffd600 0%, #ffecb3 100%);
 
 // Main Container
 .orders-main {
-    padding: 2rem;
+    padding: 1rem;
     // max-width: 1200px;
     // margin: 0 auto;
     background: $light-gray;
@@ -113,7 +113,7 @@ $gradient-warning: linear-gradient(135deg, #ffd600 0%, #ffecb3 100%);
 // Orders Container
 .orders-sub {
     display: grid;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 // Order Box
@@ -134,7 +134,7 @@ $gradient-warning: linear-gradient(135deg, #ffd600 0%, #ffecb3 100%);
 // Order Details Top
 .order-dets-top {
     @include flex-between;
-    padding: 2rem;
+    padding: 0.8rem;
     background: $gradient-primary;
     color: white;
 
@@ -183,6 +183,24 @@ $gradient-warning: linear-gradient(135deg, #ffd600 0%, #ffecb3 100%);
             }
         }
     }
+    .order-dets-top-right {
+     display: flex;
+     align-items: center;
+     gap: 1rem;
+   
+     .view-products-btn {
+      margin-top: 0.8rem;
+      padding: 0.5rem 1.5rem;
+      background: orange;
+      color: rgb(102, 85.6, 0);
+      border: none;
+      border-radius: 30px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+     }
+   }
 }
 
 // Order Status
@@ -212,13 +230,47 @@ $gradient-warning: linear-gradient(135deg, #ffd600 0%, #ffecb3 100%);
 // Order Products
 .order-dets-bottom {
 
-    padding: 2rem;
-
+    padding: 0.5rem;
+    .order-products-scroll {
+     max-height: 300px; // adjust as needed
+     overflow-y: auto;
+     // border: 1px solid $border-color;
+     // border-radius: 10px;
+     // margin-top: 1rem;
+      .order-products-table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-top: 1.5rem;
+     box-shadow: $shadow;
+     border: 1px solid $border-color;
+     
+   
+     th,
+     td {
+       padding: 0.5rem;
+       border: 1px solid $border-color;
+       text-align: left;
+       font-size: 0.95rem;
+     }
+   
+     th {
+       background: rgba(249, 64, 8, 0.62);
+       color: white;
+       font-weight: 600;
+     }
+   
+     td {
+       background: white;
+     }
+   }
+   }
+   
+   
     .order-total {
         display: flex;
         justify-content: flex-end;
-        font-size: 1.2rem;
-        font-weight: 700;
+        font-size: 1rem;
+        font-weight: 600;
         color: $secondary-color;
     }
 

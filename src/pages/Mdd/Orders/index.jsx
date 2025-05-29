@@ -9,6 +9,8 @@ const { backend_url } = config;
 const Orders = () => {
   const [orders, setOrders] = useState([]); // State to store all orders
   const [filteredOrders, setFilteredOrders] = useState([]); // State to store filtered orders
+  const [openOrderId, setOpenOrderId] = useState(null);
+
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
@@ -210,52 +212,74 @@ const Orders = () => {
                       </p>
                     )}
                   </div>
-                  <div
-                    className={`order-status ${order.OrderStatus.toLowerCase()}`}
-                  >
-                    {order.OrderStatus.toUpperCase()}
+                  <div className="order-dets-top-right">
+                    <button className="view-products-btn"
+                      onClick={() =>
+                        setOpenOrderId((prevId) =>
+                          prevId === order._id ? null : order._id
+                        )
+                      }
+                    >
+                      {openOrderId === order._id
+                        ? "Hide Products"
+                        : "View Products"}
+                    </button>
+
+                    <span
+                      className={`order-status ${order.OrderStatus.toLowerCase()}`}
+                    >
+                      {order.OrderStatus.toUpperCase()}
+                    </span>
                   </div>
                 </div>
-                <div className="order-dets-bottom">
-                  <div className="order-products-container">
-                    {order.Products.map((product) => (
-                      <div key={product._id} className="order-products">
-                        <div className="order-products-left">
-                          <p className="product-name">
-                            {product.ProductId.product_name}
-                          </p>
-                          <p className="product-price">
-                            {product.Quantity} x{" "}
-                            {new Intl.NumberFormat("en-IN").format(
-                              product.ProductId.price
-                            )}{" "}
-                            INR
-                          </p>
-                        </div>
-                        <div className="order-products-right">
-                          <p className="order-total">
-                            {new Intl.NumberFormat("en-IN", {
-                              maximumFractionDigits: 2,
-                            }).format(
-                              product.Quantity * product.ProductId.price
-                            )}{" "}
-                            INR
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+
+                {openOrderId === order._id && (
+                  <div className="order-dets-bottom">
+                    <div className="order-products-scroll">
+                      <table className="order-products-table">
+                        <thead>
+                          <tr>
+                            <th>Product Name</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {order.Products.map((product) => (
+                            <tr key={product._id}>
+                              <td>{product.ProductId.product_name}</td>
+                              <td>{product.Quantity}</td>
+                              <td>
+                                {new Intl.NumberFormat("en-IN").format(
+                                  product.ProductId.price
+                                )}{" "}
+                                INR
+                              </td>
+                              <td>
+                                {new Intl.NumberFormat("en-IN").format(
+                                  product.Quantity * product.ProductId.price
+                                )}{" "}
+                                INR
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <p className="order-total">
+                      Total Price:{" "}
+                      {new Intl.NumberFormat("en-IN", {
+                        maximumFractionDigits: 2,
+                      }).format(order.TotalPrice)}{" "}
+                      INR
+                    </p>
+                    <p className="order-remark">
+                      Remark: {order.Remark || "No remark"}
+                    </p>
                   </div>
-                  <p className="order-total">
-                    Total Price:
-                    {new Intl.NumberFormat("en-IN", {
-                      maximumFractionDigits: 2,
-                    }).format(order.TotalPrice)}{" "}
-                    INR
-                  </p>
-                  <p className="order-remark">
-                    Remark: {order.Remark || "No remark"}
-                  </p>
-                </div>
+                )}
               </div>
             ))}
           </div>
