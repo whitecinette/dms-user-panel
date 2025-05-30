@@ -1,0 +1,45 @@
+.credit-limit-header {
+  height: 60px;
+  padding-right: 16px;
+  justify-content: flex-end;
+  padding-top: 20px;
+
+  .limit-circle {
+    width: 68px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .CircularProgressbar {
+    vertical-align: middle;
+  }
+
+  .CircularProgressbar-path {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease 0s;
+  }
+
+  .CircularProgressbar-trail {
+    stroke: #e0e0e0; // Light but clearly visible gray
+  }
+
+  // Typography fixes
+  .MuiTypography-h6 {
+    font-weight: 700;
+    color: #FB8C00; // Bright orange for amount
+  }
+
+  .MuiTypography-caption {
+    font-size: 12px;
+    line-height: 1.2;
+    color: #555555; // Stronger gray, clearly visible
+  }
+
+  .distributor-code {
+    font-size: 11px;
+    color: #222222; // darker for bottom label
+    font-weight: 500;
+  }
+}
