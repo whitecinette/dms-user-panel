@@ -18,6 +18,7 @@ import { formatNumberIndian } from "../../../utils/format";
 import { FiDownload } from "react-icons/fi";
 import { useSpring, animated } from '@react-spring/web';
 import * as XLSX from "xlsx";
+import CreditAndPaymentSummary from "../../../components/creditAndPaymentSummary";
 
 
 
@@ -351,7 +352,7 @@ const FinanceDashboard = () => {
             </div>
           )}
 
-      <div className="finance-summary-cards">
+      {/* <div className="finance-summary-cards">
         <div className="finance-summary-card">
           <div className="finance-summary-title">Today Total OS</div>
           <div className="finance-summary-value">₹ {formatNumberIndian(overview.todayTotalOS)}</div>
@@ -380,7 +381,25 @@ const FinanceDashboard = () => {
             <LineChart data={availableLineData}><Line type="monotone" dataKey="value" stroke="#ffb84d" strokeWidth={2} dot={false} /></LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div> */}
+
+        <CreditAndPaymentSummary
+        totalLimit={10000000}
+        utilized={overview.todayTotalOS}
+        available={10000000 - overview.todayTotalOS}
+        todayDue={500000}
+        todayOverdue={overview.todayOverdue}
+        totalDueOverdue={3010638}
+      />
+
+      {/* <CreditAndPaymentSummary
+        totalLimit={10000000}
+        utilized={overview.todayTotalOS}
+        available={10000000 - overview.todayTotalOS}
+        todayDue={overview.todayDue}
+        todayOverdue={overview.todayOverdue}
+        totalDueOverdue={overview.totalDueOverdue}
+      /> */}
 
 
       {/* Payment Calculator  */}

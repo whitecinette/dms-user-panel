@@ -4,81 +4,81 @@
     box-sizing: border-box;
     font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 
-    .finance-summary-cards {
-        display: flex;
-        gap: 2rem;
-        flex-wrap: wrap;
-        justify-content: center;
+    // .finance-summary-cards {
+    //     display: flex;
+    //     gap: 2rem;
+    //     flex-wrap: wrap;
+    //     justify-content: center;
 
-        .finance-summary-card {
-            background: #fff;
-            border-radius: 1.2rem;
-            box-shadow: 0 4px 24px rgba(30, 41, 59, 0.09), 0 1.5px 4px rgba(30, 41, 59, 0.04);
-            border: 1.5px solid #efede0;
-            padding: 1.5rem 2rem 1.2rem 2rem;
-            min-width: 280px;
-            max-width: 500px;
-            flex: 1 1 280px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            transition: box-shadow 0.2s, border 0.2s;
-            position: relative;
-            overflow: hidden;
-            border-top: 4px solid #3b82f6;
+    //     .finance-summary-card {
+    //         background: #fff;
+    //         border-radius: 1.2rem;
+    //         box-shadow: 0 4px 24px rgba(30, 41, 59, 0.09), 0 1.5px 4px rgba(30, 41, 59, 0.04);
+    //         border: 1.5px solid #efede0;
+    //         padding: 1.5rem 2rem 1.2rem 2rem;
+    //         min-width: 280px;
+    //         max-width: 500px;
+    //         flex: 1 1 280px;
+    //         display: flex;
+    //         flex-direction: column;
+    //         align-items: flex-start;
+    //         margin-bottom: 1rem;
+    //         transition: box-shadow 0.2s, border 0.2s;
+    //         position: relative;
+    //         overflow: hidden;
+    //         border-top: 4px solid #3b82f6;
 
-            &:nth-child(1) {
-                border-top-color: #22c55e;
-            }
+    //         &:nth-child(1) {
+    //             border-top-color: #22c55e;
+    //         }
 
-            &:nth-child(2) {
-                border-top-color: #ef4444;
-            }
+    //         &:nth-child(2) {
+    //             border-top-color: #ef4444;
+    //         }
 
-            &:nth-child(3) {
-                border-top-color: #3b82f6;
-            }
-            &:nth-child(4) {
-                border-top-color: #ffb84d;
-            }
+    //         &:nth-child(3) {
+    //             border-top-color: #3b82f6;
+    //         }
+    //         &:nth-child(4) {
+    //             border-top-color: #ffb84d;
+    //         }
 
-            &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 4px;
-                border-radius: 1.2rem 1.2rem 0 0;
-                background: inherit;
-            }
+    //         &::before {
+    //             content: '';
+    //             position: absolute;
+    //             top: 0;
+    //             left: 0;
+    //             right: 0;
+    //             height: 4px;
+    //             border-radius: 1.2rem 1.2rem 0 0;
+    //             background: inherit;
+    //         }
 
-            .finance-summary-title {
-                font-size: 1.08rem;
-                font-weight: 600;
-                color: #22223b;
-                margin-bottom: 0.5rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
+    //         .finance-summary-title {
+    //             font-size: 1.08rem;
+    //             font-weight: 600;
+    //             color: #22223b;
+    //             margin-bottom: 0.5rem;
+    //             display: flex;
+    //             align-items: center;
+    //             gap: 0.5rem;
+    //         }
 
-            .finance-summary-value {
-                font-size: 2.1rem;
-                font-weight: 700;
-                color: #22223b;
-                margin-bottom: 0.5rem;
-                letter-spacing: 0.01em;
-            }
+    //         .finance-summary-value {
+    //             font-size: 2.1rem;
+    //             font-weight: 700;
+    //             color: #22223b;
+    //             margin-bottom: 0.5rem;
+    //             letter-spacing: 0.01em;
+    //         }
 
-            .recharts-responsive-container {
-                width: 100% !important;
-                min-width: 160px;
-                margin-top: 0.2rem;
-            }
-        }
-    }
+    //         .recharts-responsive-container {
+    //             width: 100% !important;
+    //             min-width: 160px;
+    //             margin-top: 0.2rem;
+    //         }
+    //     }
+    // }
 
     .os-breakup-table {
         margin: 30px 0;
