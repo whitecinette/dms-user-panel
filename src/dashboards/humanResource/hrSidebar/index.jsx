@@ -4,6 +4,7 @@ import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { useAuth } from "../../../context/AuthContext";
 import company_logo from "../../../company-logo.png";
+import { CgNotes } from "react-icons/cg";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { RiDashboardLine, RiTimeLine, RiCoupon3Line } from "react-icons/ri";
 import { FaUserCheck, FaUsersLine } from "react-icons/fa6";
@@ -15,7 +16,7 @@ import { GiHumanPyramid } from "react-icons/gi";
 import Attendance from "../../../pages/Hr/attendance";
 import Payroll from "../../../pages/Hr/Payroll";
 import { LuListTodo } from "react-icons/lu";
-import AttendanceDetails from "../../../pages/Hr/attendance/AttendanceDetails";
+// import AttendanceDetails from "../../../pages/Hr/attendance/HRAttendance";
 import ToDoForEmployee from "../../../pages/Hr/ToDo";
 import Profile from "../../../pages/Hr/Profile";
 import HolidayPage from "../../../pages/Hr/Dashboard/holidayPage";
@@ -29,6 +30,7 @@ import Announcements from "../../../pages/Hr/Announcements";
 import Timeline from "../../../pages/Hr/Timeline";
 import Employees from "../../../pages/Hr/Dashboard/employees";
 import BeatMapping from "../../../pages/Hr/BeatMapping";
+import LeaveApplication from "../../../pages/Hr/leaveApplication";
 
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
@@ -43,6 +45,11 @@ const HumanResourceSidebar = [
     segment: "hr/attendance",
     title: "Attendance",
     icon: <FaUserCheck size={22} {...iconStyle} />,
+  },
+  {
+    segment: "hr/leaveApplication",
+    title: "Leave Attendance",
+    icon: <CgNotes size={22} {...iconStyle} />,
   },
   // =====hDs=====
   {
@@ -78,15 +85,16 @@ const HumanResourceSidebar = [
     icon: <GiTakeMyMoney size={22} {...iconStyle} />,
   },
   {
-    segment: "hr/hr-profile",
-    title: "Profile",
-    icon: <CgProfile size={22} {...iconStyle} />,
-  },
-  {
     segment: "hr/employees-todo",
     title: "ToDo",
     icon: <LuListTodo size={22} {...iconStyle} />,
   },
+  {
+    segment: "hr/hr-profile",
+    title: "Profile",
+    icon: <CgProfile size={22} {...iconStyle} />,
+  },
+
   // =====hDs=====
   {
     segment: "logout",
@@ -122,11 +130,12 @@ function HumanResource(props) {
         <Routes>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="attendance" element={<Attendance />} />
+          <Route path="leaveApplication" element={<LeaveApplication/>}/>
           {/* ========hDs====== */}
-          <Route
+          {/* <Route
             path="attendance-detail/:employeeCode"
             element={<AttendanceDetails />}
-          />
+          /> */}
           <Route path="employees-data" element={<Employees />} />
           <Route path="employees-payroll" element={<Payroll />} />
           <Route path="employees-todo" element={<ToDoForEmployee />} />
@@ -140,6 +149,7 @@ function HumanResource(props) {
           <Route path="timeline" element={<Timeline />}></Route>
           <Route path="beat-mapping" element={<BeatMapping />}></Route>
           <Route path="logout" element={<Logout />}></Route>
+          
           {/* ========hDs====== */}
 
           {/* <Route path="/payroll" element={<Payroll />}></Route> */}

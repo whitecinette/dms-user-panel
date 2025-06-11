@@ -39,9 +39,10 @@ const Login = () => {
       });
 
       if (response.status === 200 && response.data.token) {
-        const { token, user } = response.data;
+        const { token, user, refreshToken } = response.data;
         const role = user.role.toLowerCase();
 
+        localStorage.setItem('refreshToken', refreshToken);
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
         localStorage.setItem("code", user.code);

@@ -16,37 +16,13 @@ import SidebarDealer from "./dashboards/dealer/dealerSidebar";
 import SidebarMdd from "./dashboards/mdd/mddSidebar";
 import PaySlipByEmployee from "./pages/Employee/paySlip";
 import Logout from "./components/logout";
+import PrivateRoute from "./components/PrivateRoute";
 
 
 
 
 function App() {
-  const PrivateRoute = ({ element, roles = [] }) => {
-    const token = localStorage.getItem("token");
-
-    if (!token) return <Navigate to="/login" replace />;
-
-    try {
-      const tokenPayload = JSON.parse(atob(token.split(".")[1]));
-      const expiryTime = tokenPayload.exp * 1000;
-      const role = localStorage.getItem("role");
-
-      if (new Date(expiryTime) < Date.now()) {
-        localStorage.removeItem("token");
-        return <Navigate to="/login" replace />;
-      }
-
-      if (roles.length && !roles.includes(role)) {
-        return <Navigate to={`/${role}/dashboard`} replace />; // or show a 403 page
-      }
-
-      return element;
-    } catch (error) {
-      localStorage.removeItem("token");
-      return <Navigate to="/login" replace />;
-    }
-  };
-
+ 
   const RoleRedirect = () => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
