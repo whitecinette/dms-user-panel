@@ -12,7 +12,7 @@ const CustomAlert = ({ type, message, onClose }) => {
       case "success":
         return <CheckCircleIcon className="mui-alert-icon success" />;
       case "error":
-        return <ErrorIcon className="mui-alert-icon error" />;
+        return <ErrorIcon className="mui-alert-icon error-message" />;
       case "warning":
         return <WarningIcon className="mui-alert-icon warning" />;
       default:

@@ -50,8 +50,11 @@
             color: #28a745;
         }
 
-        &.error {
+        &.error-message {
+            display: flex;
+            align-items: center;
             color: #dc3545;
+            margin-bottom: 10px;
         }
 
         &.warning {

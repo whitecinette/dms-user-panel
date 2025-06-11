@@ -39,7 +39,7 @@ const formatDate = (dateInput) => {
     // Format the date using Intl.DateTimeFormat for better localization
     const formatter = new Intl.DateTimeFormat("en-IN", {
       day: "numeric",
-      month: "long",
+      month: "short",
     });
 
     return formatter.format(date);
@@ -462,9 +462,7 @@ const EmployeeAttendance = () => {
                 <th>Position</th>
                 <th>Date</th>
                 <th>Check In</th>
-                <th>Check In Shop</th>
                 <th>Check Out</th>
-                <th>Check Out Shop</th>
                 <th>Total Hours</th>
                 <th>Status</th>
                 <th>View Detail</th>
@@ -485,7 +483,6 @@ const EmployeeAttendance = () => {
                           })
                         : "N/A"}
                     </td>
-                    <td>{record.punchInName || "N/A"}</td>
                     <td>
                       {record.punchOut
                         ? new Date(record.punchOut).toLocaleTimeString(
@@ -496,7 +493,6 @@ const EmployeeAttendance = () => {
                           )
                         : "N/A"}
                     </td>
-                    <td>{record.punchOutName || "N/A"}</td>
                     <td>{record.hoursWorked || "N/A"}</td>
                     <td>{record.status}</td>
                     <td
