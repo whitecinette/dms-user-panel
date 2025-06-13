@@ -16,6 +16,7 @@ import { GiHumanPyramid } from "react-icons/gi";
 import Attendance from "../../../pages/Hr/attendance";
 import Payroll from "../../../pages/Hr/Payroll";
 import { LuListTodo } from "react-icons/lu";
+import { MdOutlineModeOfTravel } from "react-icons/md";
 // import AttendanceDetails from "../../../pages/Hr/attendance/HRAttendance";
 import ToDoForEmployee from "../../../pages/Hr/ToDo";
 import Profile from "../../../pages/Hr/Profile";
@@ -31,6 +32,7 @@ import Timeline from "../../../pages/Hr/Timeline";
 import Employees from "../../../pages/Hr/Dashboard/employees";
 import BeatMapping from "../../../pages/Hr/BeatMapping";
 import LeaveApplication from "../../../pages/Hr/leaveApplication";
+import TravelExpenses from "../../../pages/Hr/TravelExpenses";
 
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
@@ -50,6 +52,11 @@ const HumanResourceSidebar = [
     segment: "hr/leaveApplication",
     title: "Leave Attendance",
     icon: <CgNotes size={22} {...iconStyle} />,
+  },
+  {
+    segment: "hr/travelExpenses",
+    title: "Travel Expenses",
+    icon: <MdOutlineModeOfTravel size={22} {...iconStyle} />,
   },
   // =====hDs=====
   {
@@ -131,6 +138,7 @@ function HumanResource(props) {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="attendance" element={<Attendance />} />
           <Route path="leaveApplication" element={<LeaveApplication/>}/>
+          <Route path="travelExpenses" element={<TravelExpenses/>}/>
           {/* ========hDs====== */}
           {/* <Route
             path="attendance-detail/:employeeCode"
