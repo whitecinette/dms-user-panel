@@ -7,56 +7,94 @@ import CustomAlert from "../../../components/CustomAlert";
 const backend_url = config.backend_url;
 
 // Add this component inside TravelExpenses before the return statement
-const ImageViewer = ({ images, onClose }) => {
-  const [imageIndex, setImageIndex] = useState(0);
+const DocumentViewer = ({ documents, onClose }) => {
+  const [docIndex, setDocIndex] = useState(0);
+  const [imageError, setImageError] = useState(false);
 
   const handleNext = (e) => {
     e.stopPropagation();
-    if (imageIndex < images.length - 1) {
-      setImageIndex(imageIndex + 1);
+    if (docIndex < documents.length - 1) {
+      setDocIndex(docIndex + 1);
     }
   };
 
   const handlePrev = (e) => {
     e.stopPropagation();
-    if (imageIndex > 0) {
-      setImageIndex(imageIndex - 1);
+    if (docIndex > 0) {
+      setDocIndex(docIndex - 1);
     }
   };
 
+  const getDocumentType = (url) => {
+    const extension = url.split(".").pop().toLowerCase();
+    return ["jpg", "jpeg", "png", "gif"].includes(extension) ? "image" : "pdf";
+  };
+
   return (
-    <div className="image-viewer-overlay" onClick={onClose}>
+    <div className="document-viewer-overlay" onClick={onClose}>
       <div
-        className="image-viewer-content"
+        className="document-viewer-content"
         onClick={(e) => e.stopPropagation()}
       >
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
-        <img src={images[imageIndex]} alt={`Bill ${imageIndex + 1}`} />
 
-        {images.length > 1 && (
+        {getDocumentType(documents[docIndex]) === "image" ? (
+          <div className="image-container">
+            <img
+              src={documents[docIndex]}
+              alt={`Document ${docIndex + 1}`}
+              onError={() => setImageError(true)}
+              style={{ display: imageError ? "none" : "block" }}
+            />
+            {imageError && (
+              <div className="error-document">
+                There is an error loading this image. Please contact the Admin.
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="pdf-container">
+            <iframe
+              src={`${documents[docIndex]}#toolbar=0`}
+              title={`Document ${docIndex + 1}`}
+              width="100%"
+              height="100%"
+              onError={() => setImageError(true)}
+              style={{ display: imageError ? "none" : "block" }}
+            />
+            {imageError && (
+              <div className="error-document">
+                There is an error loading this document. Please contact the
+                Admin.
+              </div>
+            )}
+          </div>
+        )}
+        {documents.length > 1 && (
           <div className="navigation-buttons">
             <button
               className="nav-button prev"
               onClick={handlePrev}
-              disabled={imageIndex === 0}
+              disabled={docIndex === 0}
             >
               &#8592;
             </button>
-            <span className="image-counter">
-              {imageIndex + 1} / {images.length}
+            <span className="document-counter">
+              {docIndex + 1} / {documents.length}
             </span>
             <button
               className="nav-button next"
               onClick={handleNext}
-              disabled={imageIndex === images.length - 1}
+              disabled={docIndex === documents.length - 1}
             >
               &#8594;
             </button>
           </div>
         )}
       </div>
+       
     </div>
   );
 };
@@ -73,31 +111,20 @@ const TravelExpenses = () => {
   const [loading, setLoading] = useState(true);
   const [selectedImages, setSelectedImages] = useState([]);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
-  const [amountPopup, setAmountPopup] = useState({
-    show: false,
-    billId: null,
-    status: "",
-    amount: "",
-  });
   const [alert, setAlert] = useState({
     show: false,
     message: "",
     type: "",
   });
 
+  function formatAmount(amount) {
+    if (isNaN(amount)) return "-";
+    return "₹" + amount.toLocaleString("en-IN");
+  }
+
   // Update the handleStatusChange function
   const handleStatusChange = async (billId, newStatus) => {
     // If status is being changed to "paid", show amount popup
-    if (newStatus === "paid") {
-      setAmountPopup({
-        show: true,
-        billId,
-        status: newStatus,
-        amount: "",
-      });
-      return;
-    }
-
     try {
       // Show loading state
       setLoading(true);
@@ -114,16 +141,7 @@ const TravelExpenses = () => {
           },
         }
       );
-
-      // Update local state immediately for better UX
-      setBillData((prevBills) =>
-        prevBills.map((bill) =>
-          bill._id === billId ? { ...bill, status: newStatus } : bill
-        )
-      );
-
       // Refresh the data from server
-      await getBillsData();
       setAlert({
         show: true,
         message: res?.data?.message || "Successfully changed the bill status ",
@@ -138,6 +156,7 @@ const TravelExpenses = () => {
         type: error.response?.data?.status || error,
       });
     } finally {
+      getBillsData();
       setTimeout(() => {
         setAlert({
           show: false,
@@ -147,32 +166,6 @@ const TravelExpenses = () => {
       }, 3000);
 
       setLoading(false);
-    }
-  };
-
-  const handleAmountSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await axios.put(
-        `${backend_url}/edit-travel-bill/${amountPopup.billId}`,
-        {
-          status: amountPopup.status,
-          amount: Number(amountPopup.amount),
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      );
-
-      // Close popup and refresh data
-      setAmountPopup({ show: false, billId: null, status: "", amount: "" });
-      getBillsData();
-    } catch (error) {
-      console.error("Error updating status and amount:", error);
-      // Add error handling here
     }
   };
 
@@ -304,6 +297,7 @@ const TravelExpenses = () => {
               <th>Code</th>
               <th>Remark</th>
               <th>Bill Type</th>
+              <th>Amount</th>
               <th>Status</th>
               <th>Images</th>
             </tr>
@@ -322,6 +316,7 @@ const TravelExpenses = () => {
                   <td>{bill.code}</td>
                   <td>{bill.remarks}</td>
                   <td>{bill.billType}</td>
+                  <td>{formatAmount(bill.amount)}</td>
                   <td>
                     {isEditable(bill) ? (
                       <select
@@ -389,47 +384,10 @@ const TravelExpenses = () => {
         </button>
       </div>
       {isViewerOpen && (
-        <ImageViewer
-          images={selectedImages}
+        <DocumentViewer
+          documents={selectedImages}
           onClose={() => setIsViewerOpen(false)}
         />
-      )}
-      {amountPopup.show && (
-        <div className="amount-popup-overlay">
-          <div className="amount-popup-content">
-            <h3>Enter Payment Amount</h3>
-            <form onSubmit={handleAmountSubmit}>
-              <input
-                type="number"
-                value={amountPopup.amount}
-                onChange={(e) =>
-                  setAmountPopup((prev) => ({
-                    ...prev,
-                    amount: e.target.value,
-                  }))
-                }
-                placeholder="Enter amount"
-                required
-              />
-              <div className="popup-buttons">
-                <button type="submit">Submit</button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setAmountPopup({
-                      show: false,
-                      billId: null,
-                      status: "",
-                      amount: "",
-                    })
-                  }
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
       )}
     </div>
   );
