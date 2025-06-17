@@ -36,6 +36,8 @@ const Login = () => {
       const response = await axios.post(`${backend_url}/app/user/login`, {
         code,
         password,
+      },{
+        headers:{'X-Client-Type': 'user',}
       });
 
       if (response.status === 200 && response.data.token) {

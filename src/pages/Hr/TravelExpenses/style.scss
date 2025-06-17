@@ -24,7 +24,7 @@
             .search-filter {
 
                 input {
-                    width: 100%;
+                    width: 90%;
                     max-width: 500px;
                     padding: 10px 16px;
                     border: 1px solid #e2e8f0;
@@ -426,24 +426,23 @@
             }
         }
 
-
-        .image-container,
-        .pdf-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
+        .image-container {
+            display: flex;
+            justify-content: center;
         }
 
-        
         img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            height: 80%;
+            object-fit: cover;
         }
 
         iframe {
-            width: 100%;
-            height: 100%;
+            width: 80%;
+            height: 80%;
             border: none;
             background: white;
         }
@@ -455,7 +454,7 @@
 
         .navigation-buttons {
             position: absolute;
-            bottom: -30px;
+            bottom: -50px;
             left: 0;
             right: 0;
             display: flex;
