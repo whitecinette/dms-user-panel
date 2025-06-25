@@ -143,6 +143,20 @@ function LeaveApplication() {
   };
 
   const canChangeStatus = (application) => {
+
+     // Prevent status change if the leave is in the past
+    if (application?.halfDaySession === "afternoon") {
+      const now = new Date();
+      const fromDate = new Date(application.fromDate);
+      const isToday =
+        now.getFullYear() === fromDate.getFullYear() &&
+        now.getMonth() === fromDate.getMonth() &&
+        now.getDate() === fromDate.getDate();
+      if (isToday && now.getHours() < 12) {
+        return true;
+      }
+    }
+
     // Prevent status change if the leave is in the past
     if (new Date(application.fromDate) < new Date()) {
       return false;
@@ -279,12 +293,13 @@ function LeaveApplication() {
                 <thead>
                   <tr>
                     <th></th>
-                    <th>Employee Name</th>
-                    <th>Employee Code</th>
+                    <th>Name</th>
+                    <th>Code</th>
                     <th>Leave Type</th>
                     <th>From Date</th>
                     <th>To Date</th>
                     <th>Total Days</th>
+                    <th>Session</th>
                     <th>Status</th>
                     <th>Applied At</th>
                   </tr>
@@ -292,15 +307,18 @@ function LeaveApplication() {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="9" style={{ textAlign: "center" }}>
+                      <td colSpan="10" style={{ textAlign: "center" }}>
                         loading...
                       </td>
                     </tr>
                   ) : leaveApplications.length > 0 ? (
                     leaveApplications.map((application) => (
                       <React.Fragment key={application._id}>
-                        <tr className="leave-row"  onClick={() => toggleRow(application._id)}>
-                          <td >
+                        <tr
+                          className="leave-row"
+                          onClick={() => toggleRow(application._id)}
+                        >
+                          <td>
                             <button
                               className="expand-button"
                               onClick={() => toggleRow(application._id)}
@@ -318,7 +336,12 @@ function LeaveApplication() {
                           <td>{formatDate(application.fromDate)}</td>
                           <td>{formatDate(application.toDate)}</td>
                           <td>{application.totalDays}</td>
-                          <td onClick={(e)=>e.stopPropagation()}>
+                          <td>
+                            {application.halfDaySession
+                              ? application.halfDaySession.toUpperCase()
+                              : "N/A"}
+                          </td>
+                          <td onClick={(e) => e.stopPropagation()}>
                             {canChangeStatus(application) ? (
                               <select
                                 value={application.status}
@@ -346,7 +369,7 @@ function LeaveApplication() {
                         </tr>
                         {expandedRows[application._id] && (
                           <tr className="expanded-row">
-                            <td colSpan="9">
+                            <td colSpan="10">
                               <div className="leave-expanded-content">
                                 <div className="reason-section">
                                   <strong>Reason:</strong> {application.reason}
@@ -409,7 +432,7 @@ function LeaveApplication() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="9" style={{ textAlign: "center" }}>
+                      <td colSpan="10" style={{ textAlign: "center" }}>
                         No data found
                       </td>
                     </tr>
