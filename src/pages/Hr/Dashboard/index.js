@@ -120,10 +120,10 @@ const Dashboard = () => {
       // Filter only those whose role is 'employee'
       const employeeCount = employeeList.length;
       setAllEmployees(employeeList);
-      console.log("Employee Listttttttttttttttttt:", employeeList);
+      // console.log("Employee Listttttttttttttttttt:", employeeList);
 
       setTotalEmployees(employeeCount);
-      console.log("Total Employeesssss:", employeeCount);
+      // console.log("Total Employeesssss:", employeeCount);
     } catch (err) {
       console.error("Failed to fetch employee data:", err);
       setTotalEmployees(0);

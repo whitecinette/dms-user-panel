@@ -37,6 +37,7 @@ import BeatMapping from "../../../pages/Employee/BeatMapping";
 import Targets from "../../../pages/Employee/Targets";
 import Profile from "../../../pages/Employee/Profile";
 import GeoTagging from "../../../pages/Employee/GeoTag";
+import HeaderActions from "../../../components/HeaderAction";
 
 
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
@@ -242,6 +243,7 @@ function SidebarEmployee(props) {
       <DashboardLayout
         slots={{
           sidebarFooter: () => null,
+          toolbarActions: HeaderActions 
         }}
       >
         <Routes>

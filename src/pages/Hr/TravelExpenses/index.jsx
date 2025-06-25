@@ -94,7 +94,6 @@ const DocumentViewer = ({ documents, onClose }) => {
           </div>
         )}
       </div>
-       
     </div>
   );
 };
@@ -293,6 +292,7 @@ const TravelExpenses = () => {
         <table>
           <thead>
             <tr>
+              <th>Number</th>
               <th>Name</th>
               <th>Code</th>
               <th>Remark</th>
@@ -312,6 +312,7 @@ const TravelExpenses = () => {
             ) : billData.length > 0 ? (
               billData.map((bill) => (
                 <tr key={bill._id}>
+                  <td>{bill.billNumber}</td>
                   <td>{bill.employeeName}</td>
                   <td>{bill.code}</td>
                   <td>{bill.remarks}</td>

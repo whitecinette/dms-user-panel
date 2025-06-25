@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Divider } from "@mui/material";
 import { orange } from "@mui/material/colors";
+import HeaderActions from "../../../components/HeaderAction";
 
 const MddHeader = () => {
   const [name, setName] = useState("Distributor");
-  const [code, setCode] = useState("Code")
-
+  const [code, setCode] = useState("Code");
 
   useEffect(() => {
     const storedName = localStorage.getItem("name");
@@ -46,6 +46,17 @@ const MddHeader = () => {
           {name} | {code}
         </Typography>
       </Stack>
+      <Divider
+        orientation="vertical"
+        flexItem
+        sx={{
+          mx: 2,
+          height: "40px",
+          alignSelf: "center",
+          backgroundColor: (theme) => theme.palette.divider,
+        }}
+      />
+      <HeaderActions />
     </Stack>
   );
 };

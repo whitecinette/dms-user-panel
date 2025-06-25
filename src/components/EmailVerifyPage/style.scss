@@ -1,0 +1,122 @@
+.email-verify-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f6f8fb 0%, #eef2f6 100%);
+  padding: 20px;
+
+  .verify-card {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+
+    .verify-header {
+      margin-bottom: 32px;
+
+      h1 {
+        color: #1a2b4b;
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+
+      p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+
+    .verify-content {
+      .verify-button {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 12px 32px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #2563eb;
+          transform: translateY(-1px);
+        }
+
+        &:disabled {
+          background: #94a3b8;
+          cursor: not-allowed;
+          transform: none;
+        }
+      }
+
+      .status-message {
+        padding: 16px;
+        border-radius: 8px;
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .status-icon {
+          font-size: 24px;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+        }
+
+        p {
+          margin: 0;
+          font-size: 14px;
+        }
+      }
+
+      &.success {
+        .status-message {
+          background: #f0fdf4;
+          color: #166534;
+          
+          .status-icon {
+            background: #dcfce7;
+          }
+        }
+      }
+
+      &.error {
+        .status-message {
+          background: #fef2f2;
+          color: #991b1b;
+          
+          .status-icon {
+            background: #fee2e2;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+  .email-verify-container {
+    padding: 16px;
+
+    .verify-card {
+      padding: 24px;
+
+      .verify-header {
+        h1 {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}

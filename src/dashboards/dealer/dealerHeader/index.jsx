@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
   Stack,
-  Toolbar,
+  Divider,
   Typography,
-  IconButton,
-  Tooltip,
-  Box,
 } from "@mui/material";
-import SettingsIcon from "@mui/icons-material/Settings";
 import axios from "axios";
 import config from "../../../config";
 import { orange } from "@mui/material/colors";
+import HeaderActions from "../../../components/HeaderAction";
 
 const backend_url = config.backend_url; // Get backend URL from config
 
@@ -68,6 +65,17 @@ const DealerHeader = () => {
           {user?.name || "Dealer"} {user?.code ? `| ${user.code}` : ""}
         </Typography>
       </Stack>
+      <Divider 
+    orientation="vertical" 
+    flexItem 
+    sx={{ 
+      mx: 2,
+      height: '40px',
+      alignSelf: 'center',
+      backgroundColor: (theme) => theme.palette.divider 
+    }} 
+  />
+      <HeaderActions/>
     </Stack>
   );
 };

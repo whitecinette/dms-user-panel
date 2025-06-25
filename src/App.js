@@ -17,6 +17,7 @@ import SidebarMdd from "./dashboards/mdd/mddSidebar";
 import PaySlipByEmployee from "./pages/Employee/paySlip";
 import Logout from "./components/logout";
 import PrivateRoute from "./components/PrivateRoute";
+import EmailVerifyPage from "./components/EmailVerifyPage";
 
 
 
@@ -63,6 +64,7 @@ function App() {
           <Route path="/" element={<RoleRedirect />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path = "/verify-email" element={<EmailVerifyPage/>}/>
           <Route
             path="/employee/dashboard/*"
             element={

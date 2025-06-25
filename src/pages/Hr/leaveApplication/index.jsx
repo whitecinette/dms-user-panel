@@ -148,14 +148,14 @@ function LeaveApplication() {
       return false;
     }
 
-    if (userRole === "hr") {
-      // Prevent change if super_admin has already approved
-      return !application.approvalHistory.some(
-        (history) =>
-          history.approverId?.role === "super_admin" ||
-          history.approverId?.role === "admin"
-      );
-    }
+    // if (userRole === "hr") {
+    //   // Prevent change if super_admin has already approved
+    //   return !application.approvalHistory.some(
+    //     (history) =>
+    //       history.approverId?.role === "super_admin" ||
+    //       history.approverId?.role === "admin"
+    //   );
+    // }
 
     // Super admin can change status if not blocked by past-date rule
     return true;

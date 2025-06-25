@@ -8,6 +8,7 @@ import { CgNotes } from "react-icons/cg";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { RiDashboardLine, RiTimeLine, RiCoupon3Line } from "react-icons/ri";
 import { FaUserCheck, FaUsersLine } from "react-icons/fa6";
+import { LiaRouteSolid } from "react-icons/lia";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
 import { TfiLock, TfiAnnouncement } from "react-icons/tfi";
@@ -17,7 +18,6 @@ import Attendance from "../../../pages/Hr/attendance";
 import Payroll from "../../../pages/Hr/Payroll";
 import { LuListTodo } from "react-icons/lu";
 import { MdOutlineModeOfTravel } from "react-icons/md";
-// import AttendanceDetails from "../../../pages/Hr/attendance/HRAttendance";
 import ToDoForEmployee from "../../../pages/Hr/ToDo";
 import Profile from "../../../pages/Hr/Profile";
 import HolidayPage from "../../../pages/Hr/Dashboard/holidayPage";
@@ -33,6 +33,9 @@ import Employees from "../../../pages/Hr/Dashboard/employees";
 import BeatMapping from "../../../pages/Hr/BeatMapping";
 import LeaveApplication from "../../../pages/Hr/leaveApplication";
 import TravelExpenses from "../../../pages/Hr/TravelExpenses";
+import RoutesPlan from "../../../pages/Hr/RoutePlan";
+import NotificationAlert from "../../../components/NotificationAlert"
+import HeaderActions from "../../../components/HeaderAction";
 
 const iconStyle = { color: "rgba(249, 64, 8, 0.62)" };
 
@@ -71,6 +74,11 @@ const HumanResourceSidebar = [
     icon: <RiTimeLine size={22} {...iconStyle} />,
   },
   {
+    segment: "hr/routePlan",
+    title: "Route Plan",
+    icon: <LiaRouteSolid size={22} {...iconStyle} />,
+  },
+  {
     segment: "hr/beat-mapping",
     title: "Beat Mapping",
     icon: <CiMapPin size={22} {...iconStyle} />,
@@ -96,11 +104,11 @@ const HumanResourceSidebar = [
     title: "ToDo",
     icon: <LuListTodo size={22} {...iconStyle} />,
   },
-  {
-    segment: "hr/hr-profile",
-    title: "Profile",
-    icon: <CgProfile size={22} {...iconStyle} />,
-  },
+  // {
+  //   segment: "hr/hr-profile",
+  //   title: "Profile",
+  //   icon: <CgProfile size={22} {...iconStyle} />,
+  // },
 
   // =====hDs=====
   {
@@ -121,6 +129,7 @@ function HumanResource(props) {
     searchParams: new URLSearchParams(location.search),
     navigate: (path) => navigate(path),
   };
+  
 
   return (
     <AppProvider
@@ -133,12 +142,15 @@ function HumanResource(props) {
       router={router}
       session={user}
     >
-      <DashboardLayout slots={{ sidebarFooter: () => null }}>
+
+       <DashboardLayout slots={{ sidebarFooter: () => null, toolbarActions: HeaderActions }}>
+        <NotificationAlert/>
         <Routes>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="attendance" element={<Attendance />} />
           <Route path="leaveApplication" element={<LeaveApplication/>}/>
           <Route path="travelExpenses" element={<TravelExpenses/>}/>
+          <Route path="routePlan" element={<RoutesPlan/>}/>
           {/* ========hDs====== */}
           {/* <Route
             path="attendance-detail/:employeeCode"

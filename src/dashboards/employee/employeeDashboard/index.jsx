@@ -7,6 +7,7 @@ import { useAuth } from "../../../context/AuthContext";
 import DemoPageContent from "../../../components/demoPageContent";
 import { createTheme } from "@mui/material/styles";
 import company_logo from "../../../company-logo.png";
+import HeaderActions from "../../../components/HeaderAction";
 
 const demoTheme = createTheme({
   palette: {
@@ -67,7 +68,7 @@ function EmployeeDashboard(props) {
       window={demoWindow}
       session={user}
     >
-      <DashboardLayout slots={{ sidebarFooter: () => null }}>
+      <DashboardLayout slots={{ sidebarFooter: () => null, toolbarActions: HeaderActions  }}>
         <DemoPageContent pathname={pathname} />
       </DashboardLayout>
     </AppProvider>

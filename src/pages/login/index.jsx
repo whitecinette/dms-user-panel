@@ -52,6 +52,8 @@ const Login = () => {
         localStorage.setItem("position", user.position);
         localStorage.setItem("toolpad-mode", "light");
         localStorage.setItem("toolpad-color-scheme-dark", "light");
+        localStorage.setItem("toolpad-color-scheme-dark", "light");
+        localStorage.setItem("userId", user.id)
 
         navigate(roleDashboard[role] || "/");
       } else {

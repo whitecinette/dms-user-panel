@@ -1,15 +1,629 @@
-.hr-beat-mapping-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 100px);
+.viewBeatMappingStatus-page {
     padding: 20px;
+    // height: 100%;
+    background-color: #f3f3f3;
 
-    .content-wrapper {
-        width: 100%;
-        max-width: 1200px;
-        text-align: center;
-        font-size: 24px;
-        color: #666;
+    .viewBeatMappingStatus-page-header {
+        font-size: 1.5rem;
+        font-weight: 900;
     }
+
+    .viewBeatMapping-page-graph {
+        background-color: #fff;
+        margin: 15px 0;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    
+
+
+        .viewBeatMapping-first-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 10px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+
+            .filters-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 16px;
+                flex-wrap: wrap;
+
+                .viewBeatMappingStatus-filter {
+                    gap: 5px;
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+
+                    input,
+                    select {
+                        margin-top: 2px;
+                        max-width: 60rem;
+                        border-radius: 10px;
+                        border: 2px solid #808080;
+                        color: #808080;
+                        padding: 5px;
+                        font-size: 12px;
+                    }
+                }
+
+                .viewBeatMappingStatus-date-filter {
+                    margin-left: 10px;
+                    display: flex;
+                    gap: 20px;
+                    flex-wrap: wrap;
+
+                    .date {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 5px;
+
+                        label {
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #2c3e50;
+                        }
+
+                        input {
+                            width: 100%;
+                            border-radius: 10px;
+                            border: 2px solid #808080;
+                            color: #808080;
+                            padding: 5px;
+                            font-size: 12px;
+
+                            &::-webkit-calendar-picker-indicator {
+                                filter: invert(50%) sepia(0%) saturate(0%) brightness(80%);
+                            }
+                        }
+                    }
+                }
+
+                .viewBeatMapping-status-filter {
+                    border-radius: 12px;
+                    transition: all 0.3s ease;
+
+                    .viewBeatMapping-status-filter-item {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+
+                        label {
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #2c3e50;
+                        }
+
+                        select {
+                            appearance: none;
+                            background: white;
+                            border: 2px solid #e9ecef;
+                            border-radius: 8px;
+                            padding: 8px 12px;
+                            font-size: 14px;
+                            color: #495057;
+                            cursor: pointer;
+                            min-width: 120px;
+                            transition: all 0.2s ease;
+                            background-repeat: no-repeat;
+                            background-position: right 8px center;
+                            background-size: 16px;
+                            padding-right: 32px;
+
+                            &:hover {
+                                border-color: #6399f9;
+                            }
+
+                            &:focus {
+                                outline: none;
+                                border-color: #6399f9;
+                            }
+
+                            option {
+                                padding: 8px;
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .buttons-container {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+
+                .viewBeatMappingStatus-reset-filter {
+                    margin-left: 10px;
+                }
+
+                .reset-btn {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 12px 18px;
+                    background-color: #f44336;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    transition: background-color 0.3s;
+                    height: 34px;
+
+                    &:hover {
+                        background-color: #d32f2f;
+                    }
+                }
+
+                .viewBeatMappingStatus-upload-btn,
+                .viewBeatMappingStatus-download-btn {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: white;
+                    padding: 12px 18px;
+                    border-radius: 10px;
+                    font-size: 15px;
+                    cursor: pointer;
+                    min-width: 160px;
+                    height: 34px;
+
+                    &:hover {
+                        opacity: .9;
+                    }
+                }
+
+                .viewBeatMappingStatus-upload-btn {
+                    background-color: #6666f2;
+
+                    .browse-btn {
+                        cursor: pointer;
+                    }
+                }
+
+                .viewBeatMappingStatus-download-btn {
+                    background-color: #ffcd00;
+                    color: black;
+                }
+
+                .edit-security-key {
+                    .edit-security-key-btn {
+                        padding: 12px 18px;
+                        background-color: #4a90e2;
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        font-size: 15px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        white-space: nowrap;
+
+                        &:hover {
+                            background-color: #357abd;
+                            opacity: 0.9;
+                        }
+                    }
+                }
+            }
+        }
+
+        .viewBeatMapping-table-container {
+            overflow: auto;
+            max-height: 60vh;
+            max-width: 100vw;
+            margin-top: 10px;
+
+            table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0 12px; // you can adjust this
+                min-width: 800px;
+
+                thead {
+                    position: sticky;
+                    top: 0;
+                    z-index: 11;
+                    background-color: #6399f9;
+                    color: white;
+
+                    th {
+
+                        padding: 10px 5px;
+                        white-space: nowrap;
+                        text-align: center;
+                    }
+
+                    th:first-child {
+                        border-radius: 5px 0 0 5px;
+                    }
+
+                    th:last-child {
+                        border-radius: 0 5px 5px 0;
+                    }
+                }
+
+                tbody {
+                    tr {
+                        background-color: #f8f8f8;
+
+                        &:nth-child(even) {
+                            background-color: white;
+                        }
+
+                        &:hover {
+                            background-color: #e6e4e4;
+                        }
+
+                        .expand-btn {
+                            padding: 2px;
+                            color: #6399f9;
+                            text-decoration: underline;
+                            cursor: pointer;
+                        }
+
+                        td {
+                            padding: 10px 5px;
+                            font-size: 12px;
+                            text-align: center;
+                            white-space: nowrap;
+
+                            &:first-child {
+                                border-radius: 5px 0 0 5px;
+                            }
+
+                            &:last-child {
+                                border-radius: 0 5px 5px 0;
+                            }
+
+                        }
+
+                        // Custom Select Styles
+                        .route-select-container {
+                            position: relative;
+                            width: 100%;
+
+                            select {
+                                width: 80%;
+                                max-width: 100px;
+                                border: none;
+                                background-color: transparent;
+                                cursor: pointer;
+                            }
+                        }
+
+                        .expand-container {
+                            padding: 20px;
+                            background-color: #f9f9f9;
+
+                            .expand-container-filter {
+                                position: sticky;
+                                top: 0;
+                                z-index: 10;
+                                background: #f9f9f9;
+                                padding: 10px 0;
+                                margin-bottom: 10px;
+
+                                input {
+                                    width: 90%;
+                                    padding: 10px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 5px;
+                                    font-size: 14px;
+
+                                    &:focus {
+                                        outline: none;
+                                        border-color: #6399f9;
+                                    }
+                                }
+                            }
+
+                            .expand-container-body {
+                                max-height: 400px;
+                                overflow-y: auto;
+                                padding-right: 10px;
+
+                                &::-webkit-scrollbar {
+                                    width: 8px;
+                                }
+
+                                &::-webkit-scrollbar-track {
+                                    background: #f1f1f1;
+                                    border-radius: 4px;
+                                }
+
+                                &::-webkit-scrollbar-thumb {
+                                    background: #888;
+                                    border-radius: 4px;
+
+                                    &:hover {
+                                        background: #666;
+                                    }
+                                }
+
+                                .schedule-cards {
+                                    display: grid;
+                                    grid-template-columns: repeat(3, 1fr);
+                                    gap: 20px;
+                                    padding: 10px;
+
+                                    @media (max-width: 1200px) {
+                                        grid-template-columns: repeat(2, 1fr);
+                                    }
+
+                                    @media (max-width: 768px) {
+                                        grid-template-columns: 1fr;
+                                    }
+
+                                    .schedule-card {
+                                        background: #f8f8f8;
+                                        border-radius: 12px;
+                                        border: 1px solid #e0e0e0;
+                                        padding: 18px 18px 16px 18px;
+                                        display: flex;
+                                        flex-direction: column;
+                                        min-width: 0;
+                                        position: relative;
+                                        box-shadow: none;
+                                        transition: box-shadow 0.2s;
+
+                                        &.done {
+                                            background: #f0fbf4;
+                                            border: 1.5px solid #b6e2c6;
+                                        }
+
+                                        &.pending {
+                                            background: #fff8f1;
+                                            border: 1.5px solid #ffc180;
+                                        }
+
+                                        .card-top-row {
+                                            display: flex;
+                                            justify-content: space-between;
+                                            align-items: flex-start;
+                                            margin-bottom: 2px;
+
+                                            .card-code {
+                                                font-size: 15px;
+                                                color: #222;
+                                                font-weight: 500;
+                                            }
+
+                                            .done {
+                                                background: #357a38;
+                                            }
+
+                                            .pending {
+                                                background: #F57C00;
+                                            }
+
+                                            .visit-badge {
+                                                color: #fff;
+                                                border-radius: 50%;
+                                                width: 28px;
+                                                height: 28px;
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                font-size: 15px;
+                                                font-weight: 500;
+                                                margin-left: 8px;
+                                            }
+                                        }
+
+                                        .card-name {
+                                            display: flex;
+                                            font-size: 18px;
+                                            text-align: start;
+                                            color: #222;
+                                            margin-bottom: 12px;
+                                            margin-top: 2px;
+                                            flex-wrap: wrap;
+                                            word-break: break-word;
+                                            white-space: normal;
+                                        }
+
+                                        .card-tags {
+                                            display: flex;
+                                            flex-wrap: wrap;
+                                            gap: 10px;
+                                            margin-bottom: 16px;
+
+                                            .tag {
+                                                border: 1.5px solid #357aef;
+                                                color: #357aef;
+                                                border-radius: 8px;
+                                                padding: 4px 14px;
+                                                font-size: 14px;
+                                                font-weight: 500;
+                                                background: #fff;
+                                                margin-bottom: 4px;
+                                                word-break: break-word;
+                                                white-space: normal;
+                                            }
+                                        }
+
+                                        .card-bottom-row {
+                                            display: flex;
+                                            justify-content: space-between;
+                                            align-items: center;
+                                            margin-top: 10px;
+
+                                            .distance-icon {
+                                                display: flex;
+                                                align-items: center;
+                                                gap: 4px;
+                                                font-size: 14px;
+                                                font-weight: 500;
+                                            }
+
+                                            .card-status-row {
+                                                display: flex;
+                                                justify-content: flex-end;
+                                                align-items: center;
+                                                margin-top: 8px;
+
+                                                .status-pill {
+                                                    border-radius: 8px;
+                                                    padding: 7px 28px;
+                                                    font-size: 16px;
+                                                    font-weight: 500;
+                                                    display: flex;
+                                                    align-items: center;
+                                                    border: 1.5px solid #357a38;
+                                                    background: #eaf7ed;
+                                                    color: #357a38;
+
+                                                    &.done {
+                                                        background: #eaf7ed;
+                                                        color: #357a38;
+                                                        border: 1.5px solid #357a38;
+                                                    }
+
+                                                    &.pending {
+                                                        background: #fff;
+                                                        color: #ff9800;
+                                                        border: 1.5px solid #ff9800;
+                                                    }
+
+                                                    .checkmark {
+                                                        font-size: 18px;
+                                                        margin-left: 8px;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+
+    .error-message {
+        color: rgb(240 28 28);
+    }
+
+    .success-message {
+        color: #4CAF50;
+    }
+}
+
+/* ====== Media Queries for Responsiveness ====== */
+
+/* 🔹 Tablets (max-width: 1024px) */
+@media (max-width: 1024px) {
+    
+
+        .viewBeatMapping-first-line {
+            .filters-container {
+                flex-direction: column;
+                gap: 15px;
+
+                .viewBeatMappingStatus-filter,
+                .viewBeatMappingStatus-date-filter,
+                .viewBeatMapping-status-filter {
+                    width: 100%;
+                }
+            }
+
+            .buttons-container {
+                width: 100%;
+                justify-content: flex-start;
+                gap: 10px;
+
+                .viewBeatMappingStatus-upload-btn,
+                .viewBeatMappingStatus-download-btn,
+                .edit-security-key {
+                    flex: 1;
+                    min-width: 0;
+                }
+            }
+        }
+
+        .viewBeatMapping-table-container {
+            .schedule-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+}
+
+/* 🔹 Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    .viewBeatMappingStatus-page-header {
+        font-size: 1.2rem;
+    }
+
+    
+
+        .viewBeatMapping-first-line {
+            .buttons-container {
+                flex-direction: column;
+                width: 100%;
+
+                .viewBeatMappingStatus-upload-btn,
+                .viewBeatMappingStatus-download-btn,
+                .edit-security-key {
+                    width: 100%;
+                }
+            }
+        }
+    
+
+    .viewBeatMappingStatus-calendar-container {
+        padding: 10px;
+    }
+
+    .viewBeatMappingStatus-calendar-body .viewBeatMappingStatus-calendar-days {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+    }
+
+    .viewBeatMapping-first-line {
+        flex-direction: column;
+        align-items: center;
+
+        .ViewAttendance-filter {
+            max-width: 4rem;
+        }
+    }
+
+    .viewBeatMapping-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .viewBeatMapping-table-container {
+        .schedule-cards {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+    }
+}
+
+@media (max-width: 600px) {
+
+        .viewBeatMapping-first-line {
+            .buttons-container {
+
+                .viewBeatMappingStatus-upload-btn,
+                .viewBeatMappingStatus-download-btn,
+                .edit-security-key .edit-security-key-btn {
+                    font-size: 14px;
+                    padding: 10px 0;
+                }
+            }
+        }
+    
 }
