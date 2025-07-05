@@ -57,12 +57,11 @@ const DocumentViewer = ({ documents, onClose }) => {
         ) : (
           <div className="pdf-container">
             <iframe
-              src={`${documents[docIndex]}#toolbar=0`}
+              src={`https://docs.google.com/gview?url=${documents[docIndex]}&embedded=true`}
               title={`Document ${docIndex + 1}`}
               width="100%"
               height="100%"
-              onError={() => setImageError(true)}
-              style={{ display: imageError ? "none" : "block" }}
+              style={{ border: "none" }}
             />
             {imageError && (
               <div className="error-document">

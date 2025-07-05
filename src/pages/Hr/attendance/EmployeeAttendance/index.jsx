@@ -77,6 +77,7 @@ const EmployeeAttendance = () => {
     message: "",
     type: "",
   });
+  const [tag, setTag] = useState("")
 
   // Add these handler functions after other functions
   const handleViewDetails = (record) => {
@@ -125,6 +126,10 @@ const EmployeeAttendance = () => {
       const response = await axios.get(
         `${backendUrl}/get-attendance-by-date/${UrlDate}`,
         {
+          params: {
+            firms,
+            tag
+          },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -204,6 +209,7 @@ const EmployeeAttendance = () => {
             search: searchQuery,
             status: statusFilter,
             firms: firms,
+            tag
           },
           headers: {
             Authorization: localStorage.getItem("token"),
@@ -224,11 +230,11 @@ const EmployeeAttendance = () => {
     getCount();
     getAttendance();
     getAllActorTypes();
-  }, [date]);
+  }, [date, firms, tag]);
 
   useEffect(()=>{
     getAttendance();
-  },[date, searchQuery, statusFilter, firms, page])
+  },[date, searchQuery, statusFilter, firms, tag, page])
 
   // Modify the useEffect that handles click-outside
   useEffect(() => {
@@ -362,6 +368,17 @@ const EmployeeAttendance = () => {
               <option value="Absent">Absent</option>
               <option value="Half Day">Half-Day</option>
               <option value="Leave">Leave</option>
+            </select>
+          </div>
+          <div className="tag-filter">
+            <label htmlFor="tag-select">Filter by Tag:</label>
+            <select
+              id="tag-select"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+            >
+              <option value="">All</option>
+              <option value="office">Office</option>
             </select>
           </div>
           <div className="custom-dropdown" ref={dropdownRef}>

@@ -182,7 +182,9 @@ const GeoTagging = () => {
           <Divider sx={{ mb: 2 }} />
           <Autocomplete
             options={dealers}
-            getOptionLabel={(option) => option.name || "n/a"}
+            getOptionLabel={(option) =>
+              option ? `${option.name || "n/a"} (${option.code || "n/a"})` : ""
+            }
             value={selectedDealer}
             onChange={(_, value) => setSelectedDealer(value)}
             renderInput={(params) => (
@@ -190,6 +192,14 @@ const GeoTagging = () => {
             )}
             sx={{ width: "100%", mb: 2 }}
             isOptionEqualToValue={(option, value) => option.code === value.code}
+            filterOptions={(options, state) => {
+              const inputValue = state.inputValue.toLowerCase();
+              return options.filter(
+                (option) =>
+                  option.name.toLowerCase().includes(inputValue) ||
+                  option.code.toLowerCase().includes(inputValue)
+              );
+            }}
           />
 
           <FormControlLabel
