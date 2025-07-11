@@ -120,10 +120,19 @@ const PunchInAndPunchOut = () => {
         },
       });
 
-      showAlert(
-        "success",
-        res.data.message || `Punch ${type === "in" ? "In" : "Out"} successful!`
-      );
+      if (res.data.success === false && res.data.warning) {
+        showAlert(
+          "warning",
+          res.data.message || `Warning: There was an issue with your punch ${type === "in" ? "in" : "out"}`
+        );
+      } else if(res.data.success === true) {
+        showAlert(
+          "success",
+          res.data.message || `Punch ${type === "in" ? "In" : "Out"} successful!`
+        );
+      }else {
+        showAlert("error", res.data.message || "Something went wrong. Please try again.");
+      }
     } catch (err) {
       console.error("Error sending punch:", err);
       showAlert(
