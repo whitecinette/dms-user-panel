@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../../config";
 import "./style.scss";
+import { UAParser } from "ua-parser-js";
+
+
+
 
 const backend_url = config.backend_url;
 
@@ -32,29 +36,51 @@ const Login = () => {
   const handleCodeLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+  
     try {
-      const response = await axios.post(`${backend_url}/app/user/login`, {
-        code,
-        password,
-      },{
-        headers:{'X-Client-Type': 'user',}
-      });
-
+      // Generate pseudo deviceId + deviceInfo for web
+      const parser = new UAParser();
+      const result = parser.getResult();
+  
+      const pseudoId = btoa(
+        navigator.userAgent +
+        navigator.platform +
+        window.screen.width +
+        "x" +
+        window.screen.height
+      );
+  
+      const deviceInfo = {
+        brand: result.device.vendor || "Web",
+        model: result.device.model || result.browser.name || "Browser",
+        os: `${result.os.name} ${result.os.version}`,
+        appVersion: config.appVersion || "web-1.0.0",
+      };
+  
+      const response = await axios.post(
+        `${backend_url}/app/user/login`,
+        {
+          code,
+          password,
+          androidId: pseudoId,
+          deviceInfo,
+        },
+        { headers: { "X-Client-Type": "user" } }
+      );
+  
       if (response.status === 200 && response.data.token) {
         const { token, user, refreshToken } = response.data;
         const role = user.role.toLowerCase();
-
-        localStorage.setItem('refreshToken', refreshToken);
+  
+        localStorage.setItem("refreshToken", refreshToken);
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
         localStorage.setItem("code", user.code);
         localStorage.setItem("name", user.name);
         localStorage.setItem("position", user.position);
-        localStorage.setItem("toolpad-mode", "light");
-        localStorage.setItem("toolpad-color-scheme-dark", "light");
-        localStorage.setItem("toolpad-color-scheme-dark", "light");
-        localStorage.setItem("userId", user.id)
-
+        localStorage.setItem("userId", user.id);
+  
         navigate(roleDashboard[role] || "/");
       } else {
         setError("Login failed. Please try again.");
@@ -66,6 +92,7 @@ const Login = () => {
       setLoading(false);
     }
   };
+  
 
   const handlePhoneSubmit = async (e) => {
     e.preventDefault();
