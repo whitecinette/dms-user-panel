@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import config from "../../config";
+import { clearAuthStorage } from "../../utils/authStorage";
 
 const backend_url = config.backend_url;
 
@@ -39,7 +40,7 @@ function PrivateRoute({ element }) {
       setIsAuthenticated(true);
     } catch (error) {
       console.error("Error refreshing token:", error);
-      localStorage.clear(); // Clear localStorage on error
+      clearAuthStorage();// Clear localStorage on error
       setIsAuthenticated(false);
     }
   };

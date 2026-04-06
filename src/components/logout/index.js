@@ -1,14 +1,11 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { clearAuthStorage } from "../../utils/authStorage";
 
 const Logout = () => {
-  console.log("Logout");
-  const navigate = useNavigate();
-
   useEffect(() => {
-    localStorage.clear();
-    navigate("/login", { replace: true });
-  }, [navigate]);
+    clearAuthStorage();
+    window.location.replace("/login");
+  }, []);
 
   return null;
 };

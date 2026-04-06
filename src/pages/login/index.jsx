@@ -1,90 +1,121 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../../config";
 import "./style.scss";
 import { UAParser } from "ua-parser-js";
 
-
-
-
 const backend_url = config.backend_url;
 
 const Login = () => {
   const navigate = useNavigate();
+
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [step, setStep] = useState("start"); // 'start' | 'otp'
-  const [mode, setMode] = useState("code"); // 'code' | 'phone'
+  const [showPassword, setShowPassword] = useState(false);
+
   const [loading, setLoading] = useState(false);
-  const [sessionId, setSessionId] = useState("");
-
   const [error, setError] = useState("");
+  const [infoMessage, setInfoMessage] = useState("");
 
-  const roleDashboard = {
-    employee: "/employee/dashboard/",
-    dealer: "/dealer/dashboard/",
-    mdd: "/mdd/dashboard/",
-    hr: "/hr/dashboard/",
+  const getPersistentWebDeviceId = () => {
+    const STORAGE_KEY = "webDeviceId";
+
+    try {
+      const existing = localStorage.getItem(STORAGE_KEY);
+      if (existing) return existing;
+
+      const seed = [
+        "web",
+        navigator.userAgent || "",
+        navigator.platform || "",
+        window.screen?.width || "",
+        window.screen?.height || "",
+        Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+        Date.now(),
+        Math.random().toString(36).slice(2),
+      ].join("|");
+
+      const generated = btoa(unescape(encodeURIComponent(seed))).replace(/=+$/, "");
+      localStorage.setItem(STORAGE_KEY, generated);
+      return generated;
+    } catch (err) {
+      console.error("Error generating web device id:", err);
+      return `web-fallback-${Date.now()}`;
+    }
   };
 
+  const getWebDeviceInfo = () => {
+    const parser = new UAParser();
+    const result = parser.getResult();
 
-
+    return {
+      brand: result.device.vendor || "Web",
+      model: result.device.model || result.browser.name || "Browser",
+      os: `${result.os.name || "Unknown"} ${result.os.version || ""}`.trim(),
+      appVersion: config.appVersion || "web-1.0.0",
+    };
+  };
 
   const handleCodeLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-  
+    setInfoMessage("");
+
     try {
-      // Generate pseudo deviceId + deviceInfo for web
-      const parser = new UAParser();
-      const result = parser.getResult();
-  
-      const pseudoId = btoa(
-        navigator.userAgent +
-        navigator.platform +
-        window.screen.width +
-        "x" +
-        window.screen.height
-      );
-  
-      const deviceInfo = {
-        brand: result.device.vendor || "Web",
-        model: result.device.model || result.browser.name || "Browser",
-        os: `${result.os.name} ${result.os.version}`,
-        appVersion: config.appVersion || "web-1.0.0",
-      };
-  
+      const webDeviceId = getPersistentWebDeviceId();
+      const deviceInfo = getWebDeviceInfo();
+
       const response = await axios.post(
         `${backend_url}/app/user/login`,
         {
-          code,
+          code: code.trim().toUpperCase(),
           password,
-          androidId: pseudoId,
+          androidId: webDeviceId,
           deviceInfo,
         },
-        { headers: { "X-Client-Type": "user" } }
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Client-Type": "user",
+          },
+        }
       );
-  
-      if (response.status === 200 && response.data.token) {
-        const { token, user, refreshToken } = response.data;
-        const role = user.role.toLowerCase();
-  
-        localStorage.setItem("refreshToken", refreshToken);
-        localStorage.setItem("token", token);
-        localStorage.setItem("role", role);
-        localStorage.setItem("code", user.code);
-        localStorage.setItem("name", user.name);
-        localStorage.setItem("position", user.position);
-        localStorage.setItem("userId", user.id);
-  
-        navigate(roleDashboard[role] || "/");
-      } else {
-        setError("Login failed. Please try again.");
+
+      const data = response?.data || {};
+
+      if (data.needsApproval === true) {
+        const status = String(data.deviceStatus || "pending").toLowerCase();
+
+        if (status === "blocked") {
+          setError("This device/browser is blocked. Please contact admin.");
+        } else {
+          setInfoMessage("Device approval required. Please contact admin or wait for approval.");
+        }
+        return;
       }
+
+      if (response.status === 200 && data.token && data.user) {
+        const { token, user, refreshToken } = data;
+
+        localStorage.setItem("token", token);
+        if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+
+        localStorage.setItem("role", user.role || "");
+        localStorage.setItem("code", user.code || "");
+        localStorage.setItem("name", user.name || "");
+        localStorage.setItem("position", user.position || "");
+        localStorage.setItem("userId", user.id || "");
+        localStorage.setItem("toolpad-mode", "light");
+        localStorage.setItem("toolpad-color-scheme-dark", "light");
+
+        
+        navigate("/app/employee/dashboard", { replace: true });
+        return;
+      }
+
+      setError(data.message || "Login failed. Please try again.");
     } catch (err) {
       console.error("Login failed:", err);
       setError(err.response?.data?.message || "Login failed. Please try again.");
@@ -92,135 +123,60 @@ const Login = () => {
       setLoading(false);
     }
   };
-  
-
-  const handlePhoneSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await axios.post(`${backend_url}/send-otp`, {
-        phone,
-      });
-
-      if (response.data.success) {
-        setSessionId(response.data.sessionId); // <-- store it
-        setStep("otp");
-      } else {
-        setError("Failed to send OTP. Please try again.");
-      }
-    } catch (err) {
-      console.error("OTP send failed:", err);
-      setError(err.response?.data?.message || "Failed to send OTP.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-
-
-  const handleOTPVerify = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await axios.post(`${backend_url}/verify-otp`, {
-        sessionId,
-        otp,
-        phone
-      });
-
-      const { token, user } = response.data;
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role.toLowerCase());
-      localStorage.setItem("code", user.code);
-      localStorage.setItem("name", user.name);
-      localStorage.setItem("position", user.position);
-      localStorage.setItem("toolpad-mode", "light");
-      localStorage.setItem("toolpad-color-scheme-dark", "light");
-
-      navigate("/mdd/dashboard/");
-    } catch (err) {
-      console.error("OTP verification failed:", err);
-      setError(err.response?.data?.message || "Invalid OTP or verification failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
 
   return (
     <div className="login-container">
-
-      <form
-        onSubmit={
-          mode === "code"
-            ? handleCodeLogin
-            : step === "otp"
-              ? handleOTPVerify
-              : handlePhoneSubmit
-        }
-        className="login-card"
-      >
+      <form onSubmit={handleCodeLogin} className="login-card">
         <img src="/sc.jpg" alt="Company Logo" className="login-logo" />
-        <h2>Welcome!</h2>
-        <p className="login-subtitle">Please log in to continue</p>
 
-              <div className="login-toggle">
-                <button onClick={() => { setMode("code"); setStep("start"); }} disabled={mode === "code"}>Login with Code</button>
-                <button onClick={() => { setMode("phone"); setStep("start"); }} disabled={mode === "phone"}>Login as Distributor</button>
-              </div>
+        <h2>Welcome Back</h2>
+        <p className="login-subtitle">
+          Login to continue securely with device approval and active session protection.
+        </p>
 
-        {mode === "code" && (
-          <>
+        <div className="login-input-group">
+          <label className="login-label">Employee / User Code</label>
+          <input
+            type="text"
+            placeholder="Enter Code"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            className="login-input"
+            autoComplete="username"
+          />
+        </div>
+
+        <div className="login-input-group">
+          <label className="login-label">Password</label>
+          <div className="password-wrap">
             <input
-              type="text"
-              placeholder="Enter Code"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="login-input"
-            />
-            <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="login-input"
+              className="login-input login-input-password"
+              autoComplete="current-password"
             />
-          </>
-        )}
-
-        {mode === "phone" && step === "start" && (
-          <input
-            type="text"
-            placeholder="Enter Phone (+91 6764533222)"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="login-input"
-          />
-        )}
-
-        {mode === "phone" && step === "otp" && (
-          <input
-            type="text"
-            placeholder="Enter OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            className="login-input"
-          />
-        )}
-
-
-        <button type="submit" className="login-btn" disabled={loading}>
-          {loading
-            ? "Processing..."
-            : mode === "phone" && step === "otp"
-            ? "Verify OTP"
-            : "Login"}
-        </button>
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+        </div>
 
         {error && <div className="error-message">{error}</div>}
+        {!error && infoMessage && <div className="info-message">{infoMessage}</div>}
+
+        <button type="submit" className="login-btn" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+        <div className="login-note">
+          This browser will be treated as your device for approval on web.
+        </div>
       </form>
     </div>
   );
