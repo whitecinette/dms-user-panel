@@ -71,49 +71,73 @@ const PunchInAndPunchOut = () => {
   const currentTime = formatCurrentClock(date);
   const currentDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
-  const getLocation = useCallback(() => {
+  const getLocation = useCallback((showErrors = true) => {
     if (!navigator.geolocation) {
-      showAlert("error", "Geolocation is not supported by your browser.");
+      if (showErrors) {
+        showAlert("error", "Location is not supported by this browser.");
+      }
       setLocation(null);
-      return;
+      return Promise.resolve(null);
     }
 
     setIsLoadingLocation(true);
 
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude, accuracy } = position.coords;
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude, accuracy } = position.coords;
 
-        setLocation({
-          lat: latitude,
-          lng: longitude,
-          accuracy,
-        });
+          const nextLocation = {
+            lat: latitude,
+            lng: longitude,
+            accuracy,
+          };
 
-        if (accuracy > 100) {
-          showAlert(
-            "warning",
-            `Your location accuracy is low (${Math.round(
-              accuracy
-            )} meters). Try moving to a better signal or enabling GPS.`
-          );
+          setLocation(nextLocation);
+          setIsLoadingLocation(false);
+
+          if (accuracy > 100 && showErrors) {
+            showAlert(
+              "warning",
+              `Location accuracy is low (${Math.round(
+                accuracy
+              )}m). Please move to open sky or enable precise location.`
+            );
+          }
+
+          resolve(nextLocation);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+
+          let message = "Unable to fetch location.";
+
+          if (error.code === 1) {
+            message =
+              "Location permission denied. Please allow location in browser and iPhone settings.";
+          } else if (error.code === 2) {
+            message =
+              "Location unavailable. Please turn on Location Services/GPS and try again.";
+          } else if (error.code === 3) {
+            message =
+              "Location request timed out. Please try again in open area with better signal.";
+          }
+
+          if (showErrors) {
+            showAlert("error", message);
+          }
+
+          setLocation(null);
+          setIsLoadingLocation(false);
+          resolve(null);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 0,
         }
-
-        navigator.geolocation.clearWatch(watchId);
-        setIsLoadingLocation(false);
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-        showAlert("error", "Location access denied or unavailable.");
-        setLocation(null);
-        setIsLoadingLocation(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0,
-      }
-    );
+      );
+    });
   }, [showAlert]);
 
   const loadTodayAttendanceStatus = useCallback(async () => {
@@ -151,8 +175,12 @@ const PunchInAndPunchOut = () => {
   }, []);
 
   useEffect(() => {
-    getLocation();
-    loadTodayAttendanceStatus();
+    const init = async () => {
+      await loadTodayAttendanceStatus();
+      getLocation(false);
+    };
+
+    init();
 
     const interval = setInterval(() => {
       setDate(new Date());
@@ -210,10 +238,16 @@ const PunchInAndPunchOut = () => {
       }
     }
 
-    if (!location?.lat || !location?.lng) {
+    let currentLocation = location;
+
+    if (!currentLocation?.lat || !currentLocation?.lng) {
+      currentLocation = await getLocation(true);
+    }
+
+    if (!currentLocation?.lat || !currentLocation?.lng) {
       showAlert(
         "error",
-        "Location not available. Please ensure GPS/location is enabled."
+        "Location is still unavailable. Please allow location and enable GPS, then try again."
       );
       return;
     }
@@ -229,8 +263,8 @@ const PunchInAndPunchOut = () => {
 
       const formData = new FormData();
       formData.append(type === "in" ? "punchInImage" : "punchOutImage", file);
-      formData.append("latitude", location.lat);
-      formData.append("longitude", location.lng);
+      formData.append("latitude", currentLocation.lat);
+      formData.append("longitude", currentLocation.lng);
 
       const endpoint = type === "in" ? "punch-in" : "punch-out";
 
@@ -253,7 +287,7 @@ const PunchInAndPunchOut = () => {
 
       // Same flow as Flutter: reload attendance status after successful action
       await loadTodayAttendanceStatus();
-      getLocation();
+      getLocation(false);
     } catch (err) {
       console.error("Error sending punch:", err);
       showAlert(
@@ -265,13 +299,18 @@ const PunchInAndPunchOut = () => {
     }
   };
 
-  const handlePrimaryAction = async () => {
-    if (hasPunchedIn) {
-      await sendPunch("out");
-    } else {
-      await sendPunch("in");
-    }
-  };
+    const handlePrimaryAction = async () => {
+      // 🔥 ALWAYS try to fetch location on user tap
+      if (!location) {
+        await getLocation(true);
+      }
+
+      if (hasPunchedIn) {
+        await sendPunch("out");
+      } else {
+        await sendPunch("in");
+      }
+    };
 
   const refreshPage = async () => {
     setIsRefreshing(true);
@@ -332,7 +371,7 @@ const PunchInAndPunchOut = () => {
           <button
             type="button"
             className="icon-btn"
-            onClick={getLocation}
+            onClick={() => getLocation(true)}
             disabled={isLoadingLocation}
             title="Refresh GPS"
           >
@@ -383,9 +422,25 @@ const PunchInAndPunchOut = () => {
                 <small>Accuracy: {Math.round(location.accuracy || 0)}m</small>
               </>
             ) : (
-              <span>Location not available</span>
+              <>
+                <span>Location not available</span>
+                <small>Please allow location & tap retry</small>
+              </>
             )}
           </div>
+
+          {/* ✅ ADD THIS BUTTON RIGHT HERE */}
+          {!location && (
+            <button
+              type="button"
+              className="secondary-btn"
+              onClick={() => getLocation(true)}
+              disabled={isLoadingLocation}
+              style={{ marginTop: 8 }}
+            >
+              {isLoadingLocation ? "Fetching..." : "Enable / Retry Location"}
+            </button>
+          )}
         </div>
       </div>
 
